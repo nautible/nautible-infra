@@ -1,0 +1,70 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nautible-ac
+  namespace: nautible
+  labels:
+    name: nautible-ac
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nautible-ac
+  template:
+    metadata:
+      labels:
+        app: nautible-ac
+    spec:
+      containers:
+      - name: nautible-ac
+        image: nautible/nautible-ac:1.0.0
+        command:
+        - nautible-ac
+        - --tls-cert-file=etc/nautible-ac/certs/cert.pem
+        - --tls-key-file=etc/nautible-ac/certs/key.pem
+        volumeMounts:
+          - name: cert-volume
+            mountPath: /etc/nautible-ac/certs
+            readOnly: true
+        env:
+          # definition for process target pod rule. regixp and multiple definition e.g. [aaa,bbb,^ccc]
+          # priority [webhook rule > INCLUDE POD NAMES > EXCLUDE POD NAMES ]
+          - name : TARGET_RULE_INCLUDE_POD_NAMES
+            value : "^registry-creds-"
+          - name : TARGET_RULE_EXCLUDE_NAMESPACES
+            value : "^kube-"
+          #
+          # ====　env name SHARE_XXX will be shared by all pod. ====
+          #
+          # proxy settings p.g. http://userid:password@proxy.server:proxy.server.port
+          - name: SHARE_http_proxy
+            valueFrom:
+              secretKeyRef:
+                name: proxy
+                key: http_proxy
+          - name: SHARE_https_proxy
+            valueFrom:
+              secretKeyRef:
+                name: proxy
+                key: https_proxy
+          # 10.96.0.0/12 is minikube default service cluster cidr
+          - name: SHARE_no_proxy
+            value: "127.0.0.1,localhost,10.96.0.0/12"
+      volumes:
+        - name: cert-volume
+          secret:
+            secretName: nautible-aw-certs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nautible-ac
+  namespace: nautible
+spec:
+  selector:
+    app: nautible-ac
+  ports:
+  - port: 443
+    targetPort: 8080

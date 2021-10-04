@@ -1,0 +1,9 @@
+variable "pjname" {}
+variable "private_subnets" {}
+variable "eks_cluster_security_group_id" {}
+variable "order_elasticache_node_type" {}
+variable "order_elasticache_parameter_group_name" {}
+variable "order_elasticache_engine_version" {}
+variable "order_elasticache_port" {}
+variable "private_zone_id" {}
+variable "private_zone_name" {}

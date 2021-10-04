@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  source:
+    repoURL: https://github.com/nautible/nautible-infra
+    targetRevision: HEAD
+    path: 'ArgoCD/ecosystems/overlays/aws/base/metrics-server/base'
+  syncPolicy:
+    automated:
+      prune: true

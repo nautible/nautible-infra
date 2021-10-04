@@ -1,0 +1,7 @@
+{
+  "CN": "Admission Controller CA",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  }
+}
