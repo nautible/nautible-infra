@@ -169,7 +169,7 @@ ArgoCD上でシークレットが作成されていることを確認
 Azureポータルからキーコンテナ＞シークレットを開き、秘匿情報を登録する
 
 ```
-nautible-app-product-db--user
+nautible-app-product-db-user
 nautible-app-product-db-password
 nautible-app-cosmosdb-user
 nautible-app-cosmosdb-password
@@ -240,7 +240,7 @@ resources:
   - cosmosdb.yaml
 ```
 
-※nautible-app-product-db--user,nautible-app-product-db-passwordも同様の手順で作成する
+※nautible-app-product-db-user,nautible-app-product-db-passwordも同様の手順で作成する
 
 #### 3.3. application.yamlをArgoCDに登録
 
