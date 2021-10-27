@@ -1,43 +1,97 @@
-# Secretの管理
+# 秘匿情報管理
 
-## kubernetes-external-secrets
+nautibleアプリケーションを稼働させるために必要な秘匿情報を準備する。
 
-AWS Secrets ManagerやHashiCorp Vaultのような外部の秘密管理システムを使用して、Kubernetesに安全に機密情報を追加する
+秘匿情報はクラウドのキーマネージャー上で管理し、kubernetes-external-secretsを利用してアクセスできる環境を提供する。
 
-[ドキュメント](https://github.com/external-secrets/kubernetes-external-secrets)
+## nautibleで利用する秘匿情報
 
-### サポートしているバックエンド(2021/03/01時点)
+nautibleで利用する秘匿情報の一覧は下記となる。利用するクラウドのキーマネージャー上へ登録する。
 
-- AWS： SecretsManager、SystemManagerパラメータストア
+### AWS(SystemsManager ParameterStore) 
+
+|キー|内容|備考|
+|---|---|---|
+|/nautible-app/product/db/user|商品DB（RDS）接続ユーザ||
+|/nautible-app/product/db/password|商品DB（RDS）接続パスワード||
+|/nautible-infra/github/user|Githubアクセスユーザ|Privateリポジトリにアクセスする場合のみ|
+|/nautible-infra/github/token|GithubPersonalAccessToken|Privateリポジトリにアクセスする場合のみ|
+
+### Azure(KeyVault)
+
+|キー|内容|備考|
+|---|---|---|
+|nautible-app-product-db-user|商品DB（RDS）接続ユーザ||
+|nautible-app-product-db-password|商品DB（RDS）接続パスワード||
+|nautible-app-cosmosdb-user|CosmosDB接続ユーザ||
+|nautible-app-cosmosdb-password|CosmosDB接続パスワード||
+|nautible-infra-github-user|Githubアクセスユーザ|Privateリポジトリにアクセスする場合のみ|
+|nautible-infra-github-token|GithubPersonalAccessToken|Privateリポジトリにアクセスする場合のみ|
+
+
+## Kubernetesからのアクセス方法
+
+Kubernetes上のアプリケーションからクラウドのキーマネージャーに登録されている秘匿情報を参照するために、kubernetes-external-secretsを利用する。
+
+## kubernetes-external-secrets アーキテクチャ
+
+![Architecture](https://github.com/external-secrets/kubernetes-external-secrets/raw/master/architecture.png)
+
+出典：[kubernetes-external-secrets公式Github](https://github.com/external-secrets/kubernetes-external-secrets)
+
+### サポートしているバックエンド(2021/10/01時点)
+
+- AWS： SecretsManager、SystemsManagerパラメータストア
 - Azure： KeyVault
 - GCP： Secret Manager
 - Hashicorp： Vault
 - AlibabaCloud： KMS Secret Manager
+- Akeyless： Vault
+- IBM： Cloud Secrets Manager
 
-## kubernetes-external-secretsのデプロイ
+## 利用手順
 
-### ArgoCDのApplicationでのデプロイ
+### kubernetes-external-secrets（コントローラ）のデプロイ
 
-本リポジトリのapplication.yamlを参考にArgoCDからデプロイを行う  
-反映する前に利用するAWS SystemManagerのリージョンを実行環境に合わせて編集する（env.AWS_REGIONで指定している値（デフォルトではap-northeast-1を指定））
+[CI/CDの導入手順](https://github.com/nautible/nautible-infra/tree/main/ArgoCD)を参照。エコシステムを定義したApplicationリソースをデプロイするとkubernetes-external-secretsのコントローラも含まれている。
 
-また、他デフォルトから変更可能な変数は以下のリポジトリのcharts/kubernetes-external-secrets/values.yamlを参照
 
-[external-secretsのHelmChart](https://github.com/external-secrets/kubernetes-external-secrets)  
+### （参考）kubernetes-external-secretsデプロイ時の環境変数変更について
+
+kubernetes-external-secretsデプロイ用application.yamlを編集する。
+
+#### デフォルトの設定項目
+
+AWS
+
+|設定項目|設定値|
+|---|---|
+|env.AWS_REGION|ap-northeast-1|
+
+Azure
+
+|設定項目|設定値|
+|---|---|
+|なし||
+
+また、他デフォルトから変更可能な変数は[external-secretsのHelmChart](https://github.com/external-secrets/kubernetes-external-secrets)のcharts/kubernetes-external-secrets/values.yamlを参照
+
+
+
 ※Azure Key Vaultを利用する場合は、Key Vaultへアクセスするためのアプリケーションを登録し、アプリケーションのSecrets等の[パラメータを設定する](https://github.com/external-secrets/kubernetes-external-secrets#azure-key-vault)必要があります。アプリケーションの登録については後述します。
 
-## AWS SystemManagerパラメータストアへ登録した機密情報へアクセスする場合
+## シークレットの登録（AWS）
 
-### パラメータストアへの機密情報登録
+### 1. パラメータストアへの秘匿情報登録
 
-AWSコンソールからSystemManager→パラメータストアを開き、機密情報を登録する
+AWSコンソールからSystemManager→パラメータストアを開き、秘匿情報を登録する
 
 ```
 /nautible-app/product/db/user
 /nautible-app/product/db/password
 ```
 
-### EKSからSystemManagerへのアクセス権限を設定
+### 2. EKSからSystemManagerへのアクセス権限を設定
 
 nautibleではAWSインフラ情報をTerraformで管理しているため、Terraformの設定にポリシー追加の記述を追記する  
 [Terraform ポリシー設定箇所](https://github.com/nautible/nautible-infra/blob/main/aws/terraform/nautible-aws-app/modules/common/main.tf)
@@ -61,14 +115,14 @@ nautibleではAWSインフラ情報をTerraformで管理しているため、Ter
 
 上記ポリシーを作成したら、EKSで利用しているEC2のロールにアタッチする。
 
-### AWSでのシークレットの定義
+### 3. AWSでのシークレットの定義
 
 シークレットの定義はkustomizeとArgoCDで管理している  
 AWSの定義を追加する手順は以下の通り
 
 なお、nautibleがデフォルトで用意しているシークレットは[こちら](https://github.com/nautible/nautible-infra/tree/main/ArgoCD/secrets/overlays/aws)を参照  
 
-#### １．シークレットの定義ファイルを作成
+#### 3.1. シークレットの定義ファイルを作成
 
 ```
 apiVersion: 'kubernetes-client.io/v1'
@@ -87,7 +141,7 @@ spec:
 
 注）ArgoCD v2.0ではYAMLに日本語コメントがあるとデプロイに失敗ので、コメントを記載する際は英字で記載する
 
-#### ２．kustomization.yamlに定義を追加
+#### 3.2. kustomization.yamlに定義を追加
 
 ```
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -96,7 +150,7 @@ resources:
   - product-db.yaml
 ```
 
-#### ３．application.yamlをArgoCDに登録
+#### 3.3. application.yamlをArgoCDに登録
 
 ArgoCD/secrets/overlays/aws/application.yamlをArgoCDに登録して管理対象のシークレットを生成する
 
@@ -108,18 +162,20 @@ ArgoCD上でシークレットが作成されていることを確認
 
 ![external-secret](https://user-images.githubusercontent.com/29446925/98647980-ffd30800-2378-11eb-8e48-05141cc0a7cc.png)
 
-## Azure KeyVaultへ登録した機密情報へアクセスする場合
+## シークレットの登録（Azure）
 
-### KeyVaultへの機密情報登録
+### 1. KeyVaultへの秘匿情報登録
 
-Azureポータルからキーコンテナ＞シークレットを開き、機密情報を登録する
+Azureポータルからキーコンテナ＞シークレットを開き、秘匿情報を登録する
 
 ```
+nautible-app-product-db-user
+nautible-app-product-db-password
 nautible-app-cosmosdb-user
 nautible-app-cosmosdb-password
 ```
 
-### AKSからKeyVaultへのアクセス権限について
+### 2. AKSからKeyVaultへのアクセス権限について
 
 ExternalSecretsのAzure KeyVaultのアクセスはAzureのアプリケーションを登録し、アプリケーションのSecretsを利用してアクセスします。
 nautibleではAzureインフラ情報やAzureのアプリケーションをTerraformで管理しているため、Terraformの設定でアプリケーションの登録とKeyVaultへのアクセス権を定義しています。 
@@ -147,7 +203,7 @@ resource "azuread_application" "app" {
 ```
 
 
-### Azureでのシークレットの定義
+### 3. Azureでのシークレットの定義
 
 シークレットの定義はkustomizeとArgoCDで管理している  
 Azureの定義を追加する手順は以下の通り
@@ -155,7 +211,7 @@ Azureの定義を追加する手順は以下の通り
 なお、nautibleがデフォルトで用意しているシークレットは[こちら](https://github.com/nautible/nautible-infra/tree/main/ArgoCD/secrets/overlays/azure)を参照。  
 nautibleの[サンプル](https://github.com/nautible/nautible-infra/tree/main/ArgoCD/secrets/overlays/azure)を参考にしてください。
 
-#### １．シークレットの定義ファイルを作成
+#### 3.1. シークレットの定義ファイルを作成
 
 ```
 apiVersion: kubernetes-client.io/v1
@@ -175,7 +231,7 @@ spec:
 
 注）ArgoCD v2.0ではYAMLに日本語コメントがあるとデプロイに失敗ので、コメントを記載する際は英字で記載する
 
-#### ２．kustomization.yamlに定義を追加
+#### 3.2. kustomization.yamlに定義を追加
 
 ```
 apiVersion: kustomize.config.k8s.io/v1beta1
@@ -184,7 +240,9 @@ resources:
   - cosmosdb.yaml
 ```
 
-#### ３．application.yamlをArgoCDに登録
+※nautible-app-product-db-user,nautible-app-product-db-passwordも同様の手順で作成する
+
+#### 3.3. application.yamlをArgoCDに登録
 
 ArgoCD/secrets/overlays/azure/application.yamlをArgoCDに登録して管理対象のシークレットを生成する
 
@@ -200,7 +258,7 @@ ArgoCD上でシークレットが作成されていることを確認
 
 ## アプリケーションからの利用
 
-アプリケーションからの利用は通常のsecret利用と変わりはない
+アプリケーションからの利用は通常のsecret利用と同様となる
 
 Deploymentでシークレットを環境変数として読み込む例
 

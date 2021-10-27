@@ -1,17 +1,13 @@
-# 環境構築
-
-nautibleではクラウド、CI/CD環境を構築することができます。
-
-## [クラウド環境の構築](https://github.com/nautible/nautible-infra/tree/main/aws/terraform)
-クラウド環境のIaCをTerraformを利用して行っています。環境構築手順などの詳細についてはリンク先を参照してください。
+# nautible-infra
 
 ## [CI/CD](https://github.com/nautible/nautible-infra/tree/main/ArgoCD)
-GithubActionsとArgoCDを活用しGitOpsのCI/CDを行っています。環境構築手順などの詳細についてはリンク先を参照してください。
+ArgoCDのリソースを管理。GithubActionsとArgoCDを活用しGitOpsのCI/CDを行う。
 
-## その他
+## [aws/terraform](https://github.com/nautible/nautible-infra/tree/main/aws/terraform)
+Terraformのリソースを管理。Terraformを活用しAWS環境のIaCを行う。
 
-### [nautible-aw](https://github.com/nautible/nautible-infra/tree/main/k8s/nautible-aw)
-nautibleのadmission webhook。社内proxy対応機能などを提供する。機能などの詳細についてはリンク先を参照してください。
+## [nautible-aw](https://github.com/nautible/nautible-infra/tree/main/k8s/nautible-aw)
+nautibleのadmission webhook。社内proxy対応機能などを提供する。
 
-### [external-secrets](https://github.com/nautible/nautible-infra/tree/main/ArgoCD/ecosystems/base/external-secrets)
-機密情報管理。機密情報の実体をAWSSystemManagerで管理し、Kubernetesのリソースから機密情報へ安全にアクセスできる機能を提供する。
+## [秘匿情報管理](https://github.com/nautible/nautible-infra/tree/main/ArgoCD/docs/external-secrets.md)
+データベースアクセス等の秘匿情報の管理方法及びKubernetesのリソースから秘匿情報へ安全にアクセスする機能を提供する。
