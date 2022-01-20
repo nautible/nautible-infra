@@ -1,0 +1,66 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: nautible-app-restart
+  namespace: nautible-app
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["patch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nautible-app-restart
+  namespace: nautible-app
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nautible-app-restart
+  namespace: nautible-app
+subjects:
+- kind: ServiceAccount
+  name: nautible-app-restart
+  namespace: nautible-app
+roleRef:
+  kind: Role
+  name: nautible-app-restart
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nautible-app-restart
+  namespace: nautible-app
+spec:
+  concurrencyPolicy: Replace
+  schedule: "10 22 * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: nautible-app-restart
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          serviceAccountName: nautible-app-restart
+          containers:
+          - name: nautible-app-restart
+            image: nginx:latest
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - sh
+                    - -c
+                    - "TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) \
+                      && for i in {\"nautible-app-order\",\"nautible-app-customer\",\"nautible-app-stock\",\"nautible-app-product-deployment\",\"nautible-app-payment-bff\",\"nautible-app-payment-cash\",\"nautible-app-payment-credit\",\"nautible-app-payment-convenience\"}; do curl -isSk -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/strategic-merge-patch+json\" https://kubernetes.default/apis/apps/v1/namespaces/nautible-app/deployments/$i/ -X PATCH -d \"{ \\\"spec\\\": { \\\"template\\\": { \\\"metadata\\\": { \\\"annotations\\\": { \\\"lastUpdate\\\": \\\"$(date '+%Y-%m-%dT%H:%M:%S.%sZ')\\\" } } } } }\"; done "
+            command: 
+              - sh
+              - -c
+              - "sleep 30 && exit"
+          restartPolicy: Never
