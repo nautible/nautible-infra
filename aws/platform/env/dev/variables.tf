@@ -11,7 +11,8 @@ variable "region" {
 # Istioのロードバランサー作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
 variable "istio_ig_lb_name" {
   # default = "afff962d46a7a4007afde76c7170fb3a"
-  default = "a7def79326db743b892680165d75f34c"
+  #default = "a7def79326db743b892680165d75f34c"
+  default = ""
 }
 # service api path pattern for cloudfront routing to istio lb
 variable "service_api_path_pattern" {
@@ -42,7 +43,7 @@ variable "create_iam_resources" {
 
 # eks cluster version
 variable "eks_cluster_version" {
-  default = "1.19"
+  default = "1.21"
 }
 
 # eks node-group desired capacity
