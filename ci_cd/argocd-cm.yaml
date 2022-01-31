@@ -21,13 +21,13 @@ data:
       name: nautible-infra
     - url: https://github.com/nautible/nautible-plugin
       name: nautible-plugin
-    - url: https://github.com/nautible/nautible-ms-app-product-manifest
-      name: nautible-ms-app-product-manifest
-    - url: https://github.com/nautible/nautible-ms-app-customer-manifest
-      name: nautible-ms-app-customer-manifest
-    - url: https://github.com/nautible/nautible-ms-app-stock-manifest
-      name: nautible-ms-app-stock-manifest
-    - url: https://github.com/nautible/nautible-ms-app-order-manifest
-      name: nautible-ms-app-order-manifest
-    - url: https://github.com/nautible/nautible-ms-app-payment-manifest
-      name: nautible-ms-app-payment-manifest
+    - url: https://github.com/nautible/nautible-app-ms-product-manifest
+      name: nautible-app-ms-product-manifest
+    - url: https://github.com/nautible/nautible-app-ms-customer-manifest
+      name: nautible-app-ms-customer-manifest
+    - url: https://github.com/nautible/nautible-app-ms-stock-manifest
+      name: nautible-app-ms-stock-manifest
+    - url: https://github.com/nautible/nautible-app-ms-order-manifest
+      name: nautible-app-ms-order-manifest
+    - url: https://github.com/nautible/nautible-app-ms-payment-manifest
+      name: nautible-app-ms-payment-manifest
