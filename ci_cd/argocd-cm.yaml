@@ -21,12 +21,6 @@ data:
       name: nautible-infra
     - url: https://github.com/nautible/nautible-plugin
       name: nautible-plugin
-      passwordSecret:
-        name: secret-github
-        key: github-token
-      usernameSecret:
-        name: secret-github
-        key: github-user
     - url: https://github.com/nautible/nautible-ms-app-product-manifest
       name: nautible-ms-app-product-manifest
     - url: https://github.com/nautible/nautible-ms-app-customer-manifest
