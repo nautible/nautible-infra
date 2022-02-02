@@ -1,10 +1,11 @@
-# nautible-azure-platform
+# plattoform
 
 ## Terraform
 vnetやsubnetなど開発の基礎となるAzureリソースを管理する
+
 ### Terraform構成
 ```
-nautible-azure-platform
+platform
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
   │  variables.tf
   │
@@ -64,15 +65,15 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 
 * 「az login」を実行してAzureにログインする
 * tfstate管理用のstorageaccountの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * nautible-azure-platform/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible-azure-platform/modules/initディレクトリで「terraform init」の実行
-  * nautible-azure-platform/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * nautible-azure-platform/modules/initディレクトリで「terraform apply」の実行
+  * platform/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * platform/modules/initディレクトリで「terraform init」の実行
+  * platform/modules/initディレクトリで「terraform plan」の実行と内容の確認
+  * platform/modules/initディレクトリで「terraform apply」の実行
 * Azure環境の構築
-  * nautible-azure-platform/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible-azure-platform/env/devディレクトリで「terraform init」の実行
-  * nautible-azure-platform/env/devディレクトリで「terraform plan」の実行と内容の確認
-  * nautible-azure-platform/env/devディレクトリで「terraform apply」の実行
+  * platform/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * platform/env/devディレクトリで「terraform init」の実行
+  * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
+  * platform/env/devディレクトリで「terraform apply」の実行
   * Azureの管理コンソールで以下の作業を実施する
     * terraformによって作成されたKey Vaultのシークレットに以下の定義を行う。尚、シークレット作成時には「アクセスポリシー」にオペレーションを実行するユーザーやグループを追加する必要がある。
       * 名前：nautible-infra-github-user、値：githubにアクセスするためのユーザー
@@ -86,7 +87,7 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
   ```
   * IstioのIngressgatewayのロードバランサー作成後に、nautible/env/devのvariables.tfにロードバランサーのIPを指定してapplyを再実行(Azure Front DoorにLBへのルーティングが追加されます)。
 
-※prodの場合はnautible/env/devをprodに読み替えてください。
+※prodの場合はplatform/env/devをprodに読み替えてください。
 
 
 ### terraformのGitOpsとGithub Actionsについて

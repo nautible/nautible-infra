@@ -1,10 +1,11 @@
-# nautible-infra
+# plattoform
 
 ## Terraform
 VPCやSubnetなど開発の基礎となるAWSリソースを管理する
+
 ### Terraform構成
 ```
-nautible-aws-platform
+platform
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
   │  variables.tf
   │
@@ -70,18 +71,18 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 
 * AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * nautible/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible/modules/initディレクトリで「terraform init」の実行
-  * nautible/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * nautible/modules/initディレクトリで「terraform apply」の実行
+  * platform/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * platform/modules/initディレクトリで「terraform init」の実行
+  * platform/modules/initディレクトリで「terraform plan」の実行と内容の確認
+  * platform/modules/initディレクトリで「terraform apply」の実行
 * AWS環境の構築
-  * nautible/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible/env/devディレクトリで「terraform init」の実行
-  * nautible/env/devディレクトリで「terraform plan」の実行と内容の確認
-  * nautible/env/devディレクトリで「terraform apply」の実行
-  * IstioのIngressgatewayのロードバランサー作成後に、nautible/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。
+  * platform/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * platform/env/devディレクトリで「terraform init」の実行
+  * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
+  * platform/env/devディレクトリで「terraform apply」の実行
+  * IstioのIngressgatewayのロードバランサー作成後に、platform/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。
 
-※prodの場合はnautible/env/devをprodに読み替えてください。
+※prodの場合はplatform/env/devをprodに読み替えてください。
 
 ### terraformのGitOpsとGithub Actionsについて
 

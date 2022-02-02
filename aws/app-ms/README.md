@@ -1,9 +1,10 @@
 # nautible-app
-アプリケーションの実装要件で必要となるAWSリソースを管理する
+
+マイクロサービスアプリケーション（nautible-puginリポジトリのapp-ms）の実装要件で必要となるAWSリソースを管理する
 
 ## Terraform構成
 ```
-nautible-app
+app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
   │  variables.tf
   │  
@@ -52,15 +53,15 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 
 * AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * nautible-app/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible-app/modules/initディレクトリで「terraform init」の実行
-  * nautible-app/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * nautible-app/modules/initディレクトリで「terraform apply」の実行
+  * app-ms/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * app-ms/modules/initディレクトリで「terraform init」の実行
+  * app-ms/modules/initディレクトリで「terraform plan」の実行と内容の確認
+  * app-ms/modules/initディレクトリで「terraform apply」の実行
 * AWS環境の構築
-  * nautible-app/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * nautible-app/env/devディレクトリで「terraform init」の実行
-  * nautible-app/env/devディレクトリで「terraform plan」の実行と内容の確認
-  * nautible-app/env/devディレクトリで「terraform apply」の実行
+  * app-ms/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+  * app-ms/env/devディレクトリで「terraform init」の実行
+  * app-ms/env/devディレクトリで「terraform plan」の実行と内容の確認
+  * app-ms/env/devディレクトリで「terraform apply」の実行
 
-※prodの場合はnautible/env/devをprodに読み替えてください。
+※prodの場合はapp-ms/env/devをprodに読み替えてください。
 
