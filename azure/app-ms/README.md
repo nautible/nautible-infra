@@ -3,7 +3,8 @@
 マイクロサービスアプリケーション（nautible-puginリポジトリのapp-ms）の実装要件で必要となるAzureリソースを管理する
 
 ## Terraform構成
-```
+
+```text
 app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
   │  variables.tf
@@ -30,17 +31,21 @@ Azure-StorageAccount
               │
               └─{pjname}app.tfstate     ・・・Terraformのtfstate
 ```
+
 ※各module配下のファイルは記載を割愛
 
 ### 環境構築対象のリソース
+
 「terraform plan」で確認してください
 
 ### 環境構築の前に
+
 * Terraformを利用して環境構築を行います
 * TerraformのAzure認証は事前にaz loginしている事を前提としています
 Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です
 
 ### 環境構築実行環境事前準備
+
 * [Terraform(cli)のインストール](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 * Azureアカウントの作成
 * [Azure cliのインストール](https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli)
@@ -60,4 +65,3 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
   * app-ms/env/devディレクトリで「terraform apply」の実行
 
 ※prodの場合はapp-ms/env/devをprodに読み替えてください。
-

@@ -3,7 +3,8 @@
 マイクロサービスアプリケーション（nautible-puginリポジトリのapp-ms）の実装要件で必要となるAWSリソースを管理する
 
 ## Terraform構成
-```
+
+```text
 app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
   │  variables.tf
@@ -31,18 +32,22 @@ AWS-Dynamodb
   └─nautible-nautible-app-dev-terraform-state-lock
               ・・・teffaromのtfstateのlockテーブル
 ```
+
 ※各module配下のファイルは記載を割愛
 
 ### 環境構築対象のリソース
+
 「terraform plan」で確認してください
 
 ### 環境構築の前に
+
 * AWS環境の環境構築のみサポートしています
 * Terraformを利用して環境構築を行います
 * TerraformのAWS認証は環境変数「AWS_PROFILE」でプロファイルを利用して実行することを想定しています  
 Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です
 
 ### 環境構築実行環境事前準備
+
 * sh実行可能環境であること
 * [Terraform(cli)のインストール](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 * AWSアカウントの作成
