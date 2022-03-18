@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_ecrpublic_repository" "ecr_customer" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-customer"
+  repository_name = "nautible-app-ms-customer"
 }
 
 resource "aws_dynamodb_table" "customer" {

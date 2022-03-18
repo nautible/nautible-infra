@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_ecrpublic_repository" "ecr_stock" {
   provider        = aws.us_east_1
-  repository_name =  "nautible-app-stock"
+  repository_name =  "nautible-app-ms-stock"
 }
 
 resource "aws_dynamodb_table" "stock" {

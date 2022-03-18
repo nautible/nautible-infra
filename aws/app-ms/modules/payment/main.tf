@@ -6,22 +6,22 @@ provider "aws" {
 
 resource "aws_ecrpublic_repository" "ecr_payment_cash" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-payment-cash"
+  repository_name = "nautible-app-ms-payment-cash"
 }
 
 resource "aws_ecrpublic_repository" "ecr_payment_convenience" {
   provider        = aws.us_east_1
-  repository_name ="nautible-app-payment-convenience"
+  repository_name ="nautible-app-ms-payment-convenience"
 }
 
 resource "aws_ecrpublic_repository" "ecr_payment_credit" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-payment-credit"
+  repository_name = "nautible-app-ms-payment-credit"
 }
 
 resource "aws_ecrpublic_repository" "ecr_payment_bff" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-payment-bff"
+  repository_name = "nautible-app-ms-payment-bff"
 }
 
 resource "aws_dynamodb_table" "payment" {

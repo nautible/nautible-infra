@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_ecrpublic_repository" "ecr_product" {
   provider        = aws.us_east_1
-  repository_name ="nautible-app-product"
+  repository_name ="nautible-app-ms-product"
 }
 
 resource "aws_security_group" "product_db_sg" {
@@ -91,11 +91,11 @@ resource "aws_db_parameter_group" "product_db_dbpg" {
 }
 
 data "aws_ssm_parameter" "product_db_user" {
-  name = "/nautible-app/product/db/user"
+  name = "nautible-app-ms-product-db-user"
 }
 
 data "aws_ssm_parameter" "product_db_password" {
-  name = "/nautible-app/product/db/password"
+  name = "nautible-app-ms-product-db-password"
 }
 
 resource "aws_db_instance" "product_db" {

@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_ecrpublic_repository" "ecr_order" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-order"
+  repository_name = "nautible-app-ms-order"
 }
 
 resource "aws_elasticache_cluster" "order_elasticache" {
