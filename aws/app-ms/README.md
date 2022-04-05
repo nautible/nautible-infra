@@ -1,4 +1,4 @@
-# nautible-app
+# app-ms
 
 マイクロサービスアプリケーション（nautible-puginリポジトリのapp-ms）の実装要件で必要となるAWSリソースを管理する
 
