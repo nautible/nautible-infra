@@ -105,7 +105,7 @@ resource "aws_db_instance" "product_db" {
   engine                    = "mysql"
   engine_version            = "5.7"
   instance_class            = "db.t3.micro"
-  name                      = "productdb"
+  db_name                   = "productdb"
   username                  = data.aws_ssm_parameter.product_db_user.value
   password                  = data.aws_ssm_parameter.product_db_password.value
   parameter_group_name      = aws_db_parameter_group.product_db_dbpg.name
