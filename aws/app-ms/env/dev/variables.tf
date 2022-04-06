@@ -8,7 +8,7 @@ variable "region" {
 }
 # nautible aws platform state bucket
 variable "nautible_aws_platform_state_bucket" {
-  default = "nautible-aws-platform-dev-tf-ap-northeast-1"
+  default = "nautible-dev-platform-tf-ap-northeast-1"
 }
 # nautible aws platform state region
 variable "nautible_aws_platform_state_region" {
@@ -16,7 +16,7 @@ variable "nautible_aws_platform_state_region" {
 }
 # nautible aws platform state key
 variable "nautible_aws_platform_state_key" {
-  default = "nautible-aws-platform-dev.tfstate"
+  default = "nautible-dev-platform.tfstate"
 }
 variable "order_elasticache_node_type" {
   default = "cache.t2.small"
