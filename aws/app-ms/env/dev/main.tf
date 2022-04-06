@@ -12,6 +12,13 @@ terraform {
     # if you don't need to dynamodb tfstate lock, comment out this line.
     dynamodb_table = "nautible-aws-app-dev-tfstate-lock"
   }
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.8.0"
+    }
+  }
 }
 
 module "nautible_aws_app" {

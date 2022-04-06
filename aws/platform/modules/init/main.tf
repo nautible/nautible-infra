@@ -4,6 +4,15 @@ provider "aws" {
   region = var.region
 }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.8.0"
+    }
+  }
+}
+
 resource "aws_s3_bucket" "tfstate_bucket" {
   bucket = var.terraform_bucket_name
   lifecycle {
