@@ -4,21 +4,36 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_s3_bucket" "tfstate_bucket" {
-  bucket = var.terraform_bucket_name
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.8.0"
     }
   }
-  versioning {
-    enabled = true
-  }
+}
+
+resource "aws_s3_bucket" "tfstate_bucket" {
+  bucket = var.terraform_bucket_name
   lifecycle {
     prevent_destroy = true
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "tfstate_bucket_server_side_encryption" {
+  bucket = aws_s3_bucket.tfstate_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "tfstate_bucket_versioning" {
+  bucket = aws_s3_bucket.tfstate_bucket.id
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 

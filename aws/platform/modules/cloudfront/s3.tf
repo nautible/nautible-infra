@@ -2,18 +2,21 @@
 # can't set lifecycle attribute
 resource "aws_s3_bucket" "static_web_bucket" {
   bucket = "${var.pjname}-static-web-${var.region}"
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
   lifecycle {
     prevent_destroy = true
   }
 }
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "static_web_bucket_server_side_encryption" {
+  bucket = aws_s3_bucket.static_web_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
+}
+
 
 resource "aws_s3_bucket_public_access_block" "static_web_bucket_public_access" {
   bucket                  = aws_s3_bucket.static_web_bucket.id
