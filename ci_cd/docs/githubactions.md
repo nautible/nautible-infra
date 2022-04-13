@@ -8,7 +8,6 @@ Githubリポジトリのシークレットに以下の定義を登録
 
 - DEPLOY_TARGET : (aws/azure)
 
-
 ### PersonalAccessToken
 
 事前にPersonalAccessTokenを発行しアプリケーションリポジトリ（もしくはOrgnization）のシークレットに変数名PATで登録しておく
