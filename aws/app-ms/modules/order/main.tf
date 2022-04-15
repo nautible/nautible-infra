@@ -3,10 +3,38 @@ provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 }
+data "aws_security_group" "eks_node_common_sg" {
+  vpc_id = var.vpc_id
+  name   = "${var.platform_pjname}-eks-node-common-sg"
+}
 
 resource "aws_ecrpublic_repository" "ecr_order" {
   provider        = aws.us_east_1
   repository_name = "nautible-app-ms-order"
+}
+
+resource "aws_security_group" "order_elasticache_sg" {
+  name        = "${var.pjname}-order-statestore-sg"
+  description = "security group for statestore"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_security_group_rule" "order_elasticache_sg_inbound" {
+  type                     = "ingress"
+  from_port                = 6379
+  to_port                  = 6379
+  protocol                 = "tcp"
+  source_security_group_id = data.aws_security_group.eks_node_common_sg.id
+  security_group_id        = aws_security_group.order_elasticache_sg.id
+}
+
+resource "aws_security_group_rule" "order_elasticache_sg_outbound" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.order_elasticache_sg.id
 }
 
 resource "aws_elasticache_cluster" "order_elasticache" {
@@ -18,7 +46,7 @@ resource "aws_elasticache_cluster" "order_elasticache" {
   engine_version       = var.order_elasticache_engine_version
   port                 = var.order_elasticache_port
   subnet_group_name    = aws_elasticache_subnet_group.order_elasticache_subnet_group.name
-  security_group_ids   = [var.eks_cluster_security_group_id]
+  security_group_ids   = [aws_security_group.order_elasticache_sg.id]
 }
 
 resource "aws_elasticache_subnet_group" "order_elasticache_subnet_group" {

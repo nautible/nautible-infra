@@ -10,13 +10,6 @@ output "private_subnets" {
 output "private_subnet_arns" {
   value = module.vpc.private_subnet_arns
 }
-output "eks_worker_iam_role_name" {
-  value = module.eks.eks_worker_iam_role_name
-}
-
-output "eks_cluster_primary_security_group_id" {
-  value = module.eks.eks_cluster_primary_security_group_id
-}
 
 output "eks_cluster_name" {
   value = module.eks.eks_cluster_name

@@ -5,9 +5,13 @@ resource "random_id" "app_policy_random" {
 
 data "aws_caller_identity" "self" {}
 
+data "aws_iam_role" "eks_node_role" {
+  name = "${var.platform_pjname}-AmazonEKSNodeRole"
+}
+
 resource "aws_iam_role_policy" "app_policy" {
   name = "${var.pjname}-eks-app-policy-${random_id.app_policy_random.dec}"
-  role = var.eks_worker_iam_role_name
+  role = data.aws_iam_role.eks_node_role.name
 
   policy = <<-EOF
   {

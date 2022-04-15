@@ -1,10 +1,9 @@
 variable "pjname" {}
+variable "platform_pjname" {}
 variable "region" {}
 variable "vpc_id" {}
 variable "public_subnets" {}
 variable "private_subnets" {}
-variable "eks_worker_iam_role_name" {}
-variable "eks_cluster_security_group_id" {}
 variable "private_zone_id" {}
 variable "private_zone_name" {}
 variable "order_elasticache_node_type" {}

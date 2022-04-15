@@ -4,9 +4,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_security_group" "eks_node_common_sg" {
+  vpc_id = var.vpc_id
+  name   = "${var.platform_pjname}-eks-node-common-sg"
+}
+
 resource "aws_ecrpublic_repository" "ecr_product" {
   provider        = aws.us_east_1
-  repository_name ="nautible-app-ms-product"
+  repository_name = "nautible-app-ms-product"
 }
 
 resource "aws_security_group" "product_db_sg" {
@@ -20,7 +25,7 @@ resource "aws_security_group_rule" "product_db_inbound_jdbc" {
   from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
-  source_security_group_id = var.eks_cluster_security_group_id
+  source_security_group_id = data.aws_security_group.eks_node_common_sg.id
   security_group_id        = aws_security_group.product_db_sg.id
 }
 
