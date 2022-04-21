@@ -11,8 +11,7 @@ variable "region" {
 # Istioのロードバランサー作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
 variable "istio_ig_lb_name" {
   # default = "afff962d46a7a4007afde76c7170fb3a"
-  #default = "a7def79326db743b892680165d75f34c"
-  default = "ac86c2fff72024285b6a3f177c9ec5fc"
+  default = ""
 }
 # service api path pattern for cloudfront routing to istio lb
 variable "service_api_path_pattern" {
@@ -48,7 +47,7 @@ variable "eks_cluster_version" {
 
 # eks node-group desired size
 variable "eks_ng_desired_size" {
-  default = 4
+  default = 3
 }
 # eks node-group max size
 variable "eks_ng_max_size" {
@@ -56,7 +55,7 @@ variable "eks_ng_max_size" {
 }
 # eks node-group min size
 variable "eks_ng_min_size" {
-  default = 4
+  default = 3
 }
 # eks node-group instance type
 variable "eks_ng_instance_type" {
@@ -81,7 +80,6 @@ variable "eks_cluster_endpoint_public_access" {
 }
 # eks cluster endpoint public access cidrs
 variable "eks_cluster_endpoint_public_access_cidrs" {
-  # default = ["158.201.127.1/32"]
   default = ["0.0.0.0/0"]
 }
 
