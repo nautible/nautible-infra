@@ -15,13 +15,7 @@ spec:
 
   # デプロイ先
   destinations:
-  - namespace: default
-    server: https://kubernetes.default.svc
-  - namespace: argocd
-    server: https://kubernetes.default.svc
   - namespace: nautible-app-ms
-    server: https://kubernetes.default.svc
-  - namespace: autoscaler
     server: https://kubernetes.default.svc
 
   # Deny all cluster-scoped resources from being created, except for Namespace

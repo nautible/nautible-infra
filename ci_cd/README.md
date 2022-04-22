@@ -1,6 +1,6 @@
 # CI/CD
 
-GithubActionsとArgoCDを用いたGitOps環境を構築する。
+GithubActionsとArgoCDを用いたGitOps環境を構築します。
 
 ## 全体像
 
@@ -10,76 +10,29 @@ GithubActionsとArgoCDを用いたGitOps環境を構築する。
 
 ### GtihubActions
 
-GitHubに統合されたCI/CDサービス。
+GithubActionsでは以下の２点の機能を実現します。
 
-GitHub上で管理しているコードを自動でビルド・テスト・デプロイを行うことができる。nautibleではCIツールとして利用している。（デプロイは後述のArgoCDを利用）
+- コードをビルドしコンテナイメージをコンテナレジストリにPushする。
+- マニフェスト用リポジトリにあるDeploymentリソースにあるイメージタグを最新のタグ名に変更してプルリクエストを作成する。
 
-[GithubActionsのセットアップ手順](./docs/githubactions.md)
+[GithubActionsのセットアップ手順はこちら](./docs/githubactions.md)
 
 ## CD環境の準備
 
 ### ArgoCD
 
-Kubernetesのための宣言型デリバリーツール。
+ArgoCDでは以下の機能を実現します。
 
-Kubernetes内からGitリポジトリおよび実行環境を監視することで常に実行環境をGitリポジトリと同じ状態に保つように動作する。
+- Github上で各アプリケーション（もしくはエコシステム）のマニフェストが更新された際にKubernetesの状態をGitと同じ状態に更新する。
 
-[ArgoCDのセットアップ手順](./docs/argocd.md)
+[ArgoCDのセットアップ手順はこちら](./docs/argocd.md)
 
-## 導入手順
+## エコシステム及びアプリケーションの導入手順
 
-### エコシステムのデプロイ
+エコシステム及びアプリケーションの導入はnautible-pluginプロジェクトで実施します。
 
-nautibleで利用するエコシステムを定義したApplicationリソースをデプロイする
-
-AWSの場合
-
-```bash
-kubectl apply -f ArgoCD/ecosystems/overlays/aws/dev/application.yaml
-```
-
-Azureの場合
-
-```bash
-kubectl apply -f ArgoCD/ecosystems/overlays/azure/dev/application.yaml
-```
-
-### シークレットのデプロイ
-
-サンプルアプリケーションで利用するExternalSecretsを定義したApplicationリソースをデプロイする
-
-事前にSystemManager（AWSの場合）、AzureKeyVault（Azureの場合）にシークレットを定義しておく
-
-AWSの場合
-
-```bash
-kubectl apply -f ArgoCD/secrets/overlays/aws/application.yaml
-```
-
-Azureの場合
-
-```bash
-kubectl apply -f ArgoCD/secrets/overlays/azure/application.yaml
-```
-
-### サンプルアプリケーションのデプロイ
-
-サンプルアプリケーションを定義したApplicationリソースをデプロイする
-
-事前にGithubActionsのCIが正常に完了していること
-
-AWSの場合
-
-```bash
-kubectl apply -f ArgoCD/applications/overlays/aws/application.yaml
-```
-
-Azureの場合
-
-```bash
-kubectl apply -f ArgoCD/applications/overlays/azure/application.yaml
-```
+詳細は[nautible-plugin](https://github.com/nautible/nautible-plugin)のドキュメントを参照してください。
 
 ## （参考）AWSマネージドサービスを活用したCI/CD構成
 
-AWSマネージドサービスを活用したCI/CDは[こちら](https://github.com/nautible/nautible-infra-codebuild)を参照。
+AWSマネージドサービスを活用したCI/CDは[こちら](https://github.com/nautible/nautible-infra-codebuild)を参照してください。

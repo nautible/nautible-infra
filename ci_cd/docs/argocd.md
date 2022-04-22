@@ -1,22 +1,23 @@
 # ArgoCD
 
-Kubernetesでの利用を前提とした宣言型のGitOps継続的配信ツール。
-
-本ドキュメントでは以下のサンプルもしくは導入手順を提供する。
+以下の手順で導入する。
 
 - ArgoCDのインストール
 - CLIの導入
-- kubernetes-external-secretsによるシークレット管理（シークレットの格納場所：AWSSystemsManagerパラメータストア）
-- プロジェクト作成（プロジェクトごとの権限管理）
-- アプリケーションデプロイ用マニフェスト
-- App of Apps （kustomize版）
+- ArgoCDプロジェクトの作成（プロジェクトごとの権限管理）
+- ConfigMapの作成（ArgoCDがアクセスするGithubリポジトリの登録）
+- 管理画面へアクセス
+- アプリケーションデプロイ用マニフェストの作成
+- [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps) （kustomize版）
+
+※App of Appsは必要に応じて利用する
 
 公式ドキュメントは[こちら](https://argoproj.github.io/argo-cd/)  
 公式リポジトリは[こちら](https://github.com/argoproj/argo-cd)
 
-## インストール
+## ArgoCDのインストール
 
-stable版を導入
+公式サイトのstable版をそのまま導入する。そのためnautibleリポジトリにはYAMLファイルは置かず、公式のYAMLファイルを直接参照して導入する。
 
 ```bash
 kubectl create namespace argocd
@@ -24,6 +25,45 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 ```
 
 [インストールドキュメント](https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd)
+
+## CLIの導入
+
+[公式サイトの導入手順](ArgoCDのインストール)に従い、CLIを導入する。
+
+## ArgoCDプロジェクトの作成
+
+ArgoCDではアプリケーションのデプロイ権限を切り分ける手段としてプロジェクトという単位を提供している。  
+プロジェクト単位で利用可能なソースリポジトリやデプロイ可能なクラスタ、namespeceなどを定義することで、アプリケーションが想定外のデプロイを行わないように制御する。
+
+nautibleではデフォルトのプロジェクト以外にアプリケーション用のプロジェクトとして「application」を作成する。
+
+```bash
+kubectl apply -f ci_cd/application-project.yaml
+```
+
+### applicationプロジェクトの設定内容
+
+|項目|設定値|
+|:--|:--|
+|ソース|全許可|
+|デプロイ先|自クラスタのnautible-app-msネームスペース|
+|クラスタスコープのリソース作成|Namespaceの作成のみ許可|
+|ネームスペーススコープのリソース作成|ResourceQuota、LimitRange、NetworkPolicyの作成のみ不可|
+|ロール|applicationプロジェクトにあるapp-roleに対し、applicationプロジェクトへの全操作許可|
+
+[公式ドキュメントはこちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/project.yaml)
+
+## ConfigMap
+
+ArgoCDがアクセスするGitリポジトリをConfigMapに登録する。
+
+argocd-cm.yamlはデフォルトではnautibleのリポジトリが指定されているので、適宜リポジトリのURLを変更の上、ConfigMapに反映する。
+
+```bash
+kubectl apply -f ci_cd/argocd-cm.yaml
+```
+
+[公式ドキュメントはこちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cm.yaml)
 
 ## 管理画面へのログイン
 
@@ -35,7 +75,7 @@ kubectl port-forward svc/argocd-server -n argocd 8443:443
 
 ブラウザで`https://localhost:8443`にアクセス
 
-![ArgoCD](../images/pic-202107-001.jpg)
+![ArgoCD](./images/pic-202107-001.jpg)
 
 ### 初期アカウント
 
@@ -46,45 +86,46 @@ Password : 以下のsecretに記載（Windowsはbase64コマンドがないた�
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
+ログイン後、パスワードは変更しておく。
+
 ### （参考）エンドポイントの公開方法
 
 ArgoCDへはポートフォワード、ServiceをLoadBalancerにする、Ingressを使用する、のいずれかでアクセス可能  
 （外部NWからArgoCDの管理画面へ直接の接続を許容しない場合はポートフォワードにしておく、接続を許容する場合はService（LoadBalancer）、Ingressを使用するなどの選択肢がある）
 
-## ArgoCDプロジェクトの作成
 
-ArgoCDではアプリケーションのデプロイ権限を切り分ける手段としてプロジェクトという単位を提供している。  
-プロジェクト単位で利用可能なソースリポジトリやデプロイ可能なクラスタ、namespeceなどを定義することで、アプリケーションが想定外のデプロイを行わないように制御する。
+## アプリケーション導入設定
 
-参考マニフェストは[こちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/project.yaml)
+ArgoCDによるGitOpsを実現するにはArgoCDのカスタムリソースであるApplicationを作成する。  
+Applicationリソースでは基本的に下記の３つを設定する。
 
-### nautibleデモアプリケーション用のプロジェクトをデプロイ
+- 導入元（リポジトリパス）
+- 導入先（Kubernetesおよびnamespace）
+- 同期ポリシー（自動か手動かなど）
 
-```bash
-kubectl apply -f ArgoCD/application-project.yaml
-```
+マニフェストのサンプルはnautible-pluginのマニフェスト[(例)cluster-autoscaler](https://github.com/nautible/nautible-plugin/blob/main/cluster-autoscaler/application.yaml)を参照。
 
-### ArgoCDからアクセスするGitリポジトリの定義をデプロイ
+[公式ドキュメントはこちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/)（Applicationリソースはapplication.yamlに記載）
 
-```bash
-kubectl apply -f ArgoCD/argocd-cm.yaml
-```
+## App of Apps
 
-参考マニフェストは[こちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cm.yaml)
+Applicationリソースを導入した場合、sourceに指定したリポジトリ内で変更が発生した際に差分検知を行うが、Applicationリソース自体の変更を検知したいケース（targetRevisionの変更を検知したいなど）や複数のApplicationリソースのライフサイクルをまとめて管理したいケースなどがある。
 
-### Githubのリポジトリがプライベートリポジトリの場合
+そのような場合、App of Appsパターンでの導入が有効となる。
 
-Githubがプライベートリポジトリの場合、下記のようにクラスタにシークレットでユーザIDとトークンを用意し、Githubアクセス時の認証に使用する。
+App of Appsパターンでの導入サンプルは[nautible-pluginのマイクロサービスアプリケーションの導入マニフェスト](https://github.com/nautible/nautible-plugin/blob/main/app-ms/overlays/aws/application.yaml)を参照。
 
-#### ExternalSecrets
+## Githubのリポジトリがプライベートリポジトリの場合
+
+Githubがプライベートリポジトリの場合はArgoCDからアクセスする際にユーザーIDとトークンが必要になる。nautibleではシークレットはExternalSecrets経由で取得する仕組みとしているため、下記のようにユーザIDとトークンを用意し、Githubアクセス時の認証に使用する。
+
+### ExternalSecrets
 
 ExternalSecretsをデプロイ
 
-事前にSystemManager（AWSの場合）、AzureKeyVault（Azureの場合）にシークレットを定義しておく
+事前にSecretsManager（AWSの場合）、AzureKeyVault（Azureの場合）にシークレットを定義しておく
 
-AWS（SystemManager）の例
-
-ArgoCD/secrets/overlays/aws/github.yaml
+AWS（SecretsManager）の例
 
 ```yaml
 apiVersion: 'kubernetes-client.io/v1'
@@ -93,17 +134,15 @@ metadata:
   name: secret-github
   namespace: argocd
 spec:
-  backendType: systemManager
+  backendType: secretsManager
   data:
-    - key: /nautible-infra/github/user   # SystemManager key
-      name: github-user                   # Deployment name
-    - key: /nautible-infra/github/token  # SystemManager key
-      name: github-token                  # Deployment name
+    - key: nautible-infra-github-user   # SystemManager key
+      name: github-user                 # Deployment name
+    - key: nautible-infra-github-token  # SystemManager key
+      name: github-token                # Deployment name
 ```
 
 Azureの例
-
-ArgoCD/secrets/overlays/azure/github.yaml
 
 ```yaml
 apiVersion: 'kubernetes-client.io/v1'
@@ -121,13 +160,13 @@ spec:
       name: github-token                  # Deployment name
 ```
 
-#### kustomization.yaml
+### シークレットの作成
 
-ArgoCD/secrets/overlays配下にあるkustomization.yamlのresourcesにgithub.yamlを追加することで、ArgoCDが自動デプロイする。
+[nautible-pluginのsecrets](https://github.com/nautible/nautible-plugin/tree/main/secrets)ドキュメントに従いSecretおよびExternalSecretsのリソースを作成する。
 
-#### ConfigMap
+### ConfigMap
 
-リポジトリへアクセスするためのユーザ名、シークレットを追記する。
+argocd-cm.yamlを修正し、リポジトリへアクセスするためのユーザ名、シークレットを追記する。
 
 ```yaml
     - url: https://github.com/nautible/nautible-app-customer-manifest
@@ -142,73 +181,6 @@ ArgoCD/secrets/overlays配下にあるkustomization.yamlのresourcesにgithub.ya
 
 ※ 上記設定をすべてのプライベートリポジトリに追加する
 
-## アプリケーション導入設定
-
-ArgoCDによるGitOpsを実現するにはArgoCDのカスタムリソースであるApplicationを作成する。  
-Applicationリソースでは基本的に下記の３つを設定する。
-
-- 導入元（リポジトリパス）
-- 導入先（Kubernetesおよびnamespace）
-- 同期ポリシー（自動か手動かなど）
-
-[マニフェストのサンプルこちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/)（Applicationリソースはapplication.yamlに記載）
-
-## 導入アプリケーション
-
-nautibleで導入するアプリケーション（エコシステム、シークレット、サンプルアプリケーション）は下記の通り。
-
-導入手順は[README](../README.md)を参照
-
-### エコシステム
-
-| 名称 | AWS | Azure | GCP | 備考 |
-| ---- | ---- | ---- | ---- | ---- |
-| [MetricsServer](https://docs.aws.amazon.com/ja_jp/eks/latest/userguide/metrics-server.html) | 〇 | × | - | - |
-| [Istio](https://istio.io/) | 〇 | 〇 | - | - |
-| [autoscaler](https://github.com/kubernetes/autoscaler) | 〇 | × | - | - |
-| [Dapr](https://dapr.io/) | 〇 | 〇 | - | - |
-| [KEDA](https://keda.sh/) | 〇 | 〇 | - | - |
-| [external-secrets](https://github.com/external-secrets/kubernetes-external-secrets) | 〇 | 〇 | - | - |
-| [loki](https://grafana.com/oss/loki/) | 〇 | 〇 | - | - |
-| [prometheus-operator](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | 〇 | 〇 | - | - |
-| [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) | 〇 | 〇 | - | - |
-| [prometheus monitor](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/getting-started.md) | 〇 | 〇 | - | - |
-| [prometheus rules](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/alerting.md) | 〇 | 〇 | - | - |
-
-### シークレット  
-
-AWSの場合  
-
-| 名称 | 備考 |
-| ---- | ---- |
-| github | Githubプライベートリポジトリアクセスキー（実装サンプル） |
-| product-db | 商品サービスデータベース接続キー（実装サンプル） |
-| sqs | SQS接続キー（実装サンプル） |
-
-Azureの場合  
-
-| 名称 | 備考 |
-| ---- | ---- |
-| github | Githubプライベートリポジトリアクセスキー（実装サンプル） |
-| common | Azure Servicebus(dapr pub/sub)接続キー（実装サンプル） |
-| cosmosdb | Cosmosdb接続キー（実装サンプル） |
-| order | rediscache(dapr statestor)接続キー（実装サンプル） |  
-
-### サンプルアプリケーション
-
-| 名称 | 備考 |
-| ---- | ---- |
-| [nautible-app-customer](https://github.com/nautible/nautible-app-customer) | 顧客サービス（実装サンプル） |
-| [nautible-app-product](https://github.com/nautible/nautible-app-product) | 商品サービス（実装サンプル） |
-| [nautible-app-stock](https://github.com/nautible/nautible-app-stock) | 在庫サービス（実装サンプル） |
-| [nautible-app-order](https://github.com/nautible/nautible-app-order) | 注文サービス（実装サンプル） |
-| [nautible-app-payment](https://github.com/nautible/nautible-app-payment) | 決済サービス（実装サンプル） |
-
-[注意]
-
-- helmのインストールパラメータを変更する必要がある場合は、ファイルを編集するか、kustomizeを活用して対応する必要がある  
-  - ArgoCD/ecosystems/overlays/aws/base/autoscaler/application.yamlの「autoDiscovery.clusterName（デフォルト:nautible-dev-cluster）」「awsRegion（デフォルト:ap-northeast-1）」
-
 ## アップグレード
 
 ＜version＞ 部分にアップグレードしたいバージョンを入れて実行
@@ -222,7 +194,3 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/<v
 ```bash
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.1.4/manifests/install.yaml
 ```
-
-## Tips
-
-- Helmでインストールする場合、HelmのapiVersionがv1（Helm2を指す）だとCRDが自動で入らない。その場合はCRDをインストールするApplicationが必要になる。
