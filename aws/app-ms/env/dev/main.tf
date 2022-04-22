@@ -25,11 +25,10 @@ module "nautible_aws_app" {
   source                                 = "../../"
   pjname                                 = var.pjname
   region                                 = var.region
+  platform_pjname                        = data.terraform_remote_state.nautible_aws_platform.outputs.pjname
   vpc_id                                 = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
   public_subnets                         = data.terraform_remote_state.nautible_aws_platform.outputs.public_subnets
   private_subnets                        = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
-  eks_worker_iam_role_name               = data.terraform_remote_state.nautible_aws_platform.outputs.eks_worker_iam_role_name
-  eks_cluster_security_group_id          = data.terraform_remote_state.nautible_aws_platform.outputs.eks_cluster_primary_security_group_id
   private_zone_id                        = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_id
   private_zone_name                      = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_name
   order_elasticache_node_type            = var.order_elasticache_node_type

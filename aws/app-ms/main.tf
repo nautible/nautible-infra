@@ -3,36 +3,37 @@ provider "aws" {
 }
 
 module "common" {
-  source                   = "./modules/common"
-  pjname                   = var.pjname
-  eks_worker_iam_role_name = var.eks_worker_iam_role_name
+  source          = "./modules/common"
+  pjname          = var.pjname
+  platform_pjname = var.platform_pjname
 }
 
 module "product" {
-  source                        = "./modules/product"
-  pjname                        = var.pjname
-  vpc_id                        = var.vpc_id
-  private_subnets               = var.private_subnets
-  eks_cluster_security_group_id = var.eks_cluster_security_group_id
-  private_zone_id               = var.private_zone_id
-  private_zone_name             = var.private_zone_name
+  source            = "./modules/product"
+  pjname            = var.pjname
+  platform_pjname   = var.platform_pjname
+  vpc_id            = var.vpc_id
+  private_subnets   = var.private_subnets
+  private_zone_id   = var.private_zone_id
+  private_zone_name = var.private_zone_name
 }
 
 module "customer" {
-  source                    = "./modules/customer"
-  pjname                    = var.pjname
+  source = "./modules/customer"
+  pjname = var.pjname
 }
 
 module "stock" {
-  source                    = "./modules/stock"
-  pjname                    = var.pjname
+  source = "./modules/stock"
+  pjname = var.pjname
 }
 
 module "order" {
   source                                 = "./modules/order"
   pjname                                 = var.pjname
+  platform_pjname                        = var.platform_pjname
+  vpc_id                                 = var.vpc_id
   private_subnets                        = var.private_subnets
-  eks_cluster_security_group_id          = var.eks_cluster_security_group_id
   private_zone_id                        = var.private_zone_id
   private_zone_name                      = var.private_zone_name
   order_elasticache_node_type            = var.order_elasticache_node_type
@@ -42,6 +43,6 @@ module "order" {
 }
 
 module "payment" {
-  source                    = "./modules/payment"
-  pjname                    = var.pjname
+  source = "./modules/payment"
+  pjname = var.pjname
 }

@@ -1,3 +1,7 @@
+output "pjname" {
+  value = var.pjname
+}
+
 output "vpc_id" {
   value = module.nautible_aws_platform.vpc_id
 }
@@ -12,14 +16,6 @@ output "private_subnets" {
 
 output "private_subnet_arns" {
   value = module.nautible_aws_platform.private_subnet_arns
-}
-
-output "eks_worker_iam_role_name" {
-  value = module.nautible_aws_platform.eks_worker_iam_role_name
-}
-
-output "eks_cluster_primary_security_group_id" {
-  value = module.nautible_aws_platform.eks_cluster_primary_security_group_id
 }
 
 output "eks_cluster_name" {

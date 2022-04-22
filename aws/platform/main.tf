@@ -12,20 +12,28 @@ module "vpc" {
 }
 
 module "eks" {
-  source                  = "./modules/eks"
-  pjname                  = var.pjname
-  region                  = var.region
-  vpc_id                  = module.vpc.vpc_id
-  public_subnet_ids       = module.vpc.public_subnets
-  private_subnet_ids      = module.vpc.private_subnets
-  create_iam_resources    = var.create_iam_resources
-  eks_cluster_version     = var.eks_cluster_version
-  eks_ng_desired_capacity = var.eks_ng_desired_capacity
-  eks_ng_max_capacity     = var.eks_ng_max_capacity
-  eks_ng_min_capacity     = var.eks_ng_min_capacity
-  eks_ng_instance_type    = var.eks_ng_instance_type
-  eks_default_ami_type    = var.eks_default_ami_type
-  eks_default_disk_size   = var.eks_default_disk_size
+  source                                   = "./modules/eks"
+  pjname                                   = var.pjname
+  region                                   = var.region
+  vpc_id                                   = module.vpc.vpc_id
+  vpc_cidr                                 = var.vpc_cidr
+  public_subnet_ids                        = module.vpc.public_subnets
+  private_subnet_ids                       = module.vpc.private_subnets
+  create_iam_resources                     = var.create_iam_resources
+  eks_cluster_version                      = var.eks_cluster_version
+  eks_ng_desired_size                      = var.eks_ng_desired_size
+  eks_ng_max_size                          = var.eks_ng_max_size
+  eks_ng_min_size                          = var.eks_ng_min_size
+  eks_ng_instance_type                     = var.eks_ng_instance_type
+  eks_default_ami_type                     = var.eks_default_ami_type
+  eks_default_disk_size                    = var.eks_default_disk_size
+  eks_cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
+  eks_cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
+  eks_cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_public_access_cidrs
+  eks_cluster_addons_coredns_version       = var.eks_cluster_addons_coredns_version
+  eks_cluster_addons_vpc_cni_version       = var.eks_cluster_addons_vpc_cni_version
+  eks_cluster_addons_kube_proxy_version    = var.eks_cluster_addons_kube_proxy_version
+  eks_fargate_selectors                    = var.eks_fargate_selectors
 }
 
 module "route53" {
