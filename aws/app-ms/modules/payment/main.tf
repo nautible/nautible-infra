@@ -56,30 +56,24 @@ resource "aws_dynamodb_table" "payment" {
 }
 
 resource "aws_sqs_queue" "payment_sqs_dapr_pubsub" {
-  # dapr 1.0.0-rc2: name must be app name hash value
-  name = "9004506a6283f1c25e52430ea01f3f860d114a4efc1ae4f972e530f0e31104e9"
+  name = "nautible-app-ms-payment"
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
-    "dapr-queue-name" = "nautible-app-payment"
+    "dapr-queue-name" = "nautible-app-ms-payment"
   }
 }
 
 resource "aws_sns_topic" "payment_sns_topic_payment_create" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "a75813a18cfe19d79d6ba256676549a8fe9663f4077c071eb4318f00e93e570d"
+  name = "payment-create"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "payment-create"
   }
 }
 
 resource "aws_sns_topic" "payment_sns_topic_payment_reject_create" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "229d389f3c463a6592a9a05ca4b988571670c378650dd4a2aec9bf4b815727a5"
+  name = "payment-reject-create"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "payment-reject-create"
   }
 }

@@ -89,20 +89,16 @@ resource "aws_dynamodb_table" "order" {
 }
 
 resource "aws_sqs_queue" "order_sqs_dapr_pubsub" {
-  # dapr 1.0.0-rc2: name must be app name hash value
-  name = "a028ace4f2fd29f6e3aecbbde75cb72e9180a9ac82c2c2f77c3f985792aaefe6"
+  name = "nautible-app-ms-order"
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
-    "dapr-queue-name" = "nautible-app-order"
+    "dapr-queue-name" = "nautible-app-ms-order"
   }
 }
 
 resource "aws_sns_topic" "order_sns_topic_create_order_reply" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "f38092bf2e1ee3c6788054ced76c0ecc0fb2ec5310bcd54f59c9743bb9581d89"
+  name = "create-order-reply"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "create-order-reply"
   }
 }
