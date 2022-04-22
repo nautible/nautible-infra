@@ -113,7 +113,7 @@ Applicationリソースを導入した場合、sourceに指定したリポジト
 
 そのような場合、App of Appsパターンでの導入が有効となる。
 
-App of Appsパターンでの導入サンプルは[nautible-pluginのマイクロサービスアプリケーションの導入マニフェスト](https://github.com/nautible/nautible-plugin/blob/main/app-ms/overlays/aws/application.yaml)を参照。
+App of Appsパターンでの導入サンプルはnautible-pluginの[マイクロサービスアプリケーションの導入マニフェスト](https://github.com/nautible/nautible-plugin/blob/main/app-ms/overlays/aws/application.yaml)を参照。
 
 ## Githubのリポジトリがプライベートリポジトリの場合
 
