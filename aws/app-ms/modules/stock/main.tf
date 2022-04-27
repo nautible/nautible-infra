@@ -42,40 +42,32 @@ resource "aws_dynamodb_table" "stock_allocate_history" {
 }
 
 resource "aws_sqs_queue" "stock_sqs_dapr_pubsub" {
-  # dapr 1.0.0-rc2: name must be app name hash value
-  name = "e8798c501adf823712ec3eab9184ff35aa6afa985b054c5fea36c06906fbfe34"
+  name = "nautible-app-ms-stock"
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
-    "dapr-queue-name" = "nautible-app-stock"
+    "dapr-queue-name" = "nautible-app-ms-stock"
   }
 }
 
 resource "aws_sns_topic" "stock_sns_topic_stock_reserve_allocate" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "121218fdb336f17cb1a1e62cbabb4bcffd7056b04f265e3087e94fd6bb3be723"
+  name = "stock-reserve-allocate"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "stock-reserve-allocate"
   }
 }
 
 resource "aws_sns_topic" "stock_sns_topic_stock_approve_allocate" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "f4878ef98191c6a25b56e792e44630a5d867dd602d33804624d0548d99aab953"
+  name = "stock-approve-allocate"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "stock-approve-allocate"
   }
 }
 
 resource "aws_sns_topic" "stock_sns_topic_stock_reject_allocate" {
-  # dapr 1.0.0-rc2: name must be topic name hash value
-  name = "529cb96d495da6bb8438248060e9fad7032107bebc1a62063d642552dd348f0c"
+  name = "stock-reject-allocate"
 
   tags = {
-    # dapr 1.0.0-rc2: tag must be folling value
     "dapr-topic-name" = "stock-reject-allocate"
   }
 }
