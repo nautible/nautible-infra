@@ -19,13 +19,13 @@ variable "nautible_aws_platform_state_key" {
   default = "nautible-dev-platform.tfstate"
 }
 variable "order_elasticache_node_type" {
-  default = "cache.t2.small"
+  default = "cache.t2.micro"
 }
 variable "order_elasticache_parameter_group_name" {
-  default = "default.redis5.0"
+  default = "default.redis6.x"
 }
 variable "order_elasticache_engine_version" {
-  default = "5.0.6"
+  default = "6.x"
 }
 variable "order_elasticache_port" {
   default = "6379"
