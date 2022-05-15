@@ -30,6 +30,17 @@ output "eks_node_security_group_id" {
   value = module.nautible_aws_platform.eks_node_security_group_id
 }
 
+output "eks_albc_role_arn" {
+  value = module.nautible_aws_platform.eks_albc_role_arn
+}
+
+output "eks_albc_security_group_id" {
+  value = module.nautible_aws_platform.eks_albc_security_group_id
+}
+output "eks_albc_security_group_name" {
+  value = module.nautible_aws_platform.eks_albc_security_group_name
+}
+
 output "zone_id" {
   value = module.nautible_aws_platform.zone_id
 }

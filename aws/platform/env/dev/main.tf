@@ -25,7 +25,7 @@ module "nautible_aws_platform" {
   source                                   = "../../"
   pjname                                   = var.pjname
   region                                   = var.region
-  istio_ig_lb_name                         = var.istio_ig_lb_name
+  cloudfront_origin_dns_name               = var.cloudfront_origin_dns_name
   service_api_path_pattern                 = var.service_api_path_pattern
   vpc_cidr                                 = var.vpc_cidr
   private_subnet_cidrs                     = var.private_subnet_cidrs

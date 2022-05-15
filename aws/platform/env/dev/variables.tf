@@ -6,11 +6,12 @@ variable "pjname" {
 variable "region" {
   default = "ap-northeast-1"
 }
-# istio ingressgateway loadbalancer name
-# Istioのロードバランサーを作成後にnameを指定してください。cloudfrontを作成し、s3とLBへルーティングします。 
-# Istioのロードバランサー作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
-variable "istio_ig_lb_name" {
-  # default = "afff962d46a7a4007afde76c7170fb3a"
+# cloudfront origin name
+# AWS LoadBalancer Controller dns name
+# AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
+# AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
+variable "cloudfront_origin_dns_name" {
+  # default = "k8s-nautiblealbingres-e139a26662-1883416663.ap-northeast-1.elb.amazonaws.com"
   default = ""
 }
 # service api path pattern for cloudfront routing to istio lb
@@ -90,7 +91,7 @@ variable "eks_cluster_addons_coredns_version" {
 
 # eks cluster addons vpc-cni version
 variable "eks_cluster_addons_vpc_cni_version" {
-  default = "v1.10.2-eksbuild.1"
+  default = "v1.11.0-eksbuild.1"
 }
 
 # eks cluster addons kube-proxy version
