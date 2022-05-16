@@ -5,17 +5,12 @@ locals {
   s3_origin_id = "${var.pjname}-s3-static-web"
 }
 
-data "aws_elb" "istio_ig_lb" {
-  count = var.istio_ig_lb_name == "" ? 0 : 1
-  name  = var.istio_ig_lb_name
-}
-
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "${var.pjname}-s3-static-web-origin-access-identity"
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
-  count = var.istio_ig_lb_name == "" ? 0 : 1
+resource "aws_cloudfront_distribution" "cloudfront_distribution" {
+  count = var.cloudfront_origin_dns_name == "" ? 0 : 1
   origin {
     domain_name = "${var.pjname}-static-web-${var.region}.s3.amazonaws.com"
     origin_id   = local.s3_origin_id
@@ -27,8 +22,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 
   origin {
-    domain_name = data.aws_elb.istio_ig_lb[0].dns_name
-    origin_id   = "ELB-istio-ig-lb"
+    domain_name = var.cloudfront_origin_dns_name
+    origin_id   = "aws-load-balancer-controller"
     custom_origin_config {
       http_port                = 80
       https_port               = 443
@@ -70,7 +65,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl         = 0
     # min_ttl = 0
     path_pattern           = var.service_api_path_pattern
-    target_origin_id       = "ELB-istio-ig-lb"
+    target_origin_id       = "aws-load-balancer-controller"
     viewer_protocol_policy = "redirect-to-https"
 
     forwarded_values {
@@ -85,13 +80,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     geo_restriction {
       restriction_type = "none"
     }
-  }
-
-  custom_error_response {
-    error_caching_min_ttl = 10
-    error_code            = 403
-    response_code         = 404
-    response_page_path    = "/"
   }
 
   tags = {
