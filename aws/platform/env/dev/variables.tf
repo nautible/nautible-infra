@@ -110,3 +110,9 @@ variable "eks_fargate_selectors" {
     }
   ]
 }
+
+
+# eks AWS LoadBalancerControlelr security group cloudfront prefix list id
+variable "eks_albc_security_group_cloudfront_prefix_list_id" {
+  default = "pl-58a04531"
+}
