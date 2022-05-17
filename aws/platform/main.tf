@@ -52,3 +52,8 @@ module "cloudfront" {
   service_api_path_pattern   = var.service_api_path_pattern
 }
 
+module "oidc" {
+  source = "./modules/oidc"
+  pjname = var.pjname
+  oidc   = var.oidc
+}

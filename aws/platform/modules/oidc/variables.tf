@@ -1,0 +1,2 @@
+variable "pjname" {}
+variable "oidc" {}

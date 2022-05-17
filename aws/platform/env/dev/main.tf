@@ -47,4 +47,5 @@ module "nautible_aws_platform" {
   eks_cluster_addons_kube_proxy_version             = var.eks_cluster_addons_kube_proxy_version
   eks_fargate_selectors                             = var.eks_fargate_selectors
   eks_albc_security_group_cloudfront_prefix_list_id = var.eks_albc_security_group_cloudfront_prefix_list_id
+  oidc                                              = var.oidc
 }

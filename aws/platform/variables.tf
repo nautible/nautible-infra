@@ -24,3 +24,4 @@ variable "eks_cluster_addons_coredns_version" {}
 variable "eks_cluster_addons_vpc_cni_version" {}
 variable "eks_cluster_addons_kube_proxy_version" {}
 variable "eks_albc_security_group_cloudfront_prefix_list_id" {}
+variable "oidc" {}
