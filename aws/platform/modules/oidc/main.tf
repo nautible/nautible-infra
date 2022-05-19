@@ -1,8 +1,8 @@
 # OIDC Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   url = var.oidc.url
-  client_id_list = "${var.oidc.client_id_list}"
-  thumbprint_list = "${var.oidc.thumbprint_list}"
+  client_id_list = var.oidc.client_id_list
+  thumbprint_list = var.oidc.thumbprint_list
 }
 
 # OIDC access role
@@ -34,7 +34,7 @@ EOF
 
 resource "aws_iam_role_policy" "oidc_policy" {
   name = "${aws_iam_role.oidc_role.name}-policy"
-  role = "${aws_iam_role.oidc_role.id}"
+  role = aws_iam_role.oidc_role.id
 
   policy = <<POLICY
 {
