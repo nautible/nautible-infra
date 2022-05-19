@@ -123,12 +123,14 @@ variable "oidc" {
   type = object({
     url                 = string
     github_organization = string
-    thumbprint_1        = string
+    client_id_list      = list(string)
+    thumbprint_list     = list(string)
   })
   default = {
     url                 = "https://token.actions.githubusercontent.com"
     github_organization = "nautible"
-    thumbprint_1        = "6938fd4d98bab03faadb97b34396831e3780aea1"
+    client_id_list      = ["sts.amazonaws.com"]
+    thumbprint_list     = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
 
   }
 }

@@ -1,12 +1,8 @@
 # OIDC Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   url = var.oidc.url
-
-  client_id_list = [
-    "https://github.com/${var.oidc.github_organization}",
-  ]
-
-  thumbprint_list = ["${var.oidc.thumbprint_1}"]
+  client_id_list = "${var.oidc.client_id_list}"
+  thumbprint_list = "${var.oidc.thumbprint_list}"
 }
 
 # OIDC access role
@@ -47,14 +43,27 @@ resource "aws_iam_role_policy" "oidc_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "sts:GetCallerIdentity"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecr:*"
+        "sts:GetServiceBearerToken",
+        "ecr:GetAuthorizationToken",
+        "ecr-public:GetAuthorizationToken",
+        "ecr:GetRepositoryPolicy",
+        "ecr-public:GetRepositoryPolicy",
+        "ecr:Describe*",
+        "ecr-public:Describe*",
+        "ecr:GetRepositoryCatalogData",
+        "ecr-public:GetRepositoryCatalogData",
+        "ecr:GetRegistryCatalogData",
+        "ecr-public:GetRegistryCatalogData",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr-public:BatchCheckLayerAvailability",
+        "ecr:InitiateLayerUpload",
+        "ecr-public:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr-public:UploadLayerPart",
+        "ecr:CompleteLayerUpload",
+        "ecr-public:CompleteLayerUpload",
+        "ecr:PutImage",
+        "ecr-public:PutImage"
       ],
       "Resource": "*"
     }
