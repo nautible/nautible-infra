@@ -32,8 +32,8 @@ EOF
 }
 
 resource "aws_iam_role_policy" "githubactions_ecr_access_role_policy" {
-  name = "${aws_iam_role.githubactions_assume_role.name}-policy"
-  role = aws_iam_role.githubactions_assume_role.id
+  name = "${aws_iam_role.githubactions_ecr_access_role.name}-policy"
+  role = aws_iam_role.githubactions_ecr_access_role.id
 
   policy = <<POLICY
 {
