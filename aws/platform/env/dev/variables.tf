@@ -116,3 +116,21 @@ variable "eks_fargate_selectors" {
 variable "eks_albc_security_group_cloudfront_prefix_list_id" {
   default = "pl-58a04531"
 }
+
+  # OIDC Setting
+variable "oidc" {
+  description = "OIDC用設定"
+  type = object({
+    url                 = string
+    github_organization = string
+    client_id_list      = list(string)
+    thumbprint_list     = list(string)
+  })
+  default = {
+    url                 = "https://token.actions.githubusercontent.com"
+    github_organization = "nautible"
+    client_id_list      = ["sts.amazonaws.com"]
+    thumbprint_list     = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
+
+  }
+}
