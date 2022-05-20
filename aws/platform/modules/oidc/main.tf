@@ -6,7 +6,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
 }
 
 resource "aws_iam_role" "githubactions_assume_role" {
-  name = "${var.pjname}-githubactions-assume-role"
+  name = "${var.pjname}-githubactions-ecr-access-role"
   
   assume_role_policy = <<EOF
 {
@@ -32,7 +32,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "ecr_access_policy" {
-  name = "ecr-access-policy"
+  name = "${aws_iam_role.githubactions_assume_role.name}-policy"
   role = aws_iam_role.githubactions_assume_role.id
 
   policy = <<POLICY
