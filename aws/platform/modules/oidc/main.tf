@@ -5,10 +5,9 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
   thumbprint_list = var.oidc.thumbprint_list
 }
 
-# OIDC access role
-resource "aws_iam_role" "oidc_role" {
-  name = "${var.pjname}-oidc-role"
-
+resource "aws_iam_role" "githubactions_assume_role" {
+  name = "${var.pjname}-githubactions-assume-role"
+  
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -32,9 +31,9 @@ resource "aws_iam_role" "oidc_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "oidc_policy" {
-  name = "${aws_iam_role.oidc_role.name}-policy"
-  role = aws_iam_role.oidc_role.id
+resource "aws_iam_role_policy" "ecr_access_policy" {
+  name = "ecr-access-policy"
+  role = aws_iam_role.githubactions_assume_role.id
 
   policy = <<POLICY
 {
