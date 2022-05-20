@@ -5,7 +5,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
   thumbprint_list = var.oidc.thumbprint_list
 }
 
-resource "aws_iam_role" "githubactions_assume_role" {
+resource "aws_iam_role" "githubactions_ecr_access_role" {
   name = "${var.pjname}-githubactions-ecr-access-role"
   
   assume_role_policy = <<EOF
@@ -31,7 +31,7 @@ resource "aws_iam_role" "githubactions_assume_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "ecr_access_policy" {
+resource "aws_iam_role_policy" "githubactions_ecr_access_role_policy" {
   name = "${aws_iam_role.githubactions_assume_role.name}-policy"
   role = aws_iam_role.githubactions_assume_role.id
 
