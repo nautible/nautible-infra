@@ -4,39 +4,29 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_ecrpublic_repository" "ecr_payment_cash" {
-  provider        = aws.us_east_1
-  repository_name = "nautible-app-ms-payment-cash"
-}
-
-resource "aws_ecrpublic_repository" "ecr_payment_convenience" {
-  provider        = aws.us_east_1
-  repository_name ="nautible-app-ms-payment-convenience"
-}
-
 resource "aws_ecrpublic_repository" "ecr_payment_credit" {
   provider        = aws.us_east_1
   repository_name = "nautible-app-ms-payment-credit"
 }
 
-resource "aws_ecrpublic_repository" "ecr_payment_bff" {
+resource "aws_ecrpublic_repository" "ecr_payment" {
   provider        = aws.us_east_1
-  repository_name = "nautible-app-ms-payment-bff"
+  repository_name = "nautible-app-ms-payment"
 }
 
 resource "aws_dynamodb_table" "payment" {
   name           = "Payment"
-  hash_key       = "PaymentNo"
+  hash_key       = "OrderNo"
   read_capacity  = 1
   write_capacity = 1
 
   attribute {
-    name = "PaymentNo"
+    name = "OrderNo"
     type = "S"
   }
 
   attribute {
-    name = "OrderNo"
+    name = "OrderDate"
     type = "S"
   }
 
@@ -48,10 +38,34 @@ resource "aws_dynamodb_table" "payment" {
   global_secondary_index {
     name            = "GSI-CustomerId"
     hash_key        = "CustomerId"
-    range_key       = "OrderNo"
+    range_key       = "OrderDate"
     write_capacity  = 1
     read_capacity   = 1
     projection_type = "ALL"
+  }
+}
+
+resource "aws_dynamodb_table" "credit-payment" {
+  name           = "CreditPayment"
+  hash_key       = "AcceptNo"
+  read_capacity  = 1
+  write_capacity = 1
+
+  attribute {
+    name = "AcceptNo"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "payment-allocate-history" {
+  name           = "PaymentAllocateHistory"
+  hash_key       = "RequestId"
+  read_capacity  = 1
+  write_capacity = 1
+
+  attribute {
+    name = "RequestId"
+    type = "S"
   }
 }
 
