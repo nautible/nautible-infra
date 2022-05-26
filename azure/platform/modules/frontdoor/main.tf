@@ -7,7 +7,9 @@ resource "azurerm_resource_group" "frontdoor_rg" {
 resource "azurerm_frontdoor" "frontdoor" {
   name                                         = "${var.pjname}frontdoor"
   resource_group_name                          = azurerm_resource_group.frontdoor_rg.name
-  enforce_backend_pools_certificate_name_check = false
+  backend_pool_settings{
+    enforce_backend_pools_certificate_name_check = false
+  }
 
   backend_pool {
     name                = "${var.pjname}staticwebbp"
