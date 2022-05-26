@@ -16,7 +16,7 @@ resource "azurerm_cosmosdb_mongo_collection" "order" {
   account_name        = data.azurerm_cosmosdb_account.cosmosdb_account.name
   database_name       = azurerm_cosmosdb_mongo_database.order.name
 
-  default_ttl_seconds = 0
+  default_ttl_seconds = "-1"
   shard_key           = "_id"
   index {
     keys   = ["_id"]
@@ -68,17 +68,15 @@ resource "azurerm_redis_cache" "order_dapr_statestore" {
 #   depends_on = [module.common.azurerm_private_dns_zone.privatelink_redis_cache_private_dns_zone]
 # }
 
-resource "azurerm_servicebus_topic" "create_order_reply" {
+
+resource "azurerm_servicebus_topic" "create_order_reply_topic" {
   name                  = "create-order-reply"
-  resource_group_name   = "${var.pjname}common"
-  namespace_name        = "${var.pjname}servicebusns"
+  namespace_id          = var.servicebus_namespace_id
   max_size_in_megabytes = var.servicebus_max_size_in_megabytes
 }
 
 resource "azurerm_servicebus_subscription" "create_order_reply_subscription" {
-  name                = "nautible-app-order"
-  resource_group_name = "${var.pjname}common"
-  namespace_name      = "${var.pjname}servicebusns"
-  topic_name          = azurerm_servicebus_topic.create_order_reply.name
-  max_delivery_count  = var.servicebus_max_delivery_count
+  name               = "nautible-app-order"
+  topic_id           = azurerm_servicebus_topic.create_order_reply_topic.id
+  max_delivery_count = var.servicebus_max_delivery_count
 }

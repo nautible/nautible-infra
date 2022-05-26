@@ -23,7 +23,6 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     min_count             = var.aks_node_min_count
     node_count            = var.aks_node_count
     enable_node_public_ip = false
-    availability_zones    = var.aks_node_availability_zones
     node_labels           = { "nodepool" = "defaultnodepool" }
     tags                  = merge(var.tags, { "Agent" = "defaultnodepoolagent" })
     max_pods              = var.aks_max_pods
@@ -34,37 +33,20 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     type = "SystemAssigned"
   }
 
-  addon_profile {
-    http_application_routing {
-      enabled = false
-    }
-
-    kube_dashboard {
-      enabled = false
-    }
-
-    azure_policy {
-      enabled = false
-    }
-
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.aks_log_aw.id
-    }
-
-    aci_connector_linux {
-      enabled     = true
-      subnet_name = var.aci_subnet_name
-    }
+  http_application_routing_enabled = false
+  azure_policy_enabled             = false
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.aks_log_aw.id
+  }
+  aci_connector_linux {
+    subnet_name = var.aci_subnet_name
   }
 
   network_profile {
     network_plugin = "azure"
   }
 
-  role_based_access_control {
-    enabled = true
-  }
+  role_based_access_control_enabled = true
 
   tags = var.tags
 
@@ -106,7 +88,7 @@ resource "azurerm_log_analytics_solution" "aks_log_as" {
 data "azurerm_user_assigned_identity" "aks_aci_identity" {
   name                = "aciconnectorlinux-${azurerm_kubernetes_cluster.aks_cluster.name}"
   resource_group_name = "MC_${var.pjname}aks_${var.pjname}aks_${azurerm_resource_group.aks_rg.location}"
-  depends_on = [azurerm_kubernetes_cluster.aks_cluster]
+  depends_on          = [azurerm_kubernetes_cluster.aks_cluster]
 }
 
 resource "azurerm_role_assignment" "aks_aci_subnet_assignment" {
@@ -118,7 +100,7 @@ resource "azurerm_role_assignment" "aks_aci_subnet_assignment" {
 data "azurerm_user_assigned_identity" "aks_agentpool_identity" {
   name                = "${var.pjname}aks-agentpool"
   resource_group_name = "MC_${var.pjname}aks_${var.pjname}aks_${azurerm_resource_group.aks_rg.location}"
-  depends_on = [azurerm_kubernetes_cluster.aks_cluster]
+  depends_on          = [azurerm_kubernetes_cluster.aks_cluster]
 }
 
 resource "azurerm_role_assignment" "aks_acr_assignment" {
