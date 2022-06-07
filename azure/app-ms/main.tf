@@ -39,3 +39,14 @@ module "order" {
 
   depends_on = [module.common]
 }
+
+module "payment" {
+  source   = "./modules/payment"
+  pjname   = var.pjname
+  location = var.location
+  servicebus_max_delivery_count    = var.servicebus_max_delivery_count
+  servicebus_max_size_in_megabytes = var.servicebus_max_size_in_megabytes
+  servicebus_namespace_id          = module.common.servicebus_namespace_id
+
+  depends_on = [module.common]
+}
