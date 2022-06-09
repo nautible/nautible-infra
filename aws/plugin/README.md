@@ -1,7 +1,7 @@
 # plugin
 
 Kubernetesへエコシステムなどの導入に必要なAWSリソースをterraformにて作成します。
-ディレクトリごとに1つのプラグインとして導入に必要なリソースを定義し、plugin/env/dev/variableの値で各プラグインのリソースの作成可否を制御します。
+ディレクトリごとに1つのプラグインとして導入に必要なリソースを定義し、plugin/env/dev/variables.tfの定義内容によって各プラグインのリソースの作成可否を制御します。
 
 ## Terraform構成
 
@@ -19,7 +19,7 @@ plugin
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
-      └─autn  ・・・認証のリソースのmodule
+      └─autn  ・・・認証のリソースを作成するmodule
 
 AWS-S3
   │  
@@ -27,8 +27,7 @@ AWS-S3
         │   nautible-dev-plugin.tfstate    ・・・Terraformのtfstate
 AWS-Dynamodb
   │  
-  └─nautible-nautible-dev-plugin-tstate-lock
-              ・・・teffaromのtfstateのlockテーブル
+  └─nautible-nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
