@@ -17,7 +17,7 @@ resource "azurerm_cosmosdb_mongo_collection" "payment" {
   database_name       = azurerm_cosmosdb_mongo_database.payment.name
 
   default_ttl_seconds = "-1"
-  shard_key           = "orderNo"
+  shard_key           = "OrderNo"
 
   index {
     keys   = ["_id"]
@@ -25,12 +25,12 @@ resource "azurerm_cosmosdb_mongo_collection" "payment" {
   }
 
   index {
-    keys   = ["orderNo"]
+    keys   = ["OrderNo"]
     unique = true
   }
 
   index {
-    keys   = ["customerId", "orderDate"]
+    keys   = ["CustomerId", "OrderDate"]
   }
 }
 
@@ -41,7 +41,7 @@ resource "azurerm_cosmosdb_mongo_collection" "credit_payment" {
   database_name       = azurerm_cosmosdb_mongo_database.payment.name
 
   default_ttl_seconds = "-1"
-  shard_key           = "acceptNo"
+  shard_key           = "AcceptNo"
 
   index {
     keys   = ["_id"]
@@ -49,7 +49,7 @@ resource "azurerm_cosmosdb_mongo_collection" "credit_payment" {
   }
 
   index {
-    keys   = ["acceptNo"]
+    keys   = ["AcceptNo"]
     unique = true
   }
 
@@ -62,7 +62,7 @@ resource "azurerm_cosmosdb_mongo_collection" "payment_allocate_history" {
   database_name       = azurerm_cosmosdb_mongo_database.payment.name
 
   default_ttl_seconds = "-1"
-  shard_key           = "requestId"
+  shard_key           = "RequestId"
 
   index {
     keys   = ["_id"]
@@ -70,7 +70,7 @@ resource "azurerm_cosmosdb_mongo_collection" "payment_allocate_history" {
   }
 
   index {
-    keys = ["requestId"]
+    keys = ["RequestId"]
     unique = true
   }
 }
