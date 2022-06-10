@@ -61,19 +61,12 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   ordered_cache_behavior {
     allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods  = ["GET", "HEAD"]
-    default_ttl     = 0
-    max_ttl         = 0
-    # min_ttl = 0
     path_pattern           = var.service_api_path_pattern
     target_origin_id       = "aws-load-balancer-controller"
     viewer_protocol_policy = "redirect-to-https"
 
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = data.aws_cloudfront_cache_policy.cache_policy_caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.request_policy_all_viewer.id
   }
 
   restrictions {
@@ -89,4 +82,12 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+# managed policy CachingDisabled
+data "aws_cloudfront_cache_policy" "cache_policy_caching_disabled" {
+  id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+}
+# managed policy AllViewer
+data "aws_cloudfront_origin_request_policy" "request_policy_all_viewer" {
+  id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
 }
