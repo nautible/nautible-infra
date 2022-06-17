@@ -8,3 +8,6 @@ module "auth" {
   auth_variables             = var.auth_variables
 }
 
+module "kong-apigateway" {
+  source = "./modules/kong-apigateway"
+}
