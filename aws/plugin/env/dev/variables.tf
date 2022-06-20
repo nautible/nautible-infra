@@ -32,4 +32,7 @@ variable "auth_variables" {
     }
   }
 }
-  
+
+variable "kong_apigateway_sqs_retention_seconds" {
+  default = 60
+}

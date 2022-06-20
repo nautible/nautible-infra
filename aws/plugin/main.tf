@@ -9,5 +9,6 @@ module "auth" {
 }
 
 module "kong-apigateway" {
-  source = "./modules/kong-apigateway"
+  source                                = "./modules/kong-apigateway"
+  kong_apigateway_sqs_retention_seconds = var.kong_apigateway_sqs_retention_seconds
 }

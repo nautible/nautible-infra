@@ -22,12 +22,13 @@ terraform {
 }
 
 module "nautible_plugin" {
-  source                     = "../../"
-  pjname                     = var.pjname
-  vpc_id                     = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
-  private_subnets            = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
-  eks_node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
-  auth_variables             = var.auth_variables
+  source                                = "../../"
+  pjname                                = var.pjname
+  vpc_id                                = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
+  private_subnets                       = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
+  eks_node_security_group_id            = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
+  auth_variables                        = var.auth_variables
+  kong_apigateway_sqs_retention_seconds = var.kong_apigateway_sqs_retention_seconds
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
