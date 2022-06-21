@@ -63,7 +63,7 @@ resource "aws_iam_role_policy" "app_policy" {
       {
           "Sid": "DaprPubsubSns",
           "Effect": "Allow",
-          "Action": ["SNS:ListTopics","sns:ListSubscriptionsByTopic","SNS:GetTopicAttributes","SNS:CreateTopic","SNS:Subscribe", "SNS:Publish","SNS:TagResource"],
+          "Action": ["SNS:ListTopics","SNS:ListSubscriptionsByTopic","SNS:GetTopicAttributes","SNS:CreateTopic","SNS:Subscribe", "SNS:Publish","SNS:TagResource"],
           "Resource": "*"
       }
     ]
