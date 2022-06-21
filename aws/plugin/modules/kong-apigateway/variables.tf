@@ -1,1 +1,1 @@
-variable "kong_apigateway_sqs_retention_seconds" {}
+variable "kong_apigateway_variables" {}

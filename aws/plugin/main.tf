@@ -9,6 +9,7 @@ module "auth" {
 }
 
 module "kong-apigateway" {
-  source                                = "./modules/kong-apigateway"
-  kong_apigateway_sqs_retention_seconds = var.kong_apigateway_sqs_retention_seconds
+  source                    = "./modules/kong-apigateway"
+  count                     = try(var.kong_apigateway_variables, "") != "" ? 1 : 0
+  kong_apigateway_variables = var.kong_apigateway_variables
 }
