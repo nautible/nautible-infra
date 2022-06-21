@@ -57,13 +57,13 @@ resource "aws_iam_role_policy" "app_policy" {
       {
           "Sid": "DaprPubsubSqs",
           "Effect": "Allow",
-          "Action": ["SQS:CreateQueue","SQS:SendMessage", "SQS:SendMessageBatch", "SQS:ReceiveMessage","SQS:DeleteMessage","SQS:DeleteMessageBatch","SQS:GetQueueAttributes","SQS:SetQueueAttributes","SQS:TagQueue"],
+          "Action": ["SQS:ChangeMessageVisibility","SQS:CreateQueue","SQS:SendMessage", "SQS:SendMessageBatch", "SQS:ReceiveMessage","SQS:DeleteMessage","SQS:DeleteMessageBatch","SQS:GetQueueAttributes","SQS:GetQueueUrl","SQS:SetQueueAttributes","SQS:TagQueue"],
           "Resource": "*"
       },
       {
           "Sid": "DaprPubsubSns",
           "Effect": "Allow",
-          "Action": ["SNS:CreateTopic","SNS:Subscribe", "SNS:Publish","SNS:TagResource"],
+          "Action": ["SNS:ListTopics","SNS:ListSubscriptionsByTopic","SNS:GetTopicAttributes","SNS:CreateTopic","SNS:Subscribe", "SNS:Publish","SNS:TagResource"],
           "Resource": "*"
       }
     ]

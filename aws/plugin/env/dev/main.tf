@@ -28,6 +28,7 @@ module "nautible_plugin" {
   private_subnets            = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
   eks_node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
   auth_variables             = var.auth_variables
+  kong_apigateway_variables  = var.kong_apigateway_variables
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {

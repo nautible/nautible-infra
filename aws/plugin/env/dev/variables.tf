@@ -32,4 +32,12 @@ variable "auth_variables" {
     }
   }
 }
-  
+
+variable "kong_apigateway_variables" {
+  # default = "" # kong-apigateway pluginを利用しない場合。
+  default = {
+    sqs = {
+      message_retention_seconds = 60
+    }
+  }
+}

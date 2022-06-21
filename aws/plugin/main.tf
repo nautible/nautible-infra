@@ -8,3 +8,8 @@ module "auth" {
   auth_variables             = var.auth_variables
 }
 
+module "kong-apigateway" {
+  source                    = "./modules/kong-apigateway"
+  count                     = try(var.kong_apigateway_variables, "") != "" ? 1 : 0
+  kong_apigateway_variables = var.kong_apigateway_variables
+}
