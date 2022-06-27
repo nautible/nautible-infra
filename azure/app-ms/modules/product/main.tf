@@ -14,6 +14,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
   private_dns_zone_name        = azurerm_private_dns_zone.product_pdz.name
   virtual_network_id           = var.virtual_network_id
   resource_group_name          = azurerm_resource_group.product_rg.name
+  registration_enabled         = true
 }
 
 data "azurerm_key_vault" "nautible_key_vault" {
@@ -41,9 +42,11 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   delegated_subnet_id          = var.subnet_ids[2]
   private_dns_zone_id          = azurerm_private_dns_zone.product_pdz.id
   sku_name                     = "GP_Standard_D2ds_v4"
+  zone                         = "1"
 
   high_availability {
     mode                       = "ZoneRedundant"
+    standby_availability_zone  = "2"
   }
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]
