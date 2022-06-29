@@ -12,7 +12,7 @@ resource "azurerm_private_dns_zone" "product_pdz" {
 resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
   name                         = "productFsVnetZone.com"
   private_dns_zone_name        = azurerm_private_dns_zone.product_pdz.name
-  virtual_network_id           = var.virtual_network_id
+  virtual_network_id           = var.vnet_id
   resource_group_name          = azurerm_resource_group.product_rg.name
   registration_enabled         = true
 }

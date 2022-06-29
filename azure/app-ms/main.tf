@@ -56,7 +56,7 @@ module "product" {
   pjname                           = var.pjname
   location                         = var.location
   subnet_ids                       = var.subnet_ids
-  virtual_network_id               = var.virtual_network_id
+  vnet_id                          = var.vnet_id
 
   depends_on = [module.common]
 }
