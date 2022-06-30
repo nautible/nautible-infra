@@ -31,7 +31,6 @@ module "nautible_azure_app" {
   pjname                                 = var.pjname
   location                               = var.location
   subnet_ids                             = data.terraform_remote_state.nautible_azure_platform.outputs.subnet_ids
-  vnet_id                                = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_id
   order_redis_capacity                   = var.order_redis_capacity
   order_redis_family                     = var.order_redis_family
   order_redis_sku_name                   = var.order_redis_sku_name

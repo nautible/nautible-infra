@@ -22,24 +22,16 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name                            = azurerm_resource_group.vnet_rg.name
   virtual_network_name                           = azurerm_virtual_network.vnet.name
   address_prefixes                               = [var.subnet_cidrs[count.index]]
-  service_endpoints                              = var.subnet_names[count.index] == "mysqlprivatesubnet" ? ["Microsoft.Storage"] : ["Microsoft.KeyVault"]
+  service_endpoints                              = ["Microsoft.KeyVault"]
   enforce_private_link_endpoint_network_policies = true
 
   dynamic "delegation" {
-    for_each = var.subnet_names[count.index] == "aksaciprivatesubnet" ? [{
-        delegation_name            = "aciDelegation"
-        service_delegation_name    = "Microsoft.ContainerInstance/containerGroups"
-        service_delegation_actions = [ "Microsoft.Network/virtualNetworks/subnets/action" ]
-      }] : var.subnet_names[count.index] == "mysqlprivatesubnet" ? [{
-        delegation_name            = "mysqlDelegation"
-        service_delegation_name    = "Microsoft.DBforMySQL/flexibleServers"
-        service_delegation_actions = [ "Microsoft.Network/virtualNetworks/subnets/join/action" ]
-      }] : []
+    for_each = var.subnet_names[count.index] == "aksaciprivatesubnet" ? ["true"] : []
     content {
-      name = delegation.value["delegation_name"]
+      name = "aciDelegation"
       service_delegation {
-        name    = delegation.value["service_delegation_name"]
-        actions = delegation.value["service_delegation_actions"]
+        name    = "Microsoft.ContainerInstance/containerGroups"
+        actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
       }
     }
   }
@@ -85,24 +77,6 @@ resource "azurerm_network_security_group" "web" {
 
 }
 
-resource "azurerm_network_security_group" "mysql_private" {
-  name                = "${var.pjname}mysqlprivatesg"
-  location            = azurerm_resource_group.vnet_rg.location
-  resource_group_name = azurerm_resource_group.vnet_rg.name
-
-  security_rule {
-    name                                  = "mysql"
-    priority                              = 500
-    direction                             = "Inbound"
-    access                                = "Allow"
-    protocol                              = "Tcp"
-    source_port_range                     = "*"
-    destination_port_range                = "3306"
-    source_address_prefix                 = var.subnet_cidrs[1]
-    destination_address_prefix            = "*"
-  }
-}
-
 resource "azurerm_subnet_network_security_group_association" "web_subnet_nsga" {
   subnet_id                 = azurerm_subnet.subnet[0].id
   network_security_group_id = azurerm_network_security_group.web.id
@@ -111,9 +85,4 @@ resource "azurerm_subnet_network_security_group_association" "web_subnet_nsga" {
 resource "azurerm_subnet_network_security_group_association" "private_subnet_nsga" {
   subnet_id                 = azurerm_subnet.subnet[1].id
   network_security_group_id = azurerm_network_security_group.private.id
-}
-
-resource "azurerm_subnet_network_security_group_association" "mysql_private_subnet_nsga" {
-  subnet_id                 = azurerm_subnet.subnet[2].id
-  network_security_group_id = azurerm_network_security_group.mysql_private.id
 }

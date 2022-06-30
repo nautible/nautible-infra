@@ -1,3 +1,4 @@
+
 output "vnet_rg_name" {
   value = module.nautible_azure_platform.vnet_rg_name
 }
@@ -13,3 +14,4 @@ output "vnet_name" {
 output "subnet_ids" {
   value = module.nautible_azure_platform.subnet_ids
 }
+
