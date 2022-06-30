@@ -52,6 +52,13 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]
 }
 
+resource "azurerm_mysql_flexible_server_configuration" "product_fsc" {
+  name                = "require_secure_transport"
+  resource_group_name = azurerm_resource_group.product_rg.name
+  server_name         = azurerm_mysql_flexible_server.product_fs.name
+  value               = "OFF"
+}
+
 resource "azurerm_mysql_flexible_database" "product_fd" {
   name                         = "product-db"
   resource_group_name          = azurerm_resource_group.product_rg.name
