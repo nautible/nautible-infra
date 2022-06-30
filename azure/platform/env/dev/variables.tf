@@ -27,11 +27,11 @@ variable "vnet_cidr" {
 # }
 # Private subnet cidr
 variable "subnet_cidrs" {
-  default = ["192.168.0.0/16","192.169.0.0/16"]
+  default = ["192.168.0.0/16","192.169.0.0/16","192.170.0.0/16"]
 }
 # subnet name.
 variable "subnet_names" {
-  default = ["aksdefaultnodesubnet","aksaciprivatesubnet"]
+  default = ["aksdefaultnodesubnet","aksaciprivatesubnet","mysqlprivatesubnet"]
 }
 
 # static_web index_document
