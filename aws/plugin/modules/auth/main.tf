@@ -1,9 +1,9 @@
 data "aws_ssm_parameter" "keycloak_db_user" {
-  name = "nautible-infra-keycloak-db-user"
+  name = "nautible-plugin-keycloak-db-user"
 }
 
 data "aws_ssm_parameter" "keycloak_db_password" {
-  name = "nautible-infra-keycloak-db-password"
+  name = "nautible-plugin-keycloak-db-password"
 }
 
 resource "aws_db_subnet_group" "keycloak_db_dbsubnet" {
