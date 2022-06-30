@@ -1,6 +1,6 @@
 # Project name
 variable "pjname" {
-  default = "nautible-app-dev"
+  default = "nautible-plugin-dev"
 }
 # AWS region
 variable "region" {
