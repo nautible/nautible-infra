@@ -41,13 +41,8 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   version                      = "5.7"
   delegated_subnet_id          = var.subnet_ids[2]
   private_dns_zone_id          = azurerm_private_dns_zone.product_pdz.id
-  sku_name                     = "GP_Standard_D2ds_v4"
+  sku_name                     = "B_Standard_B1s"
   zone                         = "1"
-
-  high_availability {
-    mode                       = "ZoneRedundant"
-    standby_availability_zone  = "2"
-  }
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]
 }
