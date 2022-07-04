@@ -7,6 +7,16 @@ variable "location" {
   default = "japaneast"
 }
 
+# product db subnet cidr
+variable "product_db_subnet_cidr" {
+  default = "192.170.0.0/16"
+}
+
+# product db sku
+variable "product_db_sku" {
+  default = "B_Standard_B1s"
+}
+
 # order redis(dapr_statestore) capacity
 variable "order_redis_capacity" {
   default = 0

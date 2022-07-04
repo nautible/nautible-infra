@@ -4,9 +4,51 @@ resource "azurerm_resource_group" "product_rg" {
   tags     = {}
 }
 
+resource "azurerm_subnet" "product_db_subnet" {
+  name                                           = "${var.pjname}productdbsubnet"
+  resource_group_name                            = var.vnet_rg_name
+  virtual_network_name                           = var.vnet_name
+  address_prefixes                               = [var.product_db_subnet_cidr]
+  service_endpoints                              = ["Microsoft.Storage"]
+  enforce_private_link_endpoint_network_policies = true
+
+  delegation {
+    name = "productDbDelegation"
+    service_delegation {
+      name    = "Microsoft.DBforMySQL/flexibleServers"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
+}
+
+resource "azurerm_network_security_group" "product_db_sg" {
+  name                = "${var.pjname}productdbsg"
+  location            = azurerm_resource_group.product_rg.location
+  resource_group_name = azurerm_resource_group.product_rg.name
+
+  security_rule {
+    name                                  = "mysql"
+    priority                              = 500
+    direction                             = "Inbound"
+    access                                = "Allow"
+    protocol                              = "Tcp"
+    source_port_range                     = "*"
+    destination_port_range                = "3306"
+    source_address_prefix                 = var.aks_aci_subnet_cidr
+    destination_address_prefix            = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "product_db_subnet_nsga" {
+  subnet_id                 = azurerm_subnet.product_db_subnet.id
+  network_security_group_id = azurerm_network_security_group.product_db_sg.id
+}
+
 resource "azurerm_private_dns_zone" "product_pdz" {
   name                         = "product-fs.private.mysql.database.azure.com"
   resource_group_name          = azurerm_resource_group.product_rg.name
+
+  depends_on = [azurerm_subnet_network_security_group_association.product_db_subnet_nsga]
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
@@ -39,9 +81,9 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   administrator_login          = data.azurerm_key_vault_secret.product_db_user.value
   administrator_password       = data.azurerm_key_vault_secret.product_db_password.value
   version                      = "5.7"
-  delegated_subnet_id          = var.subnet_ids[2]
+  delegated_subnet_id          = azurerm_subnet.product_db_subnet.id
   private_dns_zone_id          = azurerm_private_dns_zone.product_pdz.id
-  sku_name                     = "B_Standard_B1s"
+  sku_name                     = var.product_db_sku
   zone                         = "1"
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]

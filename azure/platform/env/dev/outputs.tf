@@ -15,3 +15,6 @@ output "subnet_ids" {
   value = module.nautible_azure_platform.subnet_ids
 }
 
+output "aks_aci_subnet_cidr" {
+  value = module.nautible_azure_platform.aks_aci_subnet_cidr
+}
