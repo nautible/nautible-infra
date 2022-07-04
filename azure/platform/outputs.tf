@@ -13,3 +13,7 @@ output "vnet_name" {
 output "subnet_ids" {
   value = module.vnet.subnet_ids
 }
+
+output "aks_aci_subnet_cidr" {
+  value = var.subnet_cidrs[1]
+}

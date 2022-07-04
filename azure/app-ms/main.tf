@@ -50,3 +50,17 @@ module "payment" {
 
   depends_on = [module.common]
 }
+
+module "product" {
+  source                           = "./modules/product"
+  pjname                           = var.pjname
+  location                         = var.location
+  aks_aci_subnet_cidr              = var.aks_aci_subnet_cidr
+  product_db_subnet_cidr           = var.product_db_subnet_cidr
+  product_db_sku                   = var.product_db_sku
+  vnet_name                        = var.vnet_name
+  vnet_rg_name                     = var.vnet_rg_name
+  vnet_id                          = var.vnet_id
+
+  depends_on = [module.common]
+}
