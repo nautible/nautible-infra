@@ -12,28 +12,29 @@ module "vpc" {
 }
 
 module "eks" {
-  source                                   = "./modules/eks"
-  pjname                                   = var.pjname
-  region                                   = var.region
-  vpc_id                                   = module.vpc.vpc_id
-  vpc_cidr                                 = var.vpc_cidr
-  public_subnet_ids                        = module.vpc.public_subnets
-  private_subnet_ids                       = module.vpc.private_subnets
-  create_iam_resources                     = var.create_iam_resources
-  eks_cluster_version                      = var.eks_cluster_version
-  eks_ng_desired_size                      = var.eks_ng_desired_size
-  eks_ng_max_size                          = var.eks_ng_max_size
-  eks_ng_min_size                          = var.eks_ng_min_size
-  eks_ng_instance_type                     = var.eks_ng_instance_type
-  eks_default_ami_type                     = var.eks_default_ami_type
-  eks_default_disk_size                    = var.eks_default_disk_size
-  eks_cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
-  eks_cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
-  eks_cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_public_access_cidrs
-  eks_cluster_addons_coredns_version       = var.eks_cluster_addons_coredns_version
-  eks_cluster_addons_vpc_cni_version       = var.eks_cluster_addons_vpc_cni_version
-  eks_cluster_addons_kube_proxy_version    = var.eks_cluster_addons_kube_proxy_version
-  eks_fargate_selectors                    = var.eks_fargate_selectors
+  source                                            = "./modules/eks"
+  pjname                                            = var.pjname
+  region                                            = var.region
+  vpc_id                                            = module.vpc.vpc_id
+  vpc_cidr                                          = var.vpc_cidr
+  public_subnet_ids                                 = module.vpc.public_subnets
+  private_subnet_ids                                = module.vpc.private_subnets
+  create_iam_resources                              = var.create_iam_resources
+  eks_cluster_version                               = var.eks_cluster_version
+  eks_ng_desired_size                               = var.eks_ng_desired_size
+  eks_ng_max_size                                   = var.eks_ng_max_size
+  eks_ng_min_size                                   = var.eks_ng_min_size
+  eks_ng_instance_type                              = var.eks_ng_instance_type
+  eks_default_ami_type                              = var.eks_default_ami_type
+  eks_default_disk_size                             = var.eks_default_disk_size
+  eks_cluster_endpoint_private_access               = var.eks_cluster_endpoint_private_access
+  eks_cluster_endpoint_public_access                = var.eks_cluster_endpoint_public_access
+  eks_cluster_endpoint_public_access_cidrs          = var.eks_cluster_endpoint_public_access_cidrs
+  eks_cluster_addons_coredns_version                = var.eks_cluster_addons_coredns_version
+  eks_cluster_addons_vpc_cni_version                = var.eks_cluster_addons_vpc_cni_version
+  eks_cluster_addons_kube_proxy_version             = var.eks_cluster_addons_kube_proxy_version
+  eks_fargate_selectors                             = var.eks_fargate_selectors
+  eks_albc_security_group_cloudfront_prefix_list_id = var.eks_albc_security_group_cloudfront_prefix_list_id
 }
 
 module "route53" {
@@ -44,10 +45,15 @@ module "route53" {
 }
 
 module "cloudfront" {
-  source                   = "./modules/cloudfront"
-  pjname                   = var.pjname
-  region                   = var.region
-  istio_ig_lb_name         = var.istio_ig_lb_name
-  service_api_path_pattern = var.service_api_path_pattern
+  source                     = "./modules/cloudfront"
+  pjname                     = var.pjname
+  region                     = var.region
+  cloudfront_origin_dns_name = var.cloudfront_origin_dns_name
+  service_api_path_pattern   = var.service_api_path_pattern
 }
 
+module "oidc" {
+  source = "./modules/oidc"
+  pjname = var.pjname
+  oidc   = var.oidc
+}

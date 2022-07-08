@@ -10,6 +10,20 @@ terraform {
     container_name       = "nautibledevterraformcontainer"
     key                  = "nautibledevapp.tfstate"
   }
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.6.0"
+    }
+
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 2.22.0"
+    }
+
+  }
+
 }
 
 module "nautible_azure_app" {
@@ -17,6 +31,12 @@ module "nautible_azure_app" {
   pjname                                 = var.pjname
   location                               = var.location
   subnet_ids                             = data.terraform_remote_state.nautible_azure_platform.outputs.subnet_ids
+  vnet_id                                = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_id
+  vnet_name                              = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_name
+  vnet_rg_name                           = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_rg_name
+  aks_aci_subnet_cidr                    = data.terraform_remote_state.nautible_azure_platform.outputs.aks_aci_subnet_cidr
+  product_db_subnet_cidr                 = var.product_db_subnet_cidr
+  product_db_sku                         = var.product_db_sku
   order_redis_capacity                   = var.order_redis_capacity
   order_redis_family                     = var.order_redis_family
   order_redis_sku_name                   = var.order_redis_sku_name

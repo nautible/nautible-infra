@@ -10,8 +10,8 @@ variable "location" {
 # Istioのロードバランサーを作成後にIPを指定してください。apiのルーティングをfrontdoorに作成します。 
 # Istioのロードバランサー作成前は、nullを指定してください。
 variable "istio_ig_lb_ip" {
-  # default = null
-  default = "20.89.84.213"
+  default = null
+  # default = "20.89.84.213"
 }
 # # service api path pattern for cloudfront routing to istio lb
 variable "service_api_path_pattern" {
@@ -45,7 +45,7 @@ variable "static_web_error_404_document" {
 
 # aks kubernetesversion 
 variable "aks_kubernetes_version" {
-  default = "1.19.9"
+  default = "1.23.5"
 }
 
 # aks node vm size

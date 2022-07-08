@@ -23,6 +23,18 @@ output "eks_node_security_group_id" {
   value = module.eks.eks_node_security_group_id
 }
 
+output "eks_albc_role_arn" {
+  value = module.eks.eks_albc_role_arn
+}
+
+output "eks_albc_security_group_id" {
+  value = module.eks.eks_albc_security_group_id
+}
+
+output "eks_albc_security_group_name" {
+  value = module.eks.eks_albc_security_group_name
+}
+
 output "zone_id" {
   value = module.route53.zone_id
 }

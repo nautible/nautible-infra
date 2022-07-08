@@ -54,12 +54,13 @@ module "aks" {
   acr_id                                        = module.acr.acr_id
 }
 
-module "front_door" {
-  source                              = "./modules/frontdoor"
-  pjname                              = var.pjname
-  location                            = var.location
-  front_door_session_affinity_enabled = var.front_door_session_affinity_enabled
-  static_web_primary_web_host         = module.static_web.static_web_primary_web_host
-  istio_ig_lb_ip                      = var.istio_ig_lb_ip
-  service_api_path_pattern            = var.service_api_path_pattern
-}
+# インターネット公開申請するまで、外部公開しない
+# module "front_door" {
+#   source                              = "./modules/frontdoor"
+#   pjname                              = var.pjname
+#   location                            = var.location
+#   front_door_session_affinity_enabled = var.front_door_session_affinity_enabled
+#   static_web_primary_web_host         = module.static_web.static_web_primary_web_host
+#   istio_ig_lb_ip                      = var.istio_ig_lb_ip
+#   service_api_path_pattern            = var.service_api_path_pattern
+# }

@@ -39,7 +39,7 @@ module "eks" {
     update_launch_template_default_version = true
     iam_role_name                          = "${var.pjname}-AmazonEKSNodeRole"
     iam_role_use_name_prefix               = false
-    security_group_use_name_prefix = false
+    security_group_use_name_prefix         = false
     network_interfaces = [
       {
         delete_on_termination = true

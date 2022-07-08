@@ -1,6 +1,6 @@
 variable "pjname" {}
 variable "region" {}
-variable "istio_ig_lb_name" {
+variable "cloudfront_origin_dns_name" {
   default = ""
 }
 variable "service_api_path_pattern" {}
@@ -23,3 +23,5 @@ variable "eks_fargate_selectors" {}
 variable "eks_cluster_addons_coredns_version" {}
 variable "eks_cluster_addons_vpc_cni_version" {}
 variable "eks_cluster_addons_kube_proxy_version" {}
+variable "eks_albc_security_group_cloudfront_prefix_list_id" {}
+variable "oidc" {}

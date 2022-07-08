@@ -5,17 +5,12 @@ locals {
   s3_origin_id = "${var.pjname}-s3-static-web"
 }
 
-data "aws_elb" "istio_ig_lb" {
-  count = var.istio_ig_lb_name == "" ? 0 : 1
-  name  = var.istio_ig_lb_name
-}
-
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "${var.pjname}-s3-static-web-origin-access-identity"
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
-  count = var.istio_ig_lb_name == "" ? 0 : 1
+resource "aws_cloudfront_distribution" "cloudfront_distribution" {
+  count = var.cloudfront_origin_dns_name == "" ? 0 : 1
   origin {
     domain_name = "${var.pjname}-static-web-${var.region}.s3.amazonaws.com"
     origin_id   = local.s3_origin_id
@@ -27,8 +22,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
 
   origin {
-    domain_name = data.aws_elb.istio_ig_lb[0].dns_name
-    origin_id   = "ELB-istio-ig-lb"
+    domain_name = var.cloudfront_origin_dns_name
+    origin_id   = "aws-load-balancer-controller"
     custom_origin_config {
       http_port                = 80
       https_port               = 443
@@ -66,32 +61,18 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   ordered_cache_behavior {
     allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods  = ["GET", "HEAD"]
-    default_ttl     = 0
-    max_ttl         = 0
-    # min_ttl = 0
     path_pattern           = var.service_api_path_pattern
-    target_origin_id       = "ELB-istio-ig-lb"
+    target_origin_id       = "aws-load-balancer-controller"
     viewer_protocol_policy = "redirect-to-https"
 
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = data.aws_cloudfront_cache_policy.cache_policy_caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.request_policy_all_viewer.id
   }
 
   restrictions {
     geo_restriction {
       restriction_type = "none"
     }
-  }
-
-  custom_error_response {
-    error_caching_min_ttl = 10
-    error_code            = 403
-    response_code         = 404
-    response_page_path    = "/"
   }
 
   tags = {
@@ -101,4 +82,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+# managed policy CachingDisabled
+data "aws_cloudfront_cache_policy" "cache_policy_caching_disabled" {
+  id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+}
+# managed policy AllViewer
+data "aws_cloudfront_origin_request_policy" "request_policy_all_viewer" {
+  id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
 }
