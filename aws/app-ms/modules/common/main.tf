@@ -41,6 +41,16 @@ resource "aws_iam_role_policy" "app_policy" {
       },
       {
           "Effect": "Allow",
+          "Action": [
+            "secretsmanager:GetResourcePolicy",
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:DescribeSecret",
+            "secretsmanager:ListSecretVersionIds"            
+          ],
+          "Resource": "arn:aws:secretsmanager:*:${data.aws_caller_identity.self.account_id}:secret:nautible-*"
+      },
+      {
+          "Effect": "Allow",
           "Action": "ssm:GetParameter",
           "Resource": "arn:aws:ssm:*:${data.aws_caller_identity.self.account_id}:parameter/sample-*"
       },
