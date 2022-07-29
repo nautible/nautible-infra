@@ -3,9 +3,11 @@ provider "aws" {
 }
 
 module "common" {
-  source          = "./modules/common"
-  pjname          = var.pjname
-  platform_pjname = var.platform_pjname
+  source                = "./modules/common"
+  pjname                = var.pjname
+  region                = var.region
+  platform_pjname       = var.platform_pjname
+  eks_oidc_provider_arn = var.eks_oidc_provider_arn
 }
 
 module "product" {

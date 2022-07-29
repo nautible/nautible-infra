@@ -24,9 +24,11 @@ terraform {
 module "nautible_plugin" {
   source                     = "../../"
   pjname                     = var.pjname
+  region                     = var.region
   vpc_id                     = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
   private_subnets            = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
   eks_node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
+  eks_oidc_provider_arn      = data.terraform_remote_state.nautible_aws_platform.outputs.eks_oidc_provider_arn
   auth_variables             = var.auth_variables
   kong_apigateway_variables  = var.kong_apigateway_variables
 }

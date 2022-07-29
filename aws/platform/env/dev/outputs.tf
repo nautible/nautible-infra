@@ -56,3 +56,7 @@ output "private_zone_id" {
 output "private_zone_name" {
   value = module.nautible_aws_platform.private_zone_name
 }
+
+output "eks_oidc_provider_arn" {
+  value = module.nautible_aws_platform.eks_oidc_provider_arn
+}
