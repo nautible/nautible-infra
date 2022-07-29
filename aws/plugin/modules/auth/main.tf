@@ -54,7 +54,7 @@ resource "aws_db_instance" "keycloak_db" {
 }
 
 resource "aws_iam_role" "auth_secret_access_role" {
-  name = "${var.pjname}-auth_secret_access_role"
+  name = "${var.pjname}-auth-secret-access-role"
   
   assume_role_policy = <<EOF
 {
