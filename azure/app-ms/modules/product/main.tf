@@ -61,7 +61,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
 
 data "azurerm_key_vault" "nautible_key_vault" {
   name                         = "nautibledevappms"
-  resource_group_name          = "nautibledevkeyvault"
+  resource_group_name          = "nautibledevcommon"
 }
 
 data "azurerm_key_vault_secret" "product_db_user" {

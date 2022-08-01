@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "keycloak_rg" {
 
 data "azurerm_key_vault" "keyvault" {
   name                = "${var.pjname}auth"
-  resource_group_name = "${var.pjname}keyvault"
+  resource_group_name = "${var.pjname}keycloak"
 }
 
 data "azurerm_key_vault_secret" "keycloak_db_user" {
