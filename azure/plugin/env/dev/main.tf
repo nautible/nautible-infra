@@ -35,7 +35,6 @@ module "nautible_plugin" {
   vnet_rg_name                         = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_rg_name
   vnet_name                            = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_name
   vnet_id                              = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_id
-  keyvault_rg                          = data.terraform_remote_state.nautible_azure_platform.outputs.keyvault_rg
   nautible_service_principal_object_id = data.terraform_remote_state.nautible_azure_platform.outputs.nautible_service_principal_object_id
 }
 

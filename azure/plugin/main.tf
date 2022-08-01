@@ -8,5 +8,4 @@ module "auth" {
   vnet_id                              = var.vnet_id
   auth_variables                       = var.auth_variables
   nautible_service_principal_object_id = var.nautible_service_principal_object_id
-  keyvault_rg                          = var.keyvault_rg
 }

@@ -14,12 +14,6 @@ module "app" {
   location = var.location
 }
 
-module "keyvault" {
-  source                               = "./modules/keyvault"
-  pjname                               = var.pjname
-  location                             = var.location
-}
-
 module "static_web" {
   source                        = "./modules/staticweb"
   pjname                        = var.pjname

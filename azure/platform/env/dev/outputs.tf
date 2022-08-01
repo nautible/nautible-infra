@@ -22,7 +22,3 @@ output "aks_aci_subnet_cidr" {
 output "nautible_service_principal_object_id" {
   value = module.nautible_azure_platform.nautible_service_principal_object_id
 }
-
-output "keyvault_rg" {
-  value = module.nautible_azure_platform.keyvault_rg
-}
