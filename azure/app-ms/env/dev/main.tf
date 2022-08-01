@@ -35,6 +35,8 @@ module "nautible_azure_app" {
   vnet_name                              = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_name
   vnet_rg_name                           = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_rg_name
   aks_aci_subnet_cidr                    = data.terraform_remote_state.nautible_azure_platform.outputs.aks_aci_subnet_cidr
+  keyvault_rg                            = data.terraform_remote_state.nautible_azure_platform.outputs.keyvault_rg
+  nautible_service_principal_object_id   = data.terraform_remote_state.nautible_azure_platform.outputs.nautible_service_principal_object_id
   product_db_subnet_cidr                 = var.product_db_subnet_cidr
   product_db_sku                         = var.product_db_sku
   order_redis_capacity                   = var.order_redis_capacity
