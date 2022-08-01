@@ -5,6 +5,7 @@ module "common" {
   servicebus_sku                         = var.servicebus_sku
   cosmosdb_public_network_access_enabled = var.cosmosdb_public_network_access_enabled
   cosmosdb_enable_free_tier              = var.cosmosdb_enable_free_tier
+  nautible_service_principal_object_id   = var.nautible_service_principal_object_id
 }
 
 module "customer" {

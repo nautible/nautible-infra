@@ -210,3 +210,47 @@ ITEM
     ignore_changes = [item]
   }
 }
+
+resource "aws_iam_role" "app_secret_access_role" {
+  name = "${var.pjname}-app-secret-access-role"
+  
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Principal": {
+        "Federated": "${var.eks_oidc_provider_arn}"
+      }
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "app_secret_access_role_policy" {
+  name = "${var.pjname}-app-secret-access-role-policy"
+  role = aws_iam_role.app_secret_access_role.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.self.account_id}:secret:nautible-app-ms-*"
+      ]
+    }
+  ]
+}
+EOF
+}

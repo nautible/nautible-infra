@@ -35,6 +35,10 @@ output "eks_albc_security_group_name" {
   value = module.eks.eks_albc_security_group_name
 }
 
+output "eks_oidc_provider_arn" {
+  value = module.eks.eks_oidc_provider_arn
+}
+
 output "zone_id" {
   value = module.route53.zone_id
 }

@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "keycloak_rg" {
   name     = "${var.pjname}keycloak"
   location = var.location
@@ -5,7 +7,7 @@ resource "azurerm_resource_group" "keycloak_rg" {
 }
 
 data "azurerm_key_vault" "keyvault" {
-  name                = "${var.pjname}keyvault"
+  name                = "${var.pjname}auth"
   resource_group_name = "${var.pjname}keyvault"
 }
 
@@ -99,4 +101,31 @@ resource "azurerm_postgresql_flexible_server_database" "keycloak_db" {
   server_id = azurerm_postgresql_flexible_server.keycloak_db_server.id
   charset   = "utf8"
   collation = "ja_JP.utf8"
+}
+
+resource "azurerm_key_vault" "keyvault" {
+  name                       = "${var.pjname}auth"
+  location                   = azurerm_resource_group.keycloak_rg.location
+  resource_group_name        = azurerm_resource_group.keycloak_rg.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days = 30
+  purge_protection_enabled   = false
+
+  sku_name = "standard"
+  tags     = {}
+}
+
+resource "azurerm_key_vault_access_policy" "keyvault_ap" {
+  key_vault_id            = azurerm_key_vault.keyvault.id
+  tenant_id               = data.azurerm_client_config.current.tenant_id
+  object_id               = var.nautible_service_principal_object_id
+  certificate_permissions = []
+  storage_permissions     = []
+  key_permissions = [
+    "Get", "List"
+  ]
+
+  secret_permissions = [
+    "Get", "List"
+  ]
 }

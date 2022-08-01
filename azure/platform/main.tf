@@ -14,13 +14,6 @@ module "app" {
   location = var.location
 }
 
-module "keyvault" {
-  source                               = "./modules/keyvault"
-  pjname                               = var.pjname
-  location                             = var.location
-  nautible_service_principal_object_id = module.app.nautible_service_principal_object_id
-}
-
 module "static_web" {
   source                        = "./modules/staticweb"
   pjname                        = var.pjname

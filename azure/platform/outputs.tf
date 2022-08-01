@@ -17,3 +17,7 @@ output "subnet_ids" {
 output "aks_aci_subnet_cidr" {
   value = var.subnet_cidrs[1]
 }
+
+output "nautible_service_principal_object_id" {
+  value = module.app.nautible_service_principal_object_id
+}
