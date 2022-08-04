@@ -59,27 +59,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
   registration_enabled         = true
 }
 
-data "azurerm_key_vault" "nautible_key_vault" {
-  name                         = "nautibledevappms"
-  resource_group_name          = "nautibledevcommon"
-}
-
-data "azurerm_key_vault_secret" "product_db_user" {
-  name                         = "nautible-app-ms-product-db-user"
-  key_vault_id                 = data.azurerm_key_vault.nautible_key_vault.id
-}
-
-data "azurerm_key_vault_secret" "product_db_password" {
-  name                         = "nautible-app-ms-product-db-password"
-  key_vault_id                 = data.azurerm_key_vault.nautible_key_vault.id
-}
-
 resource "azurerm_mysql_flexible_server" "product_fs" {
   name                         = "product-fs"
   resource_group_name          = azurerm_resource_group.product_rg.name
   location                     = azurerm_resource_group.product_rg.location
-  administrator_login          = data.azurerm_key_vault_secret.product_db_user.value
-  administrator_password       = data.azurerm_key_vault_secret.product_db_password.value
+  # 初回以外は入力を求めないようにするため、また、ブランクの場合常にエラーになってしまうのでdummyを設定する。
+  administrator_login          = coalesce(var.product_db_administrator_login, "dummy") 
+  administrator_password       = coalesce(var.product_db_administrator_password, "Dummy123") 
   version                      = "5.7"
   delegated_subnet_id          = azurerm_subnet.product_db_subnet.id
   private_dns_zone_id          = azurerm_private_dns_zone.product_pdz.id
@@ -87,6 +73,11 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   zone                         = "1"
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]
+  lifecycle {
+    ignore_changes = [
+      administrator_login,administrator_password
+    ]
+  }
 }
 
 resource "azurerm_mysql_flexible_server_configuration" "product_fsc" {

@@ -6,3 +6,5 @@ variable "product_db_sku" {}
 variable "vnet_id" {}
 variable "vnet_name" {}
 variable "vnet_rg_name" {}
+variable "product_db_administrator_login" {}
+variable "product_db_administrator_password" {}

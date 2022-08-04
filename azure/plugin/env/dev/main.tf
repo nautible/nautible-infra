@@ -31,11 +31,15 @@ module "nautible_plugin" {
   pjname         = var.pjname
   location       = var.location
   auth_variables = var.auth_variables
+  auth_postgres_administrator_login    = var.auth_postgres_administrator_login
+  auth_postgres_administrator_password = var.auth_postgres_administrator_password
 
   vnet_rg_name                         = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_rg_name
   vnet_name                            = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_name
   vnet_id                              = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_id
+  subnet_ids                           = data.terraform_remote_state.nautible_azure_platform.outputs.subnet_ids
   nautible_service_principal_object_id = data.terraform_remote_state.nautible_azure_platform.outputs.nautible_service_principal_object_id
+  keyvault_private_dns_zone_id         = data.terraform_remote_state.nautible_azure_platform.outputs.keyvault_private_dns_zone_id
 }
 
 data "terraform_remote_state" "nautible_azure_platform" {

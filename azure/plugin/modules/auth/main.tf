@@ -6,21 +6,6 @@ resource "azurerm_resource_group" "keycloak_rg" {
   tags     = {}
 }
 
-data "azurerm_key_vault" "keyvault" {
-  name                = "${var.pjname}auth"
-  resource_group_name = "${var.pjname}keycloak"
-}
-
-data "azurerm_key_vault_secret" "keycloak_db_user" {
-  name         = "nautible-plugin-keycloak-db-user"
-  key_vault_id = data.azurerm_key_vault.keyvault.id
-}
-
-data "azurerm_key_vault_secret" "keycloak_db_password" {
-  name         = "nautible-plugin-keycloak-db-password"
-  key_vault_id = data.azurerm_key_vault.keyvault.id
-}
-
 resource "azurerm_subnet" "subnet" {
   name                 = var.auth_variables.postgres.subnet_name
   resource_group_name  = var.vnet_rg_name
@@ -38,7 +23,6 @@ resource "azurerm_subnet" "subnet" {
     }
   }
 }
-
 
 resource "azurerm_network_security_group" "subnet_sg" {
   name                = "${var.pjname}postgres"
@@ -85,8 +69,11 @@ resource "azurerm_postgresql_flexible_server" "keycloak_db_server" {
   version                = var.auth_variables.postgres.version
   delegated_subnet_id    = azurerm_subnet.subnet.id
   private_dns_zone_id    = azurerm_private_dns_zone.keycloak_db_dns_zone.id
-  administrator_login    = data.azurerm_key_vault_secret.keycloak_db_user.value
-  administrator_password = data.azurerm_key_vault_secret.keycloak_db_password.value
+  # 初回以外は入力を求めないようにするため、また、ブランクの場合常にエラーになってしまうのでdummyを設定する。
+  # 以下の値では作成時にエラーとなるためダミー値でDBは作成されることはない。
+  # 8～128文字、英大文字、英小文字、数字 (0 ～ 9)、英数字以外の文字 (!、$、#、% など) のうち、3 つのカテゴリの文字が含まれている
+  administrator_login    = coalesce(var.auth_postgres_administrator_login, "dummy")
+  administrator_password = coalesce(var.auth_postgres_administrator_password, "dummy")
 
   storage_mb            = var.auth_variables.postgres.storage_mb
   backup_retention_days = var.auth_variables.postgres.backup_retention_days
@@ -94,6 +81,11 @@ resource "azurerm_postgresql_flexible_server" "keycloak_db_server" {
   zone                  = var.auth_variables.postgres.zone
   depends_on            = [azurerm_private_dns_zone_virtual_network_link.keycloak_db_dns_zone_vnl]
 
+  lifecycle {
+    ignore_changes = [
+      administrator_login,administrator_password
+    ]
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_database" "keycloak_db" {
@@ -113,6 +105,10 @@ resource "azurerm_key_vault" "keyvault" {
 
   sku_name = "standard"
   tags     = {}
+  network_acls {
+    bypass = "AzureServices"
+    default_action = "Deny"
+  }
 }
 
 resource "azurerm_key_vault_access_policy" "keyvault_ap" {
@@ -129,3 +125,42 @@ resource "azurerm_key_vault_access_policy" "keyvault_ap" {
     "Get", "List"
   ]
 }
+
+resource "azurerm_private_endpoint" "keyvault_pe" {
+  name                = "${var.pjname}authkeyvault"
+  location            = azurerm_resource_group.keycloak_rg.location
+  resource_group_name = azurerm_resource_group.keycloak_rg.name
+  subnet_id           = var.subnet_ids[0]
+
+  private_service_connection {
+    name                           = "${var.pjname}authkeyvault"
+    private_connection_resource_id = azurerm_key_vault.keyvault.id
+    is_manual_connection           = false
+    subresource_names = ["vault"]
+  }
+
+  private_dns_zone_group {
+    name = "default"
+    private_dns_zone_ids = [var.keyvault_private_dns_zone_id]
+  }
+}
+
+# resource "azurerm_private_dns_zone" "keyvault_dns_zone" {
+#   name                = "auth.privatelink.vaultcore.azure.net"
+#   resource_group_name = azurerm_resource_group.keycloak_rg.name
+# }
+
+# resource "azurerm_private_dns_a_record" "keyvault_private_dns_a_record" {
+#   name                = "${var.pjname}auth"
+#   zone_name           = azurerm_private_dns_zone.keyvault_dns_zone.name
+#   resource_group_name = azurerm_resource_group.keycloak_rg.name
+#   ttl                 = 300
+#   records             = [azurerm_private_endpoint.keyvault_pe.private_service_connection[0].private_ip_address]
+# }
+
+# resource "azurerm_private_dns_zone_virtual_network_link" "keyvault_dns_zone_virtual_network_link" {
+#   name                  = "${var.pjname}auth"
+#   resource_group_name   = azurerm_resource_group.keycloak_rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.keyvault_dns_zone.name
+#   virtual_network_id    = var.vnet_id
+# }

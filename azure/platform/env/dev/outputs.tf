@@ -22,3 +22,15 @@ output "aks_aci_subnet_cidr" {
 output "nautible_service_principal_object_id" {
   value = module.nautible_azure_platform.nautible_service_principal_object_id
 }
+
+output "keyvault_private_dns_zone_id" {
+  value = module.nautible_azure_platform.keyvault_private_dns_zone_id
+}
+
+output "cosmosdb_private_dns_zone_id" {
+  value = module.nautible_azure_platform.cosmosdb_private_dns_zone_id
+}
+
+output "redis_private_dns_zone_id" {
+  value = module.nautible_azure_platform.redis_private_dns_zone_id
+}

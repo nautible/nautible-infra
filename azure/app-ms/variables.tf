@@ -16,3 +16,8 @@ variable "servicebus_sku" {}
 variable "servicebus_max_delivery_count" {}
 variable "servicebus_max_size_in_megabytes" {}
 variable "nautible_service_principal_object_id" {}
+variable "keyvault_private_dns_zone_id" {}
+variable "cosmosdb_private_dns_zone_id" {}
+variable "redis_private_dns_zone_id" {}
+variable "product_db_administrator_login" {}
+variable "product_db_administrator_password" {}

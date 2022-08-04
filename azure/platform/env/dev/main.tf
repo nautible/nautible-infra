@@ -47,4 +47,5 @@ module "nautible_azure_platform" {
   istio_ig_lb_ip                                = var.istio_ig_lb_ip
   service_api_path_pattern                      = var.service_api_path_pattern
   web_http_port_range                           = var.web_http_port_range
+  dns                                           = var.dns
 }

@@ -99,3 +99,12 @@ variable "front_door_session_affinity_enabled" {
 variable "web_http_port_range" {
   default = "80"
 }
+
+variable "dns" {
+  default = {
+    # create private dns
+    privatelink_keyvault_enable = true # app-ms,auth
+    privatelink_cosmosdb_enable = true # app-ms
+    privatelink_redis_enable = true # app-ms
+  }
+}

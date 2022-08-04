@@ -36,12 +36,29 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   enable_free_tier       = var.cosmosdb_enable_free_tier
   network_acl_bypass_ids = []
   tags                   = {}
+  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/cosmosdb_account#ip_range_filter
+  # https://docs.microsoft.com/ja-jp/azure/cosmos-db/how-to-configure-firewall#allow-requests-from-the-azure-portal
+  ip_range_filter = "104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26"
 }
 
-# data "azurerm_cosmosdb_account" "cosmosdb_account" {
-#   name                = "${var.pjname}cosmosdb"
-#   resource_group_name = "${var.pjname}cosmosdb"
-# }
+resource "azurerm_private_endpoint" "cosmosdb_account_pe" {
+  name                = "${var.pjname}cosmosdb"
+  location            = azurerm_resource_group.common_rg.location
+  resource_group_name = azurerm_resource_group.common_rg.name
+  subnet_id           = var.subnet_ids[0]
+
+  private_service_connection {
+    name                           = "${var.pjname}cosmosdb"
+    private_connection_resource_id = azurerm_cosmosdb_account.cosmosdb_account.id
+    is_manual_connection           = false
+    subresource_names = ["MongoDB"]
+  }
+
+  private_dns_zone_group {
+    name = "default"
+    private_dns_zone_ids = [var.cosmosdb_private_dns_zone_id]
+  }
+}
 
 resource "azurerm_cosmosdb_mongo_database" "common" {
   name                = "Common"
@@ -64,11 +81,6 @@ resource "azurerm_cosmosdb_mongo_collection" "sequence" {
   }
 }
 
-# resource "azurerm_private_dns_zone" "privatelink_redis_cache_private_dns_zone" {
-#   name                = "privatelink.redis.cache.windows.net"
-#   resource_group_name = azurerm_resource_group.common_rg.name
-# }
-
 resource "azurerm_servicebus_namespace" "servicebus_namespace" {
   name                = "${var.pjname}servicebusns"
   location            = azurerm_resource_group.common_rg.location
@@ -87,6 +99,11 @@ resource "azurerm_key_vault" "keyvault" {
 
   sku_name = "standard"
   tags     = {}
+  network_acls {
+    bypass = "AzureServices"
+    default_action = "Deny"
+  }
+
 }
 
 resource "azurerm_key_vault_access_policy" "keyvault_ap" {
@@ -102,4 +119,23 @@ resource "azurerm_key_vault_access_policy" "keyvault_ap" {
   secret_permissions = [
     "Get", "List"
   ]
+}
+
+resource "azurerm_private_endpoint" "keyvault_pe" {
+  name                = "${var.pjname}appmskeyvault"
+  location            = azurerm_resource_group.common_rg.location
+  resource_group_name = azurerm_resource_group.common_rg.name
+  subnet_id           = var.subnet_ids[0]
+
+  private_service_connection {
+    name                           = "${var.pjname}appmskeyvault"
+    private_connection_resource_id = azurerm_key_vault.keyvault.id
+    is_manual_connection           = false
+    subresource_names = ["vault"]
+  }
+
+  private_dns_zone_group {
+    name = "default"
+    private_dns_zone_ids = [var.keyvault_private_dns_zone_id]
+  }
 }
