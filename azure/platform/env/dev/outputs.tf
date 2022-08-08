@@ -31,6 +31,10 @@ output "cosmosdb_private_dns_zone_id" {
   value = module.nautible_azure_platform.cosmosdb_private_dns_zone_id
 }
 
+output "servicebus_private_dns_zone_id" {
+  value = module.nautible_azure_platform.servicebus_private_dns_zone_id
+}
+
 output "redis_private_dns_zone_id" {
   value = module.nautible_azure_platform.redis_private_dns_zone_id
 }

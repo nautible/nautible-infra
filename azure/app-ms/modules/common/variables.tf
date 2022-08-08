@@ -6,6 +6,8 @@ variable "subnet_ids" {}
 variable "cosmosdb_public_network_access_enabled" {}
 variable "cosmosdb_enable_free_tier" {}
 variable "servicebus_sku" {}
+variable "servicebus_capacity" {}
 variable "nautible_service_principal_object_id" {}
 variable "keyvault_private_dns_zone_id" {}
 variable "cosmosdb_private_dns_zone_id" {}
+variable "servicebus_private_dns_zone_id" {}

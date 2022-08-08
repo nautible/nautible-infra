@@ -17,10 +17,10 @@ variable "product_db_sku" {
   default = "B_Standard_B1s"
 }
 variable "product_db_administrator_login" {
-  description = "製品サービスで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合、または認証pluginを利用しない場合はEnterで入力をスキップする。"
+  description = "製品サービスで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
 }
 variable "product_db_administrator_password" {
-  description = "製品サービスで利用するDBのパスワード。初回のみ入力する。初回以外の場合、または認証pluginを利用しない場合はEnterで入力をスキップする。"
+  description = "製品サービスで利用するDBのパスワード。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
 }
 
 # order redis(dapr_statestore) capacity
@@ -39,8 +39,16 @@ variable "order_redis_sku_name" {
 }
 
 # servicebus sku
+# Premium の場合はパブリックアクセスを無効化、プライベートエンドポイントでアクセスする
+# ※Premiumは127円/1hで月額700ドルかかるため注意が必要
 variable "servicebus_sku" {
-  default = "Standard"
+  # default = "Standard"
+  default = "Premium"
+}
+
+# servicebus capacity
+variable "servicebus_capacity" {
+  default = 1
 }
 
 # servicebus max delivery count

@@ -6,11 +6,13 @@ module "common" {
   vnet_rg_name                           = var.vnet_rg_name
   subnet_ids                             = var.subnet_ids
   servicebus_sku                         = var.servicebus_sku
+  servicebus_capacity                    = var.servicebus_capacity
   cosmosdb_public_network_access_enabled = var.cosmosdb_public_network_access_enabled
   cosmosdb_enable_free_tier              = var.cosmosdb_enable_free_tier
   nautible_service_principal_object_id   = var.nautible_service_principal_object_id
   keyvault_private_dns_zone_id           = var.keyvault_private_dns_zone_id
   cosmosdb_private_dns_zone_id           = var.cosmosdb_private_dns_zone_id
+  servicebus_private_dns_zone_id         = var.servicebus_private_dns_zone_id
 }
 
 module "customer" {

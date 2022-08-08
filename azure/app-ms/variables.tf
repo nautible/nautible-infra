@@ -13,11 +13,13 @@ variable "order_redis_sku_name" {}
 variable "cosmosdb_public_network_access_enabled" {}
 variable "cosmosdb_enable_free_tier" {}
 variable "servicebus_sku" {}
+variable "servicebus_capacity" {}
 variable "servicebus_max_delivery_count" {}
 variable "servicebus_max_size_in_megabytes" {}
 variable "nautible_service_principal_object_id" {}
 variable "keyvault_private_dns_zone_id" {}
 variable "cosmosdb_private_dns_zone_id" {}
+variable "servicebus_private_dns_zone_id" {}
 variable "redis_private_dns_zone_id" {}
 variable "product_db_administrator_login" {}
 variable "product_db_administrator_password" {}

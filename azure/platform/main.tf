@@ -60,11 +60,12 @@ module "aks" {
 # }
 
 module "dns" {
-  source                      = "./modules/dns"
-  pjname                      = var.pjname
-  location                    = var.location
-  vnet_id                     = module.vnet.vnet_id
-  privatelink_keyvault_enable = var.dns.privatelink_keyvault_enable
-  privatelink_cosmosdb_enable = var.dns.privatelink_cosmosdb_enable
-  privatelink_redis_enable    = var.dns.privatelink_redis_enable
+  source                        = "./modules/dns"
+  pjname                        = var.pjname
+  location                      = var.location
+  vnet_id                       = module.vnet.vnet_id
+  privatelink_keyvault_enable   = var.dns.privatelink_keyvault_enable
+  privatelink_cosmosdb_enable   = var.dns.privatelink_cosmosdb_enable
+  privatelink_servicebus_enable = var.dns.privatelink_servicebus_enable
+  privatelink_redis_enable      = var.dns.privatelink_redis_enable
 }

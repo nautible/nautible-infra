@@ -86,7 +86,36 @@ resource "azurerm_servicebus_namespace" "servicebus_namespace" {
   location            = azurerm_resource_group.common_rg.location
   resource_group_name = azurerm_resource_group.common_rg.name
   sku                 = var.servicebus_sku
+  capacity            = var.servicebus_capacity
   tags                = {}
+}
+
+resource "azurerm_servicebus_namespace_network_rule_set" "servicebus_namespace_network_rule_set" {
+  count                         = var.servicebus_sku == "Premium" ? 1 : 0
+  namespace_id                  = azurerm_servicebus_namespace.servicebus_namespace.id
+  default_action                = "Allow"
+  public_network_access_enabled = false
+  trusted_services_allowed      = true
+}
+
+resource "azurerm_private_endpoint" "servicebus_pe" {
+  count               = var.servicebus_sku == "Premium" ? 1 : 0
+  name                = "${var.pjname}appmsservicebus"
+  location            = azurerm_resource_group.common_rg.location
+  resource_group_name = azurerm_resource_group.common_rg.name
+  subnet_id           = var.subnet_ids[0]
+
+  private_service_connection {
+    name                           = "${var.pjname}appmsservicebus"
+    private_connection_resource_id = azurerm_servicebus_namespace.servicebus_namespace.id
+    is_manual_connection           = false
+    subresource_names = ["namespace"]
+  }
+
+  private_dns_zone_group {
+    name = "default"
+    private_dns_zone_ids = [var.servicebus_private_dns_zone_id]
+  }
 }
 
 resource "azurerm_key_vault" "keyvault" {

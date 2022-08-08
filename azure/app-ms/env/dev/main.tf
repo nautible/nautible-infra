@@ -38,6 +38,7 @@ module "nautible_azure_app" {
   nautible_service_principal_object_id   = data.terraform_remote_state.nautible_azure_platform.outputs.nautible_service_principal_object_id
   keyvault_private_dns_zone_id           = data.terraform_remote_state.nautible_azure_platform.outputs.keyvault_private_dns_zone_id
   cosmosdb_private_dns_zone_id           = data.terraform_remote_state.nautible_azure_platform.outputs.cosmosdb_private_dns_zone_id
+  servicebus_private_dns_zone_id         = data.terraform_remote_state.nautible_azure_platform.outputs.servicebus_private_dns_zone_id
   redis_private_dns_zone_id              = data.terraform_remote_state.nautible_azure_platform.outputs.redis_private_dns_zone_id
   product_db_subnet_cidr                 = var.product_db_subnet_cidr
   product_db_sku                         = var.product_db_sku
@@ -47,6 +48,7 @@ module "nautible_azure_app" {
   order_redis_family                     = var.order_redis_family
   order_redis_sku_name                   = var.order_redis_sku_name
   servicebus_sku                         = var.servicebus_sku
+  servicebus_capacity                    = var.servicebus_capacity
   servicebus_max_delivery_count          = var.servicebus_max_delivery_count
   servicebus_max_size_in_megabytes       = var.servicebus_max_size_in_megabytes
   cosmosdb_public_network_access_enabled = var.cosmosdb_public_network_access_enabled
