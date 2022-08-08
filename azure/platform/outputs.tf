@@ -30,6 +30,10 @@ output "cosmosdb_private_dns_zone_id" {
   value = module.dns.cosmosdb_private_dns_zone_id
 }
 
+output "servicebus_private_dns_zone_id" {
+  value = module.dns.servicebus_private_dns_zone_id
+}
+
 output "redis_private_dns_zone_id" {
   value = module.dns.redis_private_dns_zone_id
 }
