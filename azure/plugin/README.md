@@ -54,7 +54,7 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 ### 環境構築手順
 
 * 「az login」を実行してAzureにログインする
-* tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
+* tfstate管理用のstorageaccountの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * plugin/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * plugin/modules/initディレクトリで「terraform init」の実行
   * plugin/modules/initディレクトリで「terraform plan」の実行と内容の確認
