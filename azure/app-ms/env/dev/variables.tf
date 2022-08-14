@@ -17,10 +17,10 @@ variable "product_db_sku" {
   default = "B_Standard_B1s"
 }
 variable "product_db_administrator_login" {
-  description = "製品サービスで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
+  description = "商品サービスで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
 }
 variable "product_db_administrator_password" {
-  description = "製品サービスで利用するDBのパスワード。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
+  description = "商品サービスで利用するDBのパスワード。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
 }
 
 # order redis(dapr_statestore) capacity
