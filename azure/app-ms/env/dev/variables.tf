@@ -42,8 +42,7 @@ variable "order_redis_sku_name" {
 # Premium の場合はパブリックアクセスを無効化、プライベートエンドポイントでアクセスする
 # ※Premiumは127円/1hで月額700ドルかかるため注意が必要
 variable "servicebus_sku" {
-  # default = "Standard"
-  default = "Premium"
+  description = "Azure ServiceBusの価格レベル(sku)。[Basic Standard Premium]のいずれかを指定する。★★★ Premiumは127円/1hで月額700ドルかかるため注意。Premium の場合はパブリックアクセスを無効化、プライベートエンドポイントでアクセスする。"
 }
 
 # servicebus capacity
