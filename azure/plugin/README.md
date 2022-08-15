@@ -21,13 +21,13 @@ plugin
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
       └─autn  ・・・認証のリソースを作成するmodule
 
-AWS-S3
-  │  
-  └─nautible-plugin-terraform              ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   nautible-dev-plugin.tfstate    ・・・Terraformのtfstate
-AWS-Dynamodb
-  │  
-  └─nautible-nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
+Azure-StorageAccount
+  │
+  └─${pjname}terraformsa          ・・・Terraformを管理するためのstorageaccount。
+        │   
+        └─${pjname}terraformcontainer     ・・・Terraformのtfstateを管理するためのコンテナ
+              │
+              └─{pjname}plugin.tfstate     ・・・Terraformのtfstate
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -53,13 +53,13 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 
 ### 環境構築手順
 
-* AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
-* tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
+* 「az login」を実行してAzureにログインする
+* tfstate管理用のstorageaccountの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * plugin/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * plugin/modules/initディレクトリで「terraform init」の実行
   * plugin/modules/initディレクトリで「terraform plan」の実行と内容の確認
   * plugin/modules/initディレクトリで「terraform apply」の実行
-* AWS環境の構築
+* Azure環境の構築
   * plugin/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * plugin/env/devディレクトリで「terraform init」の実行
   * plugin/env/devディレクトリで「terraform plan」の実行と内容の確認

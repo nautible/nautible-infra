@@ -99,3 +99,15 @@ variable "front_door_session_affinity_enabled" {
 variable "web_http_port_range" {
   default = "80"
 }
+
+variable "dns" {
+  default = {
+    # PrivateLinkでアクセスするリソースの有無を設定し、PrivateLink用のprivate DNSを作成します。
+    # PrivateLink用のDNSはリソース毎に１つしか作成できないので、platformプロジェクトで一元管理します。
+    # 利用するpluginによって利用するリソースが変わるので、利用するpluginに合わせて事前にplatformプロジェクトで管理します。
+    privatelink_keyvault_enable = true # app-ms,auth
+    privatelink_cosmosdb_enable = true # app-ms
+    privatelink_servicebus_enable = true # app-ms
+    privatelink_redis_enable = true # app-ms
+  }
+}

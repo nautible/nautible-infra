@@ -18,3 +18,4 @@ variable "front_door_session_affinity_enabled" {}
 variable "istio_ig_lb_ip" {}
 variable "service_api_path_pattern" {}
 variable "web_http_port_range" {}
+variable "dns" {}

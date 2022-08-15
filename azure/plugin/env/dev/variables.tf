@@ -22,4 +22,11 @@ variable "auth_variables" {
     }
   }
 }
+variable "auth_postgres_administrator_login" {
+  description = "認証pluginで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合、または認証pluginを利用しない場合はEnterで入力をスキップする。"
+}
+variable "auth_postgres_administrator_password" {
+  description = "認証pluginで利用するDBのパスワード。初回のみ入力する。初回以外の場合、または認証pluginを利用しない場合はEnterで入力をスキップする。"
+}
+  
 

@@ -23,6 +23,7 @@ platform
       ├─acr           ・・・cloudfron関連のリソースのmodule
       ├─aks           ・・・aks関連のリソースのmodule
       ├─app           ・・・applicaiton関連のリソースのmodule
+      ├─dns           ・・・DNS関連のリソースのmodule
       ├─frontdoor     ・・・frontdoor関連のリソースのmodule
       ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のStorage Account作成など。
       ├─keyvault      ・・・keyvault関連のリソースのmodule
@@ -80,19 +81,6 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
   * platform/env/devディレクトリで「terraform init」の実行
   * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
   * platform/env/devディレクトリで「terraform apply」の実行
-  * Azureの管理コンソールで以下の作業を実施する
-    * terraformによって作成されたKey Vaultのシークレットに以下の定義を行う。尚、シークレット作成時には「アクセスポリシー」にオペレーションを実行するユーザーやグループを追加する必要がある。
-      * 名前：nautible-infra-github-user、値：githubにアクセスするためのユーザー
-      * 名前：nautible-infra-github-token　値: githubにアクセスするためのトークン
-
-  ```text
-  【ここの記載はArgocdのドキュメントで記載すべきこと。そのうち削除する。】
-  * ExternalSecretsのインストール
-    * アプリ登録を開き、「証明書とシークレット」にクライアントシークレットを登録する。説明、有効期間は任意の値で良い。
-    * テナントID、クライアントID（アプリの登録＞nautibledevapp＞概要に表示されている）、クライアントシークレットを環境変数に設定してExternalシークレットをインストールする。[詳細。](https://github.com/external-secrets/kubernetes-external-secrets#azure-key-vault)
-  * TODO k apply -f nautible-infra/blob/main/ArgoCD/secrets/base/github.yaml
-  ```
-
   * IstioのIngressgatewayのロードバランサー作成後に、nautible/env/devのvariables.tfにロードバランサーのIPを指定してapplyを再実行(Azure Front DoorにLBへのルーティングが追加されます)。
 
 ※prodの場合はplatform/env/devをprodに読み替えてください。

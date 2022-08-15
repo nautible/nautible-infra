@@ -14,13 +14,14 @@ module "app" {
   location = var.location
 }
 
-module "static_web" {
-  source                        = "./modules/staticweb"
-  pjname                        = var.pjname
-  location                      = var.location
-  static_web_index_document     = var.static_web_index_document
-  static_web_error_404_document = var.static_web_error_404_document
-}
+# インターネット公開申請するまで、外部公開しない
+# module "static_web" {
+#   source                        = "./modules/staticweb"
+#   pjname                        = var.pjname
+#   location                      = var.location
+#   static_web_index_document     = var.static_web_index_document
+#   static_web_error_404_document = var.static_web_error_404_document
+# }
 
 module "acr" {
   source   = "./modules/acr"
@@ -57,3 +58,14 @@ module "aks" {
 #   istio_ig_lb_ip                      = var.istio_ig_lb_ip
 #   service_api_path_pattern            = var.service_api_path_pattern
 # }
+
+module "dns" {
+  source                        = "./modules/dns"
+  pjname                        = var.pjname
+  location                      = var.location
+  vnet_id                       = module.vnet.vnet_id
+  privatelink_keyvault_enable   = var.dns.privatelink_keyvault_enable
+  privatelink_cosmosdb_enable   = var.dns.privatelink_cosmosdb_enable
+  privatelink_servicebus_enable = var.dns.privatelink_servicebus_enable
+  privatelink_redis_enable      = var.dns.privatelink_redis_enable
+}
