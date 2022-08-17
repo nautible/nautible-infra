@@ -98,7 +98,7 @@ module "eks" {
 
   }
   tags = {
-    Name = "kubernatis.io/cluster/${var.pjname}-eks-cluster"
+    Name = "kubernetes.io/cluster/${var.pjname}-eks-cluster"
   }
 
 }
