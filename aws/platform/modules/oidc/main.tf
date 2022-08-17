@@ -143,7 +143,7 @@ resource "aws_iam_role_policy" "githubactions_infra_role_policy" {
     },
     {
       "Effect": "Allow",
-      "Action": "iam:PasRole",
+      "Action": "iam:PassRole",
       "Resource": "*",
       "Condition": {
         "StringEquals": {
