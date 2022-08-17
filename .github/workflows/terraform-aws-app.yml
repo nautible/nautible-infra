@@ -49,7 +49,6 @@ on:
   pull_request:
     branches:
     - main
-    - feature/issue68
     paths:
     - "aws/terraform/nautible-aws-app/**"
     types:
