@@ -1,13 +1,13 @@
 # OIDC Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
-  url = var.oidc.url
-  client_id_list = var.oidc.client_id_list
+  url             = var.oidc.url
+  client_id_list  = var.oidc.client_id_list
   thumbprint_list = var.oidc.thumbprint_list
 }
 
 resource "aws_iam_role" "githubactions_ecr_access_role" {
   name = "${var.pjname}-githubactions-ecr-access-role"
-  
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

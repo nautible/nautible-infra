@@ -126,7 +126,7 @@ ITEM
 
 resource "aws_iam_role" "app_secret_access_role" {
   name = "${var.pjname}-app-secret-access-role"
-  
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

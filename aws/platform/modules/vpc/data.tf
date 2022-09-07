@@ -5,7 +5,7 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_ami" "nat_ami_recent" {
-  count = var.nat_instance_type == null ? 0 : 1
+  count       = var.nat_instance_type == null ? 0 : 1
   most_recent = true
   owners      = ["amazon"]
 

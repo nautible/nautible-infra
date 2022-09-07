@@ -11,7 +11,7 @@ module "zones" {
     "vpc.${var.pjname}.com" = {
       comment = "vpc.${var.pjname}.com"
       vpc = {
-        vpc_id = var.vpc_id
+        vpc_id     = var.vpc_id
         vpc_region = var.region
       }
       tags = {

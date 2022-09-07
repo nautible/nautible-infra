@@ -25,7 +25,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tfstate_bucket_se
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -46,8 +46,8 @@ resource "aws_s3_bucket_public_access_block" "tfstate_bucket_public_access" {
 }
 
 resource "aws_dynamodb_table" "terraform_state_lock" {
-  count = var.terraform_state_lock_table_name == null ? 0 : 1
-  name = var.terraform_state_lock_table_name
+  count          = var.terraform_state_lock_table_name == null ? 0 : 1
+  name           = var.terraform_state_lock_table_name
   read_capacity  = 1
   write_capacity = 1
   hash_key       = "LockID"

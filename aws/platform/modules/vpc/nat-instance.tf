@@ -1,6 +1,6 @@
 
 module "nat_instance" {
-  count = var.nat_instance_type == null ? 0 : 1
+  count   = var.nat_instance_type == null ? 0 : 1
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.17.0"
 
