@@ -6,8 +6,8 @@ variable "pjname" {
 variable "location" {
   default = "japaneast"
 }
-# auth variables。authのpluginを利用する場合は値を設定する
-variable "auth_variables" {
+# authのvariables。authのpluginを利用する場合は値を設定する
+variable "auth" {
   # default = "" # auth pluginを利用しない場合。
   default = {
     # postgresql variables
@@ -28,5 +28,5 @@ variable "auth_postgres_administrator_login" {
 variable "auth_postgres_administrator_password" {
   description = "認証pluginで利用するDBのパスワード。初回のみ入力する。初回以外の場合、または認証pluginを利用しない場合はEnterで入力をスキップする。"
 }
-  
+
 

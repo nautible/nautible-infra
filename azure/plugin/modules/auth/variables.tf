@@ -4,8 +4,14 @@ variable "vnet_rg_name" {}
 variable "subnet_ids" {}
 variable "vnet_id" {}
 variable "vnet_name" {}
-variable "auth_variables" {}
 variable "nautible_service_principal_object_id" {}
 variable "keyvault_private_dns_zone_id" {}
-variable "auth_postgres_administrator_login" {}
-variable "auth_postgres_administrator_password" {}
+variable "postgres_version" {}
+variable "postgres_sku_name" {}
+variable "postgres_storage_mb" {}
+variable "postgres_backup_retention_days" {}
+variable "postgres_subnet_cidr" {}
+variable "postgres_subnet_name" {}
+variable "postgres_zone" {}
+variable "postgres_administrator_login" {}
+variable "postgres_administrator_password" {}

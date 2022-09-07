@@ -7,10 +7,10 @@ resource "azurerm_resource_group" "keycloak_rg" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                 = var.auth_variables.postgres.subnet_name
+  name                 = var.postgres_subnet_name
   resource_group_name  = var.vnet_rg_name
   virtual_network_name = var.vnet_name
-  address_prefixes     = [var.auth_variables.postgres.subnet_cidr]
+  address_prefixes     = [var.postgres_subnet_cidr]
   service_endpoints    = ["Microsoft.Storage"]
 
   delegation {
@@ -63,27 +63,27 @@ resource "azurerm_private_dns_zone_virtual_network_link" "keycloak_db_dns_zone_v
 
 # private_dns_zone_id required
 resource "azurerm_postgresql_flexible_server" "keycloak_db_server" {
-  name                   = "keycloakdbserver"
-  resource_group_name    = azurerm_resource_group.keycloak_rg.name
-  location               = azurerm_resource_group.keycloak_rg.location
-  version                = var.auth_variables.postgres.version
-  delegated_subnet_id    = azurerm_subnet.subnet.id
-  private_dns_zone_id    = azurerm_private_dns_zone.keycloak_db_dns_zone.id
+  name                = "keycloakdbserver"
+  resource_group_name = azurerm_resource_group.keycloak_rg.name
+  location            = azurerm_resource_group.keycloak_rg.location
+  version             = var.postgres_version
+  delegated_subnet_id = azurerm_subnet.subnet.id
+  private_dns_zone_id = azurerm_private_dns_zone.keycloak_db_dns_zone.id
   # 初回以外は入力を求めないようにするため、また、ブランクの場合常にエラーになってしまうのでdummyを設定する。
   # 以下の値では作成時にエラーとなるためダミー値でDBは作成されることはない。
   # 8～128文字、英大文字、英小文字、数字 (0 ～ 9)、英数字以外の文字 (!、$、#、% など) のうち、3 つのカテゴリの文字が含まれている
-  administrator_login    = coalesce(var.auth_postgres_administrator_login, "dummy")
-  administrator_password = coalesce(var.auth_postgres_administrator_password, "dummy")
+  administrator_login    = coalesce(var.postgres_administrator_login, "dummy")
+  administrator_password = coalesce(var.postgres_administrator_password, "dummy")
 
-  storage_mb            = var.auth_variables.postgres.storage_mb
-  backup_retention_days = var.auth_variables.postgres.backup_retention_days
-  sku_name              = var.auth_variables.postgres.sku_name
-  zone                  = var.auth_variables.postgres.zone
+  storage_mb            = var.postgres_storage_mb
+  backup_retention_days = var.postgres_backup_retention_days
+  sku_name              = var.postgres_sku_name
+  zone                  = var.postgres_zone
   depends_on            = [azurerm_private_dns_zone_virtual_network_link.keycloak_db_dns_zone_vnl]
 
   lifecycle {
     ignore_changes = [
-      administrator_login,administrator_password
+      administrator_login, administrator_password
     ]
   }
 }
@@ -106,7 +106,7 @@ resource "azurerm_key_vault" "keyvault" {
   sku_name = "standard"
   tags     = {}
   network_acls {
-    bypass = "AzureServices"
+    bypass         = "AzureServices"
     default_action = "Deny"
   }
 }
@@ -136,11 +136,11 @@ resource "azurerm_private_endpoint" "keyvault_pe" {
     name                           = "${var.pjname}authkeyvault"
     private_connection_resource_id = azurerm_key_vault.keyvault.id
     is_manual_connection           = false
-    subresource_names = ["vault"]
+    subresource_names              = ["vault"]
   }
 
   private_dns_zone_group {
-    name = "default"
+    name                 = "default"
     private_dns_zone_ids = [var.keyvault_private_dns_zone_id]
   }
 }
