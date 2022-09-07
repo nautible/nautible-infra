@@ -26,12 +26,12 @@ terraform {
 }
 
 module "nautible_azure_platform" {
-  source              = "../../"
-  pjname              = var.pjname
-  location            = var.location
-  vnet                = var.vnet
-  aks                 = var.aks
-  static_web          = var.static_web
-  frontdoor           = var.frontdoor
-  dns                 = var.dns
+  source     = "../../"
+  pjname     = var.pjname
+  location   = var.location
+  vnet       = var.vnet
+  aks        = var.aks
+  static_web = var.static_web
+  frontdoor  = var.frontdoor
+  dns        = var.dns
 }

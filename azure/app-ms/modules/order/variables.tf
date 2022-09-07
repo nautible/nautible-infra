@@ -1,11 +1,11 @@
 variable "pjname" {}
 variable "location" {}
-variable "subnet_ids" {}
+variable "aks_subnet_ids" {}
 variable "vnet_id" {}
 variable "vnet_rg_name" {}
 variable "order_redis_capacity" {}
 variable "order_redis_family" {}
-variable "order_redis_sku_name" {}
+variable "order_redis_sku" {}
 variable "servicebus_max_delivery_count" {}
 variable "servicebus_max_size_in_megabytes" {}
 variable "servicebus_namespace_id" {}

@@ -30,7 +30,7 @@ resource "azurerm_cosmosdb_mongo_collection" "payment" {
   }
 
   index {
-    keys   = ["CustomerId", "OrderDate"]
+    keys = ["CustomerId", "OrderDate"]
   }
 }
 
@@ -70,7 +70,7 @@ resource "azurerm_cosmosdb_mongo_collection" "payment_allocate_history" {
   }
 
   index {
-    keys = ["RequestId"]
+    keys   = ["RequestId"]
     unique = true
   }
 }

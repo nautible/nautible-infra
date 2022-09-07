@@ -10,7 +10,7 @@ variable "location" {
 
 # schedule weekdays
 variable "schedule_weekdays" {
-  default = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+  default = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 }
 
 # schedule time

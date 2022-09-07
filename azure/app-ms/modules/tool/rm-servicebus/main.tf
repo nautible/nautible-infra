@@ -2,7 +2,7 @@ provider "azurerm" {
   features {} // required but empty ok
 }
 resource "azurerm_resource_group" "rm_servicebus" {
-  name                = "${var.pjname}removeservicebus"
+  name     = "${var.pjname}removeservicebus"
   location = var.location
 }
 
@@ -10,8 +10,8 @@ resource "azurerm_automation_account" "rm_servicebus_account" {
   name                = "${var.pjname}removeservicebus"
   location            = azurerm_resource_group.rm_servicebus.location
   resource_group_name = azurerm_resource_group.rm_servicebus.name
-  sku_name = "Basic"
-  tags = {}
+  sku_name            = "Basic"
+  tags                = {}
 }
 
 # resource "azurerm_automation_module" "Az_Accounts" {

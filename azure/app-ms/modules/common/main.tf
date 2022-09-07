@@ -45,17 +45,17 @@ resource "azurerm_private_endpoint" "cosmosdb_account_pe" {
   name                = "${var.pjname}cosmosdb"
   location            = azurerm_resource_group.common_rg.location
   resource_group_name = azurerm_resource_group.common_rg.name
-  subnet_id           = var.subnet_ids[0]
+  subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
     name                           = "${var.pjname}cosmosdb"
     private_connection_resource_id = azurerm_cosmosdb_account.cosmosdb_account.id
     is_manual_connection           = false
-    subresource_names = ["MongoDB"]
+    subresource_names              = ["MongoDB"]
   }
 
   private_dns_zone_group {
-    name = "default"
+    name                 = "default"
     private_dns_zone_ids = [var.cosmosdb_private_dns_zone_id]
   }
 }
@@ -103,17 +103,17 @@ resource "azurerm_private_endpoint" "servicebus_pe" {
   name                = "${var.pjname}appmsservicebus"
   location            = azurerm_resource_group.common_rg.location
   resource_group_name = azurerm_resource_group.common_rg.name
-  subnet_id           = var.subnet_ids[0]
+  subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
     name                           = "${var.pjname}appmsservicebus"
     private_connection_resource_id = azurerm_servicebus_namespace.servicebus_namespace.id
     is_manual_connection           = false
-    subresource_names = ["namespace"]
+    subresource_names              = ["namespace"]
   }
 
   private_dns_zone_group {
-    name = "default"
+    name                 = "default"
     private_dns_zone_ids = [var.servicebus_private_dns_zone_id]
   }
 }
@@ -129,7 +129,7 @@ resource "azurerm_key_vault" "keyvault" {
   sku_name = "standard"
   tags     = {}
   network_acls {
-    bypass = "AzureServices"
+    bypass         = "AzureServices"
     default_action = "Deny"
   }
 
@@ -154,17 +154,17 @@ resource "azurerm_private_endpoint" "keyvault_pe" {
   name                = "${var.pjname}appmskeyvault"
   location            = azurerm_resource_group.common_rg.location
   resource_group_name = azurerm_resource_group.common_rg.name
-  subnet_id           = var.subnet_ids[0]
+  subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
     name                           = "${var.pjname}appmskeyvault"
     private_connection_resource_id = azurerm_key_vault.keyvault.id
     is_manual_connection           = false
-    subresource_names = ["vault"]
+    subresource_names              = ["vault"]
   }
 
   private_dns_zone_group {
-    name = "default"
+    name                 = "default"
     private_dns_zone_ids = [var.keyvault_private_dns_zone_id]
   }
 }

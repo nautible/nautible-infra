@@ -37,7 +37,7 @@ resource "azurerm_redis_cache" "order_dapr_statestore" {
   resource_group_name           = azurerm_resource_group.order_rg.name
   capacity                      = var.order_redis_capacity
   family                        = var.order_redis_family
-  sku_name                      = var.order_redis_sku_name
+  sku_name                      = var.order_redis_sku
   enable_non_ssl_port           = false
   public_network_access_enabled = false
   redis_configuration {
@@ -48,17 +48,17 @@ resource "azurerm_private_endpoint" "order_dapr_statestore_pe" {
   name                = "${var.pjname}orderstatestore"
   location            = azurerm_resource_group.order_rg.location
   resource_group_name = azurerm_resource_group.order_rg.name
-  subnet_id           = var.subnet_ids[0]
+  subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
     name                           = "${var.pjname}orderstatestore"
     private_connection_resource_id = azurerm_redis_cache.order_dapr_statestore.id
     is_manual_connection           = false
-    subresource_names = ["redisCache"]
+    subresource_names              = ["redisCache"]
   }
 
   private_dns_zone_group {
-    name = "default"
+    name                 = "default"
     private_dns_zone_ids = [var.redis_private_dns_zone_id]
   }
 
