@@ -11,9 +11,10 @@ variable "location" {
 variable "vnet" {
   description = "VNET設定"
   type = object({
-    vnet_cidr    = string
-    subnet_cidrs = list(string)
-    subnet_names = list(string)
+    vnet_cidr               = string
+    subnet_cidrs            = list(string)
+    subnet_names            = list(string)
+    inbound_http_port_range = string
   })
   default = {
     # VNET cidr
@@ -22,6 +23,9 @@ variable "vnet" {
     subnet_cidrs = ["192.168.0.0/16", "192.169.0.0/16"]
     # subnet name.
     subnet_names = ["aksdefaultnodesubnet", "aksaciprivatesubnet"]
+
+    # inbound http port range. e.g "80,8080-8082"
+    inbound_http_port_range = "80"
   }
 }
 
@@ -101,11 +105,6 @@ variable "frontdoor" {
     # service api path pattern for cloudfront routing to istio lb
     service_api_path_pattern = "/api/*"
   }
-}
-
-# web_http port range. e.g "80,8080-8082"
-variable "web_http_port_range" {
-  default = "80"
 }
 
 variable "dns" {

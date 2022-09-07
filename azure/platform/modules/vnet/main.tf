@@ -61,7 +61,7 @@ resource "azurerm_network_security_group" "web" {
   }
 
   dynamic "security_rule" {
-    for_each = var.web_http_port_range != null && var.web_http_port_range != "" ? ["true"] : []
+    for_each = var.inbound_http_port_range != null && var.inbound_http_port_range != "" ? ["true"] : []
     content {
       name                       = "http"
       priority                   = 501
@@ -69,7 +69,7 @@ resource "azurerm_network_security_group" "web" {
       access                     = "Allow"
       protocol                   = "Tcp"
       source_port_range          = "*"
-      destination_port_range     = var.web_http_port_range
+      destination_port_range     = var.inbound_http_port_range
       source_address_prefix      = "*"
       destination_address_prefix = "*"
     }

@@ -33,6 +33,5 @@ module "nautible_azure_platform" {
   aks                 = var.aks
   static_web          = var.static_web
   frontdoor           = var.frontdoor
-  web_http_port_range = var.web_http_port_range
   dns                 = var.dns
 }

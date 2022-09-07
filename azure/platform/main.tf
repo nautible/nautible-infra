@@ -1,11 +1,11 @@
 module "vnet" {
-  source              = "./modules/vnet"
-  pjname              = var.pjname
-  location            = var.location
-  vnet_cidr           = var.vnet.vnet_cidr
-  subnet_cidrs        = var.vnet.subnet_cidrs
-  subnet_names        = var.vnet.subnet_names
-  web_http_port_range = var.web_http_port_range
+  source                  = "./modules/vnet"
+  pjname                  = var.pjname
+  location                = var.location
+  vnet_cidr               = var.vnet.vnet_cidr
+  subnet_cidrs            = var.vnet.subnet_cidrs
+  subnet_names            = var.vnet.subnet_names
+  inbound_http_port_range = var.vnet.inbound_http_port_range
 }
 
 module "app" {
@@ -15,13 +15,13 @@ module "app" {
 }
 
 # インターネット公開申請するまで、外部公開しない
-module "static_web" {
-  source                        = "./modules/staticweb"
-  pjname                        = var.pjname
-  location                      = var.location
-  static_web_index_document     = var.static_web.index_document
-  static_web_error_404_document = var.static_web.error_404_document
-}
+# module "static_web" {
+#   source                        = "./modules/staticweb"
+#   pjname                        = var.pjname
+#   location                      = var.location
+#   static_web_index_document     = var.static_web.index_document
+#   static_web_error_404_document = var.static_web.error_404_document
+# }
 
 module "acr" {
   source   = "./modules/acr"
@@ -49,15 +49,15 @@ module "aks" {
 }
 
 # インターネット公開申請するまで、外部公開しない
-module "front_door" {
-  source                              = "./modules/frontdoor"
-  pjname                              = var.pjname
-  location                            = var.location
-  front_door_session_affinity_enabled = var.frontdoor.session_affinity_enabled
-  static_web_primary_web_host         = module.static_web.static_web_primary_web_host
-  istio_ig_lb_ip                      = var.frontdoor.istio_ig_lb_ip
-  service_api_path_pattern            = var.frontdoor.service_api_path_pattern
-}
+# module "front_door" {
+#   source                              = "./modules/frontdoor"
+#   pjname                              = var.pjname
+#   location                            = var.location
+#   front_door_session_affinity_enabled = var.frontdoor.session_affinity_enabled
+#   static_web_primary_web_host         = module.static_web.static_web_primary_web_host
+#   istio_ig_lb_ip                      = var.frontdoor.istio_ig_lb_ip
+#   service_api_path_pattern            = var.frontdoor.service_api_path_pattern
+# }
 
 module "dns" {
   source                        = "./modules/dns"
