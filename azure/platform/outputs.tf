@@ -15,7 +15,7 @@ output "subnet_ids" {
 }
 
 output "aks_aci_subnet_cidr" {
-  value = var.subnet_cidrs[1]
+  value = var.vnet.subnet_cidrs[1]
 }
 
 output "nautible_service_principal_object_id" {

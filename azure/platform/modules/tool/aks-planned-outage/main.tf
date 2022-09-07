@@ -2,7 +2,7 @@ provider "azurerm" {
   features {} // required but empty ok
 }
 resource "azurerm_resource_group" "aks_planned_outage" {
-  name                = "${var.pjname}aksplannedoutage"
+  name     = "${var.pjname}aksplannedoutage"
   location = var.location
 }
 
@@ -10,8 +10,8 @@ resource "azurerm_automation_account" "aks_planned_outage_account" {
   name                = "${var.pjname}aksplannedoutage"
   location            = azurerm_resource_group.aks_planned_outage.location
   resource_group_name = azurerm_resource_group.aks_planned_outage.name
-  sku_name = "Basic"
-  tags = {}
+  sku_name            = "Basic"
+  tags                = {}
 }
 
 resource "azurerm_automation_module" "Az_Accounts" {
@@ -73,10 +73,10 @@ resource "azurerm_automation_job_schedule" "start_job_schedule" {
   runbook_name            = azurerm_automation_runbook.aks_start_stop.name
 
   parameters = {
-    subscriptionid = data.azurerm_subscription.current.subscription_id
+    subscriptionid    = data.azurerm_subscription.current.subscription_id
     resourcegroupname = var.aks_rg_name
-    resourcename = var.aks_resource_name
-    action =  "start"  
+    resourcename      = var.aks_resource_name
+    action            = "start"
   }
 }
 
@@ -87,9 +87,9 @@ resource "azurerm_automation_job_schedule" "stop_job_schedule" {
   runbook_name            = azurerm_automation_runbook.aks_start_stop.name
 
   parameters = {
-    subscriptionid = data.azurerm_subscription.current.subscription_id
+    subscriptionid    = data.azurerm_subscription.current.subscription_id
     resourcegroupname = var.aks_rg_name
-    resourcename = var.aks_resource_name
-    action =  "stop"  
+    resourcename      = var.aks_resource_name
+    action            = "stop"
   }
 }
