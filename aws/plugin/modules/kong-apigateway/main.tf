@@ -1,6 +1,6 @@
 resource "aws_sqs_queue" "kong_serverless_plugin_pubsub" {
   name                      = "kong-serverless-plugin"
-  message_retention_seconds = var.kong_apigateway_variables.sqs.message_retention_seconds
+  message_retention_seconds = var.kong_apigateway.sqs.message_retention_seconds
 
   tags = {
     "dapr-queue-name" = "kong-serverless-plugin"

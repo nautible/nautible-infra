@@ -39,15 +39,15 @@ resource "aws_security_group_rule" "keycloak_db_outbound" {
 
 resource "aws_db_instance" "keycloak_db" {
   identifier             = "keycloak"
-  allocated_storage      = var.auth_variables.postgres.allocated_storage
-  storage_type           = var.auth_variables.postgres.storage_type
+  allocated_storage      = var.postgres_allocated_storage
+  storage_type           = var.postgres_storage_type
   engine                 = "postgres"
-  engine_version         = var.auth_variables.postgres.engine_version
-  instance_class         = var.auth_variables.postgres.instance_class
+  engine_version         = var.postgres_engine_version
+  instance_class         = var.postgres_instance_class
   db_name                = "keycloak"
   username               = data.aws_ssm_parameter.keycloak_db_user.value
   password               = data.aws_ssm_parameter.keycloak_db_password.value
-  parameter_group_name   = var.auth_variables.postgres.parameter_group_name
+  parameter_group_name   = var.postgres_parameter_group_name
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.keycloak_db_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.keycloak_db_dbsubnet.name
@@ -55,7 +55,7 @@ resource "aws_db_instance" "keycloak_db" {
 
 resource "aws_iam_role" "auth_secret_access_role" {
   name = "${var.pjname}-auth-secret-access-role"
-  
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

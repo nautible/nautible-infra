@@ -1,1 +1,1 @@
-variable "kong_apigateway_variables" {}
+variable "kong_apigateway" {}
