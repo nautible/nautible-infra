@@ -36,7 +36,7 @@ module "nautible_plugin" {
     rg_name = data.terraform_remote_state.nautible_azure_platform.outputs.vnet_rg_name
   }
   aks = {
-    subnet_ids = data.terraform_remote_state.nautible_azure_platform.outputs.subnet_ids
+    subnet_ids = data.terraform_remote_state.nautible_azure_platform.outputs.aks_subnet_ids
   }
   dns = {
     keyvault_private_dns_zone_id = data.terraform_remote_state.nautible_azure_platform.outputs.keyvault_private_dns_zone_id

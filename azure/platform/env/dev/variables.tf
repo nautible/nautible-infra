@@ -11,21 +11,11 @@ variable "location" {
 variable "vnet" {
   description = "VNET設定"
   type = object({
-    vnet_cidr               = string
-    subnet_cidrs            = list(string)
-    subnet_names            = list(string)
-    inbound_http_port_range = string
+    vnet_cidr = string
   })
   default = {
     # VNET cidr
     vnet_cidr = "192.0.0.0/8"
-    # subnet cidr
-    subnet_cidrs = ["192.168.0.0/16", "192.169.0.0/16"]
-    # subnet name.
-    subnet_names = ["aksdefaultnodesubnet", "aksaciprivatesubnet"]
-
-    # inbound http port range. e.g "80,8080-8082"
-    inbound_http_port_range = "80"
   }
 }
 
@@ -36,6 +26,11 @@ variable "aks" {
     kubernetes_version                        = string
     max_pods                                  = number
     log_analytics_workspace_retention_in_days = number
+    cluster_inbound_http_port_range           = string
+    subnet = object({
+      cidrs = list(string)
+      names = list(string)
+    })
     node = object({
       vm_size            = string
       os_disk_size_gb    = number
@@ -44,7 +39,6 @@ variable "aks" {
       node_count         = number
       availability_zones = list(string)
     })
-
   })
   default = {
     # kubernetes version 
@@ -53,7 +47,14 @@ variable "aks" {
     max_pods = 110
     # log analytics workspace retention in days
     log_analytics_workspace_retention_in_days = 30
-
+    # inbound http port range. e.g "80,8080-8082"
+    cluster_inbound_http_port_range = "80"
+    subnet = {
+      # cidr
+      cidrs = ["192.168.0.0/16", "192.169.0.0/16"]
+      # name
+      names = ["aksdefaultnodesubnet", "aksacisubnet"]
+    }
     node = {
       # node vm size."standard_b2s" can't deploy istio.
       vm_size = "standard_d2s_v3"
@@ -111,7 +112,7 @@ variable "dns" {
   default = {
     # PrivateLinkでアクセスするリソースの有無を設定し、PrivateLink用のprivate DNSを作成します。
     # PrivateLink用のDNSはリソース毎に１つしか作成できないので、platformプロジェクトで一元管理します。
-    # 利用するpluginによって利用するリソースが変わるので、利用するpluginに合わせて事前にplatformプロジェクトで管理します。
+    # 利用するpluginによって利用するリソースが変わるため、利用するpluginに合わせて事前にplatformプロジェクトで管理します。
     privatelink_keyvault_enable   = true # app-ms,auth
     privatelink_cosmosdb_enable   = true # app-ms
     privatelink_servicebus_enable = true # app-ms

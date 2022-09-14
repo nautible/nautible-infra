@@ -1,11 +1,8 @@
 module "vnet" {
-  source                  = "./modules/vnet"
-  pjname                  = var.pjname
-  location                = var.location
-  vnet_cidr               = var.vnet.vnet_cidr
-  subnet_cidrs            = var.vnet.subnet_cidrs
-  subnet_names            = var.vnet.subnet_names
-  inbound_http_port_range = var.vnet.inbound_http_port_range
+  source    = "./modules/vnet"
+  pjname    = var.pjname
+  location  = var.location
+  vnet_cidr = var.vnet.vnet_cidr
 }
 
 module "app" {
@@ -30,22 +27,24 @@ module "acr" {
 }
 
 module "aks" {
-  source                                        = "./modules/aks"
-  pjname                                        = var.pjname
-  location                                      = var.location
-  vnet_subnet_id                                = module.vnet.subnet_ids[0]
-  aci_subnet_id                                 = module.vnet.subnet_ids[1]
-  aci_subnet_name                               = var.vnet.subnet_names[1]
-  aks_kubernetes_version                        = var.aks.kubernetes_version
-  aks_node_vm_size                              = var.aks.node.vm_size
-  aks_node_os_disk_size_gb                      = var.aks.node.os_disk_size_gb
-  aks_node_max_count                            = var.aks.node.max_count
-  aks_node_min_count                            = var.aks.node.min_count
-  aks_node_count                                = var.aks.node.node_count
-  aks_node_availability_zones                   = var.aks.node.availability_zones
-  aks_max_pods                                  = var.aks.max_pods
-  aks_log_analytics_workspace_retention_in_days = var.aks.log_analytics_workspace_retention_in_days
-  acr_id                                        = module.acr.acr_id
+  source                                    = "./modules/aks"
+  pjname                                    = var.pjname
+  location                                  = var.location
+  vnet_rg_name                              = module.vnet.vnet_rg_name
+  vnet_name                                 = module.vnet.vnet_name
+  subnet_cidrs                              = var.aks.subnet.cidrs
+  subnet_names                              = var.aks.subnet.names
+  cluster_inbound_http_port_range           = var.aks.cluster_inbound_http_port_range
+  kubernetes_version                        = var.aks.kubernetes_version
+  node_vm_size                              = var.aks.node.vm_size
+  node_os_disk_size_gb                      = var.aks.node.os_disk_size_gb
+  node_max_count                            = var.aks.node.max_count
+  node_min_count                            = var.aks.node.min_count
+  node_count                                = var.aks.node.node_count
+  node_availability_zones                   = var.aks.node.availability_zones
+  max_pods                                  = var.aks.max_pods
+  log_analytics_workspace_retention_in_days = var.aks.log_analytics_workspace_retention_in_days
+  acr_id                                    = module.acr.acr_id
 }
 
 # インターネット公開申請するまで、外部公開しない

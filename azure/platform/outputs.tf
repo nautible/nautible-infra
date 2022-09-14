@@ -10,12 +10,12 @@ output "vnet_name" {
   value = module.vnet.vnet_name
 }
 
-output "subnet_ids" {
-  value = module.vnet.subnet_ids
+output "aks_subnet_ids" {
+  value = module.aks.subnet_ids
 }
 
-output "aks_aci_subnet_cidr" {
-  value = var.vnet.subnet_cidrs[1]
+output "aks_subnet_cidrs" {
+  value = module.aks.subnet_cidrs
 }
 
 output "nautible_service_principal_object_id" {

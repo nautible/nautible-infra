@@ -66,7 +66,7 @@ module "product" {
   source                            = "./modules/product"
   pjname                            = var.pjname
   location                          = var.location
-  aks_aci_subnet_cidr               = var.aks.aci_subnet_cidr
+  aks_aci_subnet_cidr               = var.aks.subnet_cidrs[1]
   product_db_subnet_cidr            = var.product.db.subnet_cidr
   product_db_sku                    = var.product.db.sku
   vnet_name                         = var.vnet.name

@@ -13,3 +13,9 @@
 # #output "eks_worker_security_group_id" {
 # #  value = module.eks.worker_security_group_id
 # #}
+output "subnet_ids" {
+  value = azurerm_subnet.subnet.*.id
+}
+output "subnet_cidrs" {
+  value = var.subnet_cidrs
+}
