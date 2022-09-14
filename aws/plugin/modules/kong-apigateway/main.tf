@@ -10,26 +10,24 @@ resource "aws_sqs_queue" "kong_serverless_plugin_pubsub" {
 resource "aws_sqs_queue_policy" "kong_serverless_plugin_pubsub_policy" {
   queue_url = aws_sqs_queue.kong_serverless_plugin_pubsub.id
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Id": "sqspolicy",
-  "Statement": [
-    {
-      "Sid": "First",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "sqs:SendMessage",
-      "Resource": "${aws_sqs_queue.kong_serverless_plugin_pubsub.arn}",
-      "Condition": {
-        "ArnEquals": {
-          "aws:SourceArn": "${aws_sns_topic.kong_root_request_topic.arn}"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Id      = "sqspolicy",
+    Statement = [
+      {
+        Sid       = "First",
+        Effect    = "Allow",
+        Principal = "*",
+        Action    = "sqs:SendMessage",
+        Resource  = "${aws_sqs_queue.kong_serverless_plugin_pubsub.arn}",
+        Condition = {
+          ArnEquals = {
+            "aws:SourceArn" = "${aws_sns_topic.kong_root_request_topic.arn}"
+          }
         }
       }
-    }
-  ]
-}
-POLICY
+    ]
+  })
 }
 
 resource "aws_sns_topic" "kong_root_request_topic" {
