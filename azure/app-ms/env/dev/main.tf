@@ -36,8 +36,8 @@ module "nautible_azure_app" {
     rg_name = data.terraform_remote_state.nautible_azure_platform.outputs.vnet.vnet_rg_name
   }
   aks = {
-    subnet_ids      = data.terraform_remote_state.nautible_azure_platform.outputs.aks.subnet_ids
-    subnet_cidrs    = data.terraform_remote_state.nautible_azure_platform.outputs.aks.subnet_cidrs
+    subnet_ids   = data.terraform_remote_state.nautible_azure_platform.outputs.aks.subnet_ids
+    subnet_cidrs = data.terraform_remote_state.nautible_azure_platform.outputs.aks.subnet_cidrs
   }
   dns = {
     keyvault_private_dns_zone_id   = data.terraform_remote_state.nautible_azure_platform.outputs.dns.keyvault_private_dns_zone_id

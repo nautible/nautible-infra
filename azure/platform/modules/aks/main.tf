@@ -22,7 +22,7 @@ resource "azurerm_subnet" "subnet" {
       }
     }
   }
-  
+
 }
 
 resource "azurerm_network_security_group" "aks_security_group" {
