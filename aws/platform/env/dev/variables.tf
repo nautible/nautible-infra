@@ -127,7 +127,7 @@ variable "cloudfront" {
     # AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
     # AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
     # cloudfront_origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
-    origin_dns_name = ""
+    origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
     # service api path pattern for cloudfront routing to istio lb
     service_api_path_pattern = "api/*"
   }

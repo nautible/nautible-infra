@@ -27,15 +27,15 @@ module "nautible_aws_app" {
   region          = var.region
   platform_pjname = data.terraform_remote_state.nautible_aws_platform.outputs.pjname
   vpc = {
-    vpc_id            = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
-    public_subnets    = data.terraform_remote_state.nautible_aws_platform.outputs.public_subnets
-    private_subnets   = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
-    private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_id
-    private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_name
+    vpc_id            = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
+    public_subnets    = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.public_subnets
+    private_subnets   = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
+    private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
+    private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
   }
   eks = {
-    node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
-    oidc_provider_arn      = data.terraform_remote_state.nautible_aws_platform.outputs.eks_oidc_provider_arn
+    node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks.node.security_group_id
+    oidc_provider_arn      = data.terraform_remote_state.nautible_aws_platform.outputs.eks.oidc.provider_arn
   }
   order = var.order
 }
