@@ -6,27 +6,48 @@ variable "pjname" {
 variable "region" {
   default = "ap-northeast-1"
 }
-# nautible aws platform state bucket
-variable "nautible_aws_platform_state_bucket" {
-  default = "nautible-dev-platform-tf-ap-northeast-1"
+
+# platform tfstate
+variable "platform_tfstate" {
+  description = "platform tfstate設定"
+  type = object({
+    bucket = string
+    region = string
+    key    = string
+  })
+  default = {
+    # platform tfstate bucket
+    bucket = "nautible-dev-platform-tf-ap-northeast-1"
+    # platform tfstate region
+    region = "ap-northeast-1"
+    # platform tfstate key
+    key = "nautible-dev-platform.tfstate"
+  }
 }
-# nautible aws platform state region
-variable "nautible_aws_platform_state_region" {
-  default = "ap-northeast-1"
-}
-# nautible aws platform state key
-variable "nautible_aws_platform_state_key" {
-  default = "nautible-dev-platform.tfstate"
-}
-variable "order_elasticache_node_type" {
-  default = "cache.t2.micro"
-}
-variable "order_elasticache_parameter_group_name" {
-  default = "default.redis6.x"
-}
-variable "order_elasticache_engine_version" {
-  default = "6.x"
-}
-variable "order_elasticache_port" {
-  default = "6379"
+
+
+# ORDER
+variable "order" {
+  description = "ORDER設定"
+  type = object({
+    elasticache = object({
+      engine_version       = string
+      node_type            = string
+      parameter_group_name = string
+      port                 = number
+    })
+  })
+  default = {
+    # elasticache
+    elasticache = {
+      # engine version
+      engine_version = "6.x"
+      # node type
+      node_type = "cache.t2.micro"
+      # parameter group name
+      parameter_group_name = "default.redis6.x"
+      # port
+      port = 6379
+    }
+  }
 }

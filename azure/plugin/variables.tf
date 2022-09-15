@@ -1,11 +1,7 @@
 variable "pjname" {}
 variable "location" {}
-variable "vnet_rg_name" {}
-variable "subnet_ids" {}
-variable "vnet_id" {}
-variable "vnet_name" {}
-variable "auth_variables" {}
+variable "vnet" {}
+variable "aks" {}
+variable "dns" {}
+variable "auth" {}
 variable "nautible_service_principal_object_id" {}
-variable "keyvault_private_dns_zone_id" {}
-variable "auth_postgres_administrator_login" {}
-variable "auth_postgres_administrator_password" {}

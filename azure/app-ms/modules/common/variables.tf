@@ -2,7 +2,7 @@ variable "pjname" {}
 variable "location" {}
 variable "vnet_id" {}
 variable "vnet_rg_name" {}
-variable "subnet_ids" {}
+variable "aks_subnet_ids" {}
 variable "cosmosdb_public_network_access_enabled" {}
 variable "cosmosdb_enable_free_tier" {}
 variable "servicebus_sku" {}

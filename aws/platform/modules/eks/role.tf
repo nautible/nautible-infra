@@ -56,7 +56,7 @@ module "load_balancer_controller_irsa_role" {
 
   role_name                              = "${var.pjname}-AmazonEKSLoadBalancerControllerRole"
   attach_load_balancer_controller_policy = true
-  policy_name_prefix = "${var.pjname}-"
+  policy_name_prefix                     = "${var.pjname}-"
 
   oidc_providers = {
     ex = {

@@ -22,28 +22,29 @@ terraform {
 }
 
 module "nautible_aws_app" {
-  source                                 = "../../"
-  pjname                                 = var.pjname
-  region                                 = var.region
-  platform_pjname                        = data.terraform_remote_state.nautible_aws_platform.outputs.pjname
-  vpc_id                                 = data.terraform_remote_state.nautible_aws_platform.outputs.vpc_id
-  public_subnets                         = data.terraform_remote_state.nautible_aws_platform.outputs.public_subnets
-  private_subnets                        = data.terraform_remote_state.nautible_aws_platform.outputs.private_subnets
-  private_zone_id                        = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_id
-  private_zone_name                      = data.terraform_remote_state.nautible_aws_platform.outputs.private_zone_name
-  eks_node_security_group_id             = data.terraform_remote_state.nautible_aws_platform.outputs.eks_node_security_group_id
-  eks_oidc_provider_arn                  = data.terraform_remote_state.nautible_aws_platform.outputs.eks_oidc_provider_arn
-  order_elasticache_node_type            = var.order_elasticache_node_type
-  order_elasticache_parameter_group_name = var.order_elasticache_parameter_group_name
-  order_elasticache_engine_version       = var.order_elasticache_engine_version
-  order_elasticache_port                 = var.order_elasticache_port
+  source          = "../../"
+  pjname          = var.pjname
+  region          = var.region
+  platform_pjname = data.terraform_remote_state.nautible_aws_platform.outputs.pjname
+  vpc = {
+    vpc_id            = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
+    public_subnets    = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.public_subnets
+    private_subnets   = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
+    private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
+    private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
+  }
+  eks = {
+    node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks.node.security_group_id
+    oidc_provider_arn      = data.terraform_remote_state.nautible_aws_platform.outputs.eks.oidc.provider_arn
+  }
+  order = var.order
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
   backend = "s3"
   config = {
-    bucket = var.nautible_aws_platform_state_bucket
-    region = var.nautible_aws_platform_state_region
-    key    = var.nautible_aws_platform_state_key
+    bucket = var.platform_tfstate.bucket
+    region = var.platform_tfstate.region
+    key    = var.platform_tfstate.key
   }
 }

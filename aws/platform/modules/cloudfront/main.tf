@@ -59,13 +59,13 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
   }
 
   ordered_cache_behavior {
-    allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods  = ["GET", "HEAD"]
+    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods         = ["GET", "HEAD"]
     path_pattern           = var.service_api_path_pattern
     target_origin_id       = "aws-load-balancer-controller"
     viewer_protocol_policy = "redirect-to-https"
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.cache_policy_caching_disabled.id
+    cache_policy_id          = data.aws_cloudfront_cache_policy.cache_policy_caching_disabled.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.request_policy_all_viewer.id
   }
 
