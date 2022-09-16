@@ -1,5 +1,23 @@
 data "aws_caller_identity" "self" {}
 
+resource "aws_ecr_repository" "security_scan_job" {
+  name                 = "security/scan-job"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
+resource "aws_ecr_repository" "security_scan_api" {
+  name                 = "security/scan-api"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = false
+  }
+}
+
 resource "aws_iam_role" "container_scan_secret_access_role" {
   name = "${var.pjname}-container-scan-secret-access-role"
 
