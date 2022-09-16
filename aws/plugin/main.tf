@@ -19,3 +19,11 @@ module "kong-apigateway" {
   count           = try(var.kong_apigateway, "") != "" ? 1 : 0
   kong_apigateway = var.kong_apigateway
 }
+
+module "container-scan" {
+  source                = "./modules/container-scan"
+  count                 = try(var.container_scan, "") != "" ? 1 : 0
+  pjname                = var.pjname
+  region                = var.region
+  eks_oidc_provider_arn = var.eks.oidc_provider_arn
+}

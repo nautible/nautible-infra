@@ -58,3 +58,8 @@ variable "kong_apigateway" {
     }
   }
 }
+
+variable "container_scan" {
+  # default = "" # kong-apigateway pluginを利用しない場合。
+  default = true
+}

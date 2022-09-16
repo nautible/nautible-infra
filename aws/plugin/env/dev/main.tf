@@ -35,6 +35,7 @@ module "nautible_plugin" {
   }
   auth            = var.auth
   kong_apigateway = var.kong_apigateway
+  container_scan  = var.container_scan
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
