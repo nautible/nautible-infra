@@ -94,6 +94,7 @@ variable "frontdoor" {
     session_affinity_enabled = bool
     istio_ig_lb_ip           = string
     service_api_path_pattern = string
+    access_log_storage_account_allow_ips = list(string)
   })
   default = {
     # session affinity enabled
@@ -105,6 +106,8 @@ variable "frontdoor" {
     istio_ig_lb_ip = null
     # service api path pattern for cloudfront routing to istio lb
     service_api_path_pattern = "/api/*"
+    # access logのstorage accountへのアクセスを許容するIP
+    access_log_storage_account_allow_ips = []
   }
 }
 
