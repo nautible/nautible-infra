@@ -44,6 +44,7 @@ module "aks" {
   node_availability_zones                   = var.aks.node.availability_zones
   max_pods                                  = var.aks.max_pods
   log_analytics_workspace_retention_in_days = var.aks.log_analytics_workspace_retention_in_days
+  api_server_authorized_ip_ranges           = var.aks.api_server_authorized_ip_ranges
   acr_id                                    = module.acr.acr_id
 }
 

@@ -117,6 +117,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   role_based_access_control_enabled = true
 
+  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
+
   tags = var.tags
 
   lifecycle {

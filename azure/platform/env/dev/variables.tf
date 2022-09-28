@@ -27,6 +27,7 @@ variable "aks" {
     max_pods                                  = number
     log_analytics_workspace_retention_in_days = number
     cluster_inbound_http_port_range           = string
+    api_server_authorized_ip_ranges           = list(string)
     subnet = object({
       cidrs = list(string)
       names = list(string)
@@ -49,6 +50,8 @@ variable "aks" {
     log_analytics_workspace_retention_in_days = 30
     # inbound http port range. e.g "80,8080-8082"
     cluster_inbound_http_port_range = "80"
+    # api server authorized ip ranges
+    api_server_authorized_ip_ranges = []
     subnet = {
       # cidr
       cidrs = ["192.168.0.0/16", "192.169.0.0/16"]
