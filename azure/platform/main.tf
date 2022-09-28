@@ -11,14 +11,13 @@ module "app" {
   location = var.location
 }
 
-# インターネット公開申請するまで、外部公開しない
-# module "static_web" {
-#   source                        = "./modules/staticweb"
-#   pjname                        = var.pjname
-#   location                      = var.location
-#   static_web_index_document     = var.static_web.index_document
-#   static_web_error_404_document = var.static_web.error_404_document
-# }
+module "static_web" {
+  source                        = "./modules/staticweb"
+  pjname                        = var.pjname
+  location                      = var.location
+  static_web_index_document     = var.static_web.index_document
+  static_web_error_404_document = var.static_web.error_404_document
+}
 
 module "acr" {
   source   = "./modules/acr"
@@ -47,16 +46,16 @@ module "aks" {
   acr_id                                    = module.acr.acr_id
 }
 
-# インターネット公開申請するまで、外部公開しない
-# module "front_door" {
-#   source                              = "./modules/frontdoor"
-#   pjname                              = var.pjname
-#   location                            = var.location
-#   front_door_session_affinity_enabled = var.frontdoor.session_affinity_enabled
-#   static_web_primary_web_host         = module.static_web.static_web_primary_web_host
-#   istio_ig_lb_ip                      = var.frontdoor.istio_ig_lb_ip
-#   service_api_path_pattern            = var.frontdoor.service_api_path_pattern
-# }
+module "front_door" {
+  source                               = "./modules/frontdoor"
+  pjname                               = var.pjname
+  location                             = var.location
+  front_door_session_affinity_enabled  = var.frontdoor.session_affinity_enabled
+  static_web_primary_web_host          = module.static_web.static_web_primary_web_host
+  istio_ig_lb_ip                       = var.frontdoor.istio_ig_lb_ip
+  service_api_path_pattern             = var.frontdoor.service_api_path_pattern
+  access_log_storage_account_allow_ips = var.frontdoor.access_log_storage_account_allow_ips
+}
 
 module "dns" {
   source                        = "./modules/dns"
