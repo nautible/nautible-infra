@@ -31,4 +31,5 @@ variable "node_count" {}
 variable "node_availability_zones" {}
 variable "max_pods" {}
 variable "log_analytics_workspace_retention_in_days" {}
+variable "api_server_authorized_ip_ranges" {}
 variable "acr_id" {}
