@@ -8,7 +8,7 @@ vnetやsubnetなど開発の基礎となるAzureリソースを管理する
 
 ```text
 platform
-  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
+  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
   │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
@@ -20,7 +20,7 @@ platform
   │      │  variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
-      ├─acr           ・・・cloudfron関連のリソースのmodule
+      ├─acr           ・・・acr関連のリソースのmodule
       ├─aks           ・・・aks関連のリソースのmodule
       ├─app           ・・・applicaiton関連のリソースのmodule
       ├─dns           ・・・DNS関連のリソースのmodule
@@ -55,8 +55,7 @@ Azure-StorageAccount
 ### 環境構築の前に
 
 * Terraformを利用して環境構築を行います
-* TerraformのAzure認証は事前にaz loginしている事を前提としています
-Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です
+* TerraformのAzure認証は事前にaz loginしている事を前提としています（Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です）
 * このTerraformの定義で構築するAzure環境はnautibleを簡単に試したり、開発環境として利用する事を想定しています。本番環境として利用するためには、各プロジェクトの特性に合わせて環境設定や作成するリソースを検討してください。以下は検討内容の例です。
   * WAFの作成
   * AKSのノード数の定義
