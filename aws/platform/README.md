@@ -8,7 +8,7 @@ VPCやSubnetなど開発の基礎となるAWSリソースを管理する
 
 ```text
 platform
-  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
+  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
   │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
@@ -20,7 +20,7 @@ platform
   │      │  variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
-      ├─cloudfront    ・・・cloudfron関連のリソースのmodule
+      ├─cloudfront    ・・・cloudfront関連のリソースのmodule
       ├─eks           ・・・eks関連のリソースのmodule
       ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─route53       ・・・route53関連のリソースのmodule
@@ -53,8 +53,7 @@ AWS-Dynamodb
 
 * AWS環境の環境構築のみサポートしています
 * Terraformを利用して環境構築を行います
-* TerraformのAWS認証は環境変数「AWS_PROFILE」でプロファイルを利用して実行することを想定しています
-Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です
+* TerraformのAWS認証は環境変数「AWS_PROFILE」でプロファイルを利用して実行することを想定しています（Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です）
 * このTerraformの定義で構築するAWS環境はnautibleを簡単に試したり、開発環境として利用する事を想定しています。本番環境として利用するためには、各プロジェクトの特性に合わせて環境設定や作成するリソースを検討してください。以下は検討内容の例です。
   * WAFの作成
   * EKSのノード数の定義
@@ -95,7 +94,7 @@ Terraformの定義ファイルを編集する事で他の方法でも認証可�
 |  作業No  |  ブランチ  |  作業内容  |  GAトリガー  |  GAで実行するTerraformコマンド  | 備考 |
 | ---- | ---- |---- |---- | ---- |---- |
 |  １  |  開発ブランチ  | 開発 | - | - |  |
-|  ２  |  開発ブランチ＞mainブランチ  | プルリクエスト作成 |　プルリクエスト | terraform plan | terraform planにより差分など確認できる |
+|  ２  |  開発ブランチ＞mainブランチ  | プルリクエスト作成 | プルリクエスト | terraform plan | terraform planにより差分など確認できる |
 |  ３  |  mainブランチ  | プルリクエストのマージ | マージコミット | terraform apply --auto-approve | PRの検証にはNo２のterraform planの結果を参考にする |
 
 ※GA＝GithubActions
