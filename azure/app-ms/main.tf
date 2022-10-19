@@ -2,9 +2,17 @@ module "common" {
   source                                 = "./modules/common"
   pjname                                 = var.pjname
   location                               = var.location
-  servicebus_sku                         = var.servicebus_sku
-  cosmosdb_public_network_access_enabled = var.cosmosdb_public_network_access_enabled
-  cosmosdb_enable_free_tier              = var.cosmosdb_enable_free_tier
+  vnet_id                                = var.vnet.id
+  vnet_rg_name                           = var.vnet.rg_name
+  aks_subnet_ids                         = var.aks.subnet_ids
+  servicebus_sku                         = var.common.servicebus.sku
+  servicebus_capacity                    = var.common.servicebus.capacity
+  cosmosdb_public_network_access_enabled = var.common.cosmosdb.public_network_access_enabled
+  cosmosdb_enable_free_tier              = var.common.cosmosdb.enable_free_tier
+  nautible_service_principal_object_id   = var.nautible_service_principal_object_id
+  keyvault_private_dns_zone_id           = var.dns.keyvault_private_dns_zone_id
+  cosmosdb_private_dns_zone_id           = var.dns.cosmosdb_private_dns_zone_id
+  servicebus_private_dns_zone_id         = var.dns.servicebus_private_dns_zone_id
 }
 
 module "customer" {
@@ -19,48 +27,53 @@ module "stock" {
   source                           = "./modules/stock"
   pjname                           = var.pjname
   location                         = var.location
-  servicebus_max_delivery_count    = var.servicebus_max_delivery_count
-  servicebus_max_size_in_megabytes = var.servicebus_max_size_in_megabytes
+  servicebus_max_delivery_count    = var.common.servicebus.max_delivery_count
+  servicebus_max_size_in_megabytes = var.common.servicebus.max_size_in_megabytes
   servicebus_namespace_id          = module.common.servicebus_namespace_id
-  depends_on = [module.common]
+  depends_on                       = [module.common]
 }
 
 module "order" {
   source                           = "./modules/order"
   pjname                           = var.pjname
   location                         = var.location
-  subnet_ids                       = var.subnet_ids
-  order_redis_capacity             = var.order_redis_capacity
-  order_redis_family               = var.order_redis_family
-  order_redis_sku_name             = var.order_redis_sku_name
-  servicebus_max_delivery_count    = var.servicebus_max_delivery_count
-  servicebus_max_size_in_megabytes = var.servicebus_max_size_in_megabytes
+  aks_subnet_ids                   = var.aks.subnet_ids
+  vnet_id                          = var.vnet.id
+  vnet_rg_name                     = var.vnet.rg_name
+  order_redis_capacity             = var.order.redis.capacity
+  order_redis_family               = var.order.redis.family
+  order_redis_sku                  = var.order.redis.sku
+  servicebus_max_delivery_count    = var.common.servicebus.max_delivery_count
+  servicebus_max_size_in_megabytes = var.common.servicebus.max_size_in_megabytes
   servicebus_namespace_id          = module.common.servicebus_namespace_id
+  redis_private_dns_zone_id        = var.dns.redis_private_dns_zone_id
 
   depends_on = [module.common]
 }
 
 module "payment" {
-  source   = "./modules/payment"
-  pjname   = var.pjname
-  location = var.location
-  servicebus_max_delivery_count    = var.servicebus_max_delivery_count
-  servicebus_max_size_in_megabytes = var.servicebus_max_size_in_megabytes
+  source                           = "./modules/payment"
+  pjname                           = var.pjname
+  location                         = var.location
+  servicebus_max_delivery_count    = var.common.servicebus.max_delivery_count
+  servicebus_max_size_in_megabytes = var.common.servicebus.max_size_in_megabytes
   servicebus_namespace_id          = module.common.servicebus_namespace_id
 
   depends_on = [module.common]
 }
 
 module "product" {
-  source                           = "./modules/product"
-  pjname                           = var.pjname
-  location                         = var.location
-  aks_aci_subnet_cidr              = var.aks_aci_subnet_cidr
-  product_db_subnet_cidr           = var.product_db_subnet_cidr
-  product_db_sku                   = var.product_db_sku
-  vnet_name                        = var.vnet_name
-  vnet_rg_name                     = var.vnet_rg_name
-  vnet_id                          = var.vnet_id
+  source                            = "./modules/product"
+  pjname                            = var.pjname
+  location                          = var.location
+  aks_aci_subnet_cidr               = var.aks.subnet_cidrs[1]
+  product_db_subnet_cidr            = var.product.db.subnet_cidr
+  product_db_sku                    = var.product.db.sku
+  vnet_name                         = var.vnet.name
+  vnet_rg_name                      = var.vnet.rg_name
+  vnet_id                           = var.vnet.id
+  product_db_administrator_login    = var.product.db.administrator_login
+  product_db_administrator_password = var.product.db.administrator_password
 
   depends_on = [module.common]
 }

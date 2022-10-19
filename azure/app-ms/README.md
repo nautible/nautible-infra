@@ -6,7 +6,7 @@
 
 ```text
 app-ms
-  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義
+  │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
   │  
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
@@ -41,8 +41,7 @@ Azure-StorageAccount
 ### 環境構築の前に
 
 * Terraformを利用して環境構築を行います
-* TerraformのAzure認証は事前にaz loginしている事を前提としています
-Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です
+* TerraformのAzure認証は事前にaz loginしている事を前提としています（Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です）
 
 ### 環境構築実行環境事前準備
 

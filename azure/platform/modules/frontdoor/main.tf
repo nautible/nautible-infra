@@ -5,9 +5,9 @@ resource "azurerm_resource_group" "frontdoor_rg" {
 }
 
 resource "azurerm_frontdoor" "frontdoor" {
-  name                                         = "${var.pjname}frontdoor"
-  resource_group_name                          = azurerm_resource_group.frontdoor_rg.name
-  backend_pool_settings{
+  name                = "${var.pjname}frontdoor"
+  resource_group_name = azurerm_resource_group.frontdoor_rg.name
+  backend_pool_settings {
     enforce_backend_pools_certificate_name_check = false
   }
 
@@ -46,7 +46,7 @@ resource "azurerm_frontdoor" "frontdoor" {
     patterns_to_match  = ["/*"]
     frontend_endpoints = ["${var.pjname}frontdoor"]
     forwarding_configuration {
-      forwarding_protocol = "MatchRequest"
+      forwarding_protocol = "HttpsOnly"
       backend_pool_name   = "${var.pjname}staticwebbp"
     }
   }
@@ -55,11 +55,11 @@ resource "azurerm_frontdoor" "frontdoor" {
     for_each = var.istio_ig_lb_ip != null ? ["true"] : []
     content {
       name               = "${var.pjname}apibprr"
-      accepted_protocols = ["Http"]
+      accepted_protocols = ["Https"]
       patterns_to_match  = [var.service_api_path_pattern]
       frontend_endpoints = ["${var.pjname}frontdoor"]
       forwarding_configuration {
-        forwarding_protocol = "MatchRequest"
+        forwarding_protocol = "HttpOnly"
         backend_pool_name   = "${var.pjname}apibp"
       }
     }
@@ -75,7 +75,7 @@ resource "azurerm_frontdoor" "frontdoor" {
     for_each = var.istio_ig_lb_ip != null ? ["true"] : []
     content {
       name         = "${var.pjname}apibphp"
-      protocol     = "Https"
+      protocol     = "Http"
       probe_method = "GET"
     }
   }
@@ -97,4 +97,48 @@ resource "azurerm_frontdoor" "frontdoor" {
     session_affinity_enabled = var.front_door_session_affinity_enabled
   }
   tags = {}
+}
+
+resource "azurerm_storage_account" "frontdoor_log_sa" {
+  name                     = "${var.pjname}frontdoorlog"
+  resource_group_name      = azurerm_resource_group.frontdoor_rg.name
+  location                 = azurerm_resource_group.frontdoor_rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  network_rules {
+    default_action = "Deny"
+    ip_rules = var.access_log_storage_account_allow_ips
+  }
+  tags = {}
+}
+
+resource "azurerm_monitor_diagnostic_setting" "frontdoor_access_log" {
+  name               = "${var.pjname}frontdooraccesslog"
+  target_resource_id = azurerm_frontdoor.frontdoor.id
+  storage_account_id = azurerm_storage_account.frontdoor_log_sa.id
+  log {
+    category = "FrontdoorAccessLog"
+    enabled  = true
+    retention_policy {
+      enabled = true
+      days    = 7
+    }
+  }
+  log {
+    category = "FrontdoorWebApplicationFirewallLog"
+    enabled  = false
+    retention_policy {
+      enabled = false
+      days    = 0
+    }
+  }
+  
+  metric {
+    category = "AllMetrics"
+    enabled  = false
+    retention_policy {
+        days    = 0
+        enabled = false
+    }
+  }
 }

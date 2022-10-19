@@ -1,20 +1,12 @@
-
-output "vnet_rg_name" {
-  value = module.nautible_azure_platform.vnet_rg_name
+output "vnet" {
+  value = module.nautible_azure_platform.vnet
 }
-
-output "vnet_id" {
-  value = module.nautible_azure_platform.vnet_id
+output "aks" {
+  value = module.nautible_azure_platform.aks
 }
-
-output "vnet_name" {
-  value = module.nautible_azure_platform.vnet_name
+output "app" {
+  value = module.nautible_azure_platform.app
 }
-
-output "subnet_ids" {
-  value = module.nautible_azure_platform.subnet_ids
-}
-
-output "aks_aci_subnet_cidr" {
-  value = module.nautible_azure_platform.aks_aci_subnet_cidr
+output "dns" {
+  value = module.nautible_azure_platform.dns
 }

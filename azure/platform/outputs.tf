@@ -1,19 +1,28 @@
-output "vnet_rg_name" {
-  value = module.vnet.vnet_rg_name
+output "vnet" {
+  value = {
+    vnet_rg_name = module.vnet.vnet_rg_name
+    vnet_id      = module.vnet.vnet_id
+    vnet_name    = module.vnet.vnet_name
+  }
+}
+output "aks" {
+  value = {
+    subnet_ids   = module.aks.subnet_ids
+    subnet_cidrs = module.aks.subnet_cidrs
+  }
 }
 
-output "vnet_id" {
-  value = module.vnet.vnet_id
+output "app" {
+  value = {
+    nautible_service_principal_object_id = module.app.nautible_service_principal_object_id
+  }
 }
 
-output "vnet_name" {
-  value = module.vnet.vnet_name
-}
-
-output "subnet_ids" {
-  value = module.vnet.subnet_ids
-}
-
-output "aks_aci_subnet_cidr" {
-  value = var.subnet_cidrs[1]
+output "dns" {
+  value = {
+    keyvault_private_dns_zone_id   = module.dns.keyvault_private_dns_zone_id
+    cosmosdb_private_dns_zone_id   = module.dns.cosmosdb_private_dns_zone_id
+    servicebus_private_dns_zone_id = module.dns.servicebus_private_dns_zone_id
+    redis_private_dns_zone_id      = module.dns.redis_private_dns_zone_id
+  }
 }

@@ -37,37 +37,32 @@ resource "azurerm_redis_cache" "order_dapr_statestore" {
   resource_group_name           = azurerm_resource_group.order_rg.name
   capacity                      = var.order_redis_capacity
   family                        = var.order_redis_family
-  sku_name                      = var.order_redis_sku_name
+  sku_name                      = var.order_redis_sku
   enable_non_ssl_port           = false
-  public_network_access_enabled = true
+  public_network_access_enabled = false
   redis_configuration {
   }
 }
 
-# resource "azurerm_private_endpoint" "order_dapr_statestore_pe" {
-#   name                = "${var.pjname}orderstatestorepe"
-#   location            = azurerm_resource_group.order_rg.location
-#   resource_group_name = azurerm_resource_group.order_rg.name
-#   subnet_id           = var.private_subnet_ids[0]
+resource "azurerm_private_endpoint" "order_dapr_statestore_pe" {
+  name                = "${var.pjname}orderstatestore"
+  location            = azurerm_resource_group.order_rg.location
+  resource_group_name = azurerm_resource_group.order_rg.name
+  subnet_id           = var.aks_subnet_ids[0]
 
-#   private_service_connection {
-#     name                           = "${var.pjname}orderstatestorepsc"
-#     private_connection_resource_id = azurerm_redis_cache.order_dapr_statestore.id
-#     is_manual_connection           = false
-#     subresource_names = ["redisCache"]
-#   }
-# }
+  private_service_connection {
+    name                           = "${var.pjname}orderstatestore"
+    private_connection_resource_id = azurerm_redis_cache.order_dapr_statestore.id
+    is_manual_connection           = false
+    subresource_names              = ["redisCache"]
+  }
 
-# resource "azurerm_private_dns_a_record" "order_dapr_statestore_dns_a_record" {
-#   name                = "${var.pjname}orderstatestore"
-#   zone_name           = "privatelink.redis.cache.windows.net"
-#   resource_group_name = "${var.pjname}common"
-#   ttl                 = 300
-#   records             = [azurerm_private_endpoint.order_dapr_statestore_pe.private_service_connection[0].private_ip_address]
+  private_dns_zone_group {
+    name                 = "default"
+    private_dns_zone_ids = [var.redis_private_dns_zone_id]
+  }
 
-#   depends_on = [module.common.azurerm_private_dns_zone.privatelink_redis_cache_private_dns_zone]
-# }
-
+}
 
 resource "azurerm_servicebus_topic" "create_order_reply_topic" {
   name                  = "create-order-reply"

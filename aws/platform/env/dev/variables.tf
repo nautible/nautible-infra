@@ -6,118 +6,134 @@ variable "pjname" {
 variable "region" {
   default = "ap-northeast-1"
 }
-# cloudfront origin name
-# AWS LoadBalancer Controller dns name
-# AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
-# AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
-variable "cloudfront_origin_dns_name" {
-  # default = "k8s-nautiblealbingres-e139a26662-1883416663.ap-northeast-1.elb.amazonaws.com"
-  default = ""
-}
-# service api path pattern for cloudfront routing to istio lb
-variable "service_api_path_pattern" {
-  default = "api/*"
-}
-# VPC cidr
-variable "vpc_cidr" {
-  default = "192.168.0.0/16"
-}
-# Public subnet cidr
-variable "public_subnet_cidrs" {
-  default = ["192.168.4.0/24", "192.168.5.0/24"]
-}
-# Private subnet cidr
-variable "private_subnet_cidrs" {
-  default = ["192.168.1.0/24", "192.168.2.0/24"]
-}
-# デフォルト（NAT-instance typeを指定しない場合は）はNATGatewayを作成。
-# NAT-instance typeを指定した場合はNATInstanceを作成。
-variable "nat_instance_type" {
-  default = null
-  #default = "t2.small"
-}
 # create IAM resources(user,Role) or not
 variable "create_iam_resources" {
   default = true
 }
-
-# eks cluster version
-variable "eks_cluster_version" {
-  default = "1.22"
+# VPC
+variable "vpc" {
+  description = "VPC設定"
+  type = object({
+    vpc_cidr             = string
+    public_subnet_cidrs  = list(string)
+    private_subnet_cidrs = list(string)
+    nat_instance_type    = string
+  })
+  default = {
+    # VPC cidr
+    vpc_cidr = "192.168.0.0/16"
+    # Public subnet cidr
+    public_subnet_cidrs = ["192.168.4.0/24", "192.168.5.0/24"]
+    # Private subnet cidr
+    private_subnet_cidrs = ["192.168.1.0/24", "192.168.2.0/24"]
+    # デフォルト（NAT-instance typeを指定しない場合は）はNATGatewayを作成。
+    # NAT-instance typeを指定した場合はNATInstanceを作成。
+    nat_instance_type = null
+    #nat_instance_type = "t2.small"
+  }
 }
 
-# eks node-group desired size
-variable "eks_ng_desired_size" {
-  default = 3
-}
-# eks node-group max size
-variable "eks_ng_max_size" {
-  default = 5
-}
-# eks node-group min size
-variable "eks_ng_min_size" {
-  default = 3
-}
-# eks node-group instance type
-variable "eks_ng_instance_type" {
-  default = "t2.medium"
-}
-
-# eks node-group dafault ami type
-variable "eks_default_ami_type" {
-  default = "AL2_x86_64"
-}
-# eks node-group default dist size
-variable "eks_default_disk_size" {
-  default = 16
-}
-# eks cluster endpoint private access
-variable "eks_cluster_endpoint_private_access" {
-  default = true
-}
-# eks cluster endpoint public access
-variable "eks_cluster_endpoint_public_access" {
-  default = true
-}
-# eks cluster endpoint public access cidrs
-variable "eks_cluster_endpoint_public_access_cidrs" {
-  default = ["0.0.0.0/0"]
-}
-
-# eks cluster addons coredns version
-variable "eks_cluster_addons_coredns_version" {
-  default = "v1.8.7-eksbuild.1"
-}
-
-# eks cluster addons vpc-cni version
-variable "eks_cluster_addons_vpc_cni_version" {
-  default = "v1.11.0-eksbuild.1"
-}
-
-# eks cluster addons kube-proxy version
-variable "eks_cluster_addons_kube_proxy_version" {
-  default = "v1.22.6-eksbuild.1"
-}
-
-# eks fargate namespaces
-variable "eks_fargate_selectors" {
-  default = [
-    {
-      namespace = "nautible-app-ms"
-      labels = {
-        "nodetype" = "fargate"
+# EKS
+variable "eks" {
+  description = "EKS設定"
+  type = object({
+    cluster = object({
+      version                      = string
+      endpoint_private_access      = bool
+      endpoint_public_access       = bool
+      endpoint_public_access_cidrs = list(string)
+      addons = object({
+        coredns_version    = string
+        vpc_cni_version    = string
+        kube_proxy_version = string
+      })
+    })
+    fargate_selectors = list(object({
+      namespace = string
+      labels = object({
+        nodetype = string
+      })
+    }))
+    node_group = object({
+      desired_size  = number
+      max_size      = number
+      min_size      = number
+      instance_type = string
+      ami_type      = string
+      disk_size     = number
+    })
+    albc_security_group_cloudfront_prefix_list_id = string
+  })
+  default = {
+    # cluster
+    cluster = {
+      # version
+      version = "1.22"
+      # endpoint private access
+      endpoint_private_access = true
+      # endpoint public access
+      endpoint_public_access = true
+      # endpoint public access cidrs
+      endpoint_public_access_cidrs = ["0.0.0.0/0"]
+      # addons
+      addons = {
+        # coredns version
+        coredns_version = "v1.8.7-eksbuild.1"
+        # vpc-cni version
+        vpc_cni_version = "v1.11.0-eksbuild.1"
+        # kube-proxy version
+        kube_proxy_version = "v1.22.6-eksbuild.1"
       }
     }
-  ]
+    # fargate namespaces
+    fargate_selectors = [
+      {
+        namespace = "nautible-app-ms"
+        labels = {
+          nodetype = "fargate"
+        }
+      }
+    ]
+    # nodegroup
+    node_group = {
+      # desired size
+      desired_size = 3
+      # max size
+      max_size = 5
+      # min size
+      min_size = 3
+      # instance type
+      instance_type = "t2.medium"
+      # ami type
+      ami_type = "AL2_x86_64"
+      # disk size
+      disk_size = 16
+    }
+    # AWS LoadBalancerControlelr security group cloudfront prefix list id
+    albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+  }
 }
 
-
-# eks AWS LoadBalancerControlelr security group cloudfront prefix list id
-variable "eks_albc_security_group_cloudfront_prefix_list_id" {
-  default = "pl-58a04531"
+# Cloudfront
+variable "cloudfront" {
+  description = "Cloudfront設定"
+  type = object({
+    origin_dns_name          = string
+    service_api_path_pattern = string
+  })
+  default = {
+    # cloudfront origin name
+    # AWS LoadBalancer Controller dns name
+    # AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
+    # AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
+    # cloudfront_origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
+    origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
+    # service api path pattern for cloudfront routing to istio lb
+    service_api_path_pattern = "api/*"
+  }
 }
 
-  # OIDC Setting
+# OIDC Setting
 variable "oidc" {
   description = "OIDC用設定"
   type = object({

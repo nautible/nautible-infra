@@ -1,6 +1,6 @@
 
 module "nat_instance_security_group" {
-  count = var.nat_instance_type == null ? 0 : 1
+  count   = var.nat_instance_type == null ? 0 : 1
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
 

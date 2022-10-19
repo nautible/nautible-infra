@@ -19,7 +19,7 @@ variable "aks_resource_name" {
 
 # aks start stop schedule weekdays
 variable "aks_start_stop_schedule_weekdays" {
-  default = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+  default = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 }
 
 # aks start schedule time

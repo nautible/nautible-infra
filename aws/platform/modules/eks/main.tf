@@ -1,13 +1,13 @@
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
   version                                = "18.20.1"
-  cluster_version                        = var.eks_cluster_version
+  cluster_version                        = var.cluster_version
   cluster_name                           = "${var.pjname}-cluster"
   subnet_ids                             = var.private_subnet_ids
   vpc_id                                 = var.vpc_id
-  cluster_endpoint_private_access        = var.eks_cluster_endpoint_private_access
-  cluster_endpoint_public_access         = var.eks_cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs   = var.eks_cluster_endpoint_public_access_cidrs
+  cluster_endpoint_private_access        = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access         = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs   = var.cluster_endpoint_public_access_cidrs
   cluster_security_group_name            = "${var.pjname}-eks-cp-sg"
   cluster_security_group_use_name_prefix = false
   node_security_group_name               = "${var.pjname}-eks-node-common-sg"
@@ -19,23 +19,23 @@ module "eks" {
     coredns = {
       name              = "coredns"
       resolve_conflicts = "OVERWRITE"
-      addon_version     = var.eks_cluster_addons_coredns_version
+      addon_version     = var.cluster_addons_coredns_version
     }
     kube-proxy = {
       name              = "kube-proxy"
       resolve_conflicts = "OVERWRITE"
-      addon_version     = var.eks_cluster_addons_kube_proxy_version
+      addon_version     = var.cluster_addons_kube_proxy_version
     }
     vpc-cni = {
       name              = "vpc-cni"
       resolve_conflicts = "OVERWRITE"
-      addon_version     = var.eks_cluster_addons_vpc_cni_version
+      addon_version     = var.cluster_addons_vpc_cni_version
     }
   }
 
   eks_managed_node_group_defaults = {
-    ami_type                               = var.eks_default_ami_type
-    disk_size                              = var.eks_default_disk_size
+    ami_type                               = var.ng_ami_type
+    disk_size                              = var.ng_disk_size
     update_launch_template_default_version = true
     iam_role_name                          = "${var.pjname}-AmazonEKSNodeRole"
     iam_role_use_name_prefix               = false
@@ -50,10 +50,10 @@ module "eks" {
   eks_managed_node_groups = {
     "${var.pjname}-eks-default-node" = {
       security_group_name = "${var.pjname}-eks-default-node-sg"
-      desired_size        = var.eks_ng_desired_size
-      max_size            = var.eks_ng_max_size
-      min_size            = var.eks_ng_min_size
-      instance_types      = [var.eks_ng_instance_type]
+      desired_size        = var.ng_desired_size
+      max_size            = var.ng_max_size
+      min_size            = var.ng_min_size
+      instance_types      = [var.ng_instance_type]
     }
   }
 
@@ -98,7 +98,7 @@ module "eks" {
 
   }
   tags = {
-    Name = "kubernatis.io/cluster/${var.pjname}-eks-cluster"
+    Name = "kubernetes.io/cluster/${var.pjname}-eks-cluster"
   }
 
 }
