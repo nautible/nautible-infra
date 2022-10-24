@@ -79,7 +79,7 @@ variable "eks" {
         # endpoint public access
         endpoint_public_access = true
         # endpoint public access cidrs
-        endpoint_public_access_cidrs = []
+        endpoint_public_access_cidrs = ["0.0.0.0/0"]
         # addons
         addons = {
           # coredns version
