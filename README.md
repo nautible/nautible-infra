@@ -22,6 +22,8 @@ Terraformを使いVPC等Kubernetesを稼働させる環境の構築やKubernetes
   - KubernetesおよびKubernetesを稼働させるために必要なリソースの構築
 - app-ms
   - nautible-app-ms-xxxアプリケーションで利用するクラウドリソースの構築（データベース、キュー等）
+- app-examples
+  - nautible-app-examplesアプリケーションで利用するクラウドリソースの構築
 - plugin
   - nautible-pluginで利用するクラウドリソースの構築
 
