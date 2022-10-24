@@ -2,17 +2,17 @@ module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
   version                                = "18.20.1"
   cluster_version                        = var.cluster_version
-  cluster_name                           = "${var.pjname}-cluster"
+  cluster_name                           = var.cluster_name
   subnet_ids                             = var.private_subnet_ids
   vpc_id                                 = var.vpc_id
   cluster_endpoint_private_access        = var.cluster_endpoint_private_access
   cluster_endpoint_public_access         = var.cluster_endpoint_public_access
   cluster_endpoint_public_access_cidrs   = var.cluster_endpoint_public_access_cidrs
-  cluster_security_group_name            = "${var.pjname}-eks-cp-sg"
+  cluster_security_group_name            = "${var.cluster_name}-eks-cp-sg"
   cluster_security_group_use_name_prefix = false
-  node_security_group_name               = "${var.pjname}-eks-node-common-sg"
+  node_security_group_name               = "${var.cluster_name}-eks-node-common-sg"
   node_security_group_use_name_prefix    = false
-  iam_role_name                          = "${var.pjname}-AmazonEKSClusterRole"
+  iam_role_name                          = "${var.cluster_name}-AmazonEKSClusterRole"
   iam_role_use_name_prefix               = false
 
   cluster_addons = {
@@ -37,7 +37,7 @@ module "eks" {
     ami_type                               = var.ng_ami_type
     disk_size                              = var.ng_disk_size
     update_launch_template_default_version = true
-    iam_role_name                          = "${var.pjname}-AmazonEKSNodeRole"
+    iam_role_name                          = "${var.cluster_name}-AmazonEKSNodeRole"
     iam_role_use_name_prefix               = false
     security_group_use_name_prefix         = false
     network_interfaces = [
@@ -48,8 +48,8 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    "${var.pjname}-eks-default-node" = {
-      security_group_name = "${var.pjname}-eks-default-node-sg"
+    "eks-default-node" = {
+      security_group_name = "${var.cluster_name}-eks-default-node-sg"
       desired_size        = var.ng_desired_size
       max_size            = var.ng_max_size
       min_size            = var.ng_min_size
@@ -98,7 +98,7 @@ module "eks" {
 
   }
   tags = {
-    Name = "kubernetes.io/cluster/${var.pjname}-eks-cluster"
+    Name = "kubernetes.io/cluster/${var.cluster_name}-eks-cluster"
   }
 
 }

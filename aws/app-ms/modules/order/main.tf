@@ -3,10 +3,6 @@ provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
 }
-data "aws_security_group" "eks_node_common_sg" {
-  vpc_id = var.vpc_id
-  name   = "${var.platform_pjname}-eks-node-common-sg"
-}
 
 resource "aws_ecrpublic_repository" "ecr_order" {
   provider        = aws.us_east_1
@@ -25,7 +21,7 @@ resource "aws_security_group" "order_elasticache_sg" {
     from_port       = var.order_elasticache_port
     to_port         = var.order_elasticache_port
     protocol        = "tcp"
-    security_groups = [var.eks_node_security_group_id]
+    security_groups = var.eks_node_security_group_ids
   }
   egress {
     from_port   = 0

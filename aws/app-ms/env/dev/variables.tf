@@ -25,6 +25,17 @@ variable "platform_tfstate" {
   }
 }
 
+# EKS
+variable "eks" {
+  default = {
+    # [複数クラスターの運用を行わない場合は利用しない機能。]
+    # clusterアップデートのblue/green運用などで複数clusterが存在する場合に、除外するcluster名を指定する。
+    # 除外されたclusterのnodeへ付与するPolicyやclusterからのアクセスを許容するためのSecurity Group設定を削除するためなどに利用する。
+    # 指定無しの場合は全clusterが有効。
+    # excludes_cluster_names = ["nautible-dev-cluster-v1_22"]
+  }
+}
+
 
 # ORDER
 variable "order" {

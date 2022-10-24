@@ -5,6 +5,7 @@ variable "vpc_cidr" {}
 variable "public_subnet_ids" {}
 variable "private_subnet_ids" {}
 variable "create_iam_resources" {}
+variable "cluster_name" {}
 variable "cluster_version" {}
 variable "ng_desired_size" {}
 variable "ng_max_size" {}
