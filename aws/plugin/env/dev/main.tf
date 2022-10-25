@@ -23,7 +23,7 @@ terraform {
 
 # filter eks info
 locals {
-  target_esk = { for k, v in data.terraform_remote_state.nautible_aws_platform.outputs.eks :
+  target_eks = { for k, v in data.terraform_remote_state.nautible_aws_platform.outputs.eks :
   k => v if !contains(try(var.eks.excludes_cluster_names, []), v.cluster.name) }
 }
 
@@ -35,7 +35,7 @@ module "nautible_plugin" {
     vpc_id          = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
     private_subnets = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
   }
-  eks             = local.target_esk
+  eks             = local.target_eks
   auth            = var.auth
   kong_apigateway = var.kong_apigateway
 }

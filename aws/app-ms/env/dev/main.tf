@@ -23,7 +23,7 @@ terraform {
 
 # filter eks info
 locals {
-  target_esk = { for k, v in data.terraform_remote_state.nautible_aws_platform.outputs.eks :
+  target_eks = { for k, v in data.terraform_remote_state.nautible_aws_platform.outputs.eks :
   k => v if !contains(try(var.eks.excludes_cluster_names, []), v.cluster.name) }
 }
 
@@ -39,7 +39,7 @@ module "nautible_aws_app" {
     private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
     private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
   }
-  eks   = local.target_esk
+  eks   = local.target_eks
   order = var.order
 }
 
