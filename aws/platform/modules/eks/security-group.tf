@@ -2,7 +2,7 @@ module "albc_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
 
-  name                             = "${var.pjname}-albc-sg"
+  name                             = "${var.cluster_name}-albc-sg"
   use_name_prefix                  = false
   description                      = "Security group for AWS Load Balancer Controller"
   vpc_id                           = var.vpc_id
@@ -13,6 +13,6 @@ module "albc_security_group" {
   egress_rules                     = ["all-all"]
 
   tags = {
-    Name = "${var.pjname}-albc-sg"
+    Name = "${var.cluster_name}-albc-sg"
   }
 }

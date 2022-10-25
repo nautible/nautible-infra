@@ -15,17 +15,21 @@ module "vpc" {
   private_subnet_suffix = "private-subnet"
   public_subnet_suffix  = "public-subnet"
 
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${var.pjname}-cluster" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
-    "Name"                                        = "${var.pjname}-public-subnet"
-  }
+  public_subnet_tags = merge(
+    { for v in var.eks_cluster_names : "kubernetes.io/cluster/${v}" => "shared" },
+    {
+      "kubernetes.io/role/elb" = "1"
+      "Name"                   = "${var.pjname}-public-subnet"
+    }
+  )
 
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${var.pjname}-cluster" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
-    "Name"                                        = "${var.pjname}-private-subnet"
-  }
+  private_subnet_tags = merge(
+    { for v in var.eks_cluster_names : "kubernetes.io/cluster/${v}" => "shared" },
+    {
+      "kubernetes.io/role/internal-elb" = "1"
+      "Name"                            = "${var.pjname}-private-subnet"
+    }
+  )
 
   igw_tags = {
     "Name" = "${var.pjname}-igw"

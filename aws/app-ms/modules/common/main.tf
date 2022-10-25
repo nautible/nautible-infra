@@ -5,13 +5,10 @@ resource "random_id" "app_policy_random" {
 
 data "aws_caller_identity" "self" {}
 
-data "aws_iam_role" "eks_node_role" {
-  name = "${var.platform_pjname}-AmazonEKSNodeRole"
-}
-
 resource "aws_iam_role_policy" "app_policy" {
-  name = "${var.pjname}-eks-app-policy-${random_id.app_policy_random.dec}"
-  role = data.aws_iam_role.eks_node_role.name
+  for_each = var.eks_cluster_name_node_role_name_map
+  name     = "${each.key}-eks-app-policy"
+  role     = each.value
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -132,7 +129,7 @@ resource "aws_iam_role" "app_secret_access_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${var.eks_oidc_provider_arn}"
+          Federated = var.eks_oidc_provider_arns
         }
       }
     ]

@@ -1,5 +1,6 @@
 # OIDC Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
+  count           = var.oidc.oidc_provider_arn == "" ? 1 : 0
   url             = var.oidc.url
   client_id_list  = var.oidc.client_id_list
   thumbprint_list = var.oidc.thumbprint_list
@@ -15,7 +16,7 @@ resource "aws_iam_role" "githubactions_ecr_access_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${aws_iam_openid_connect_provider.oidc_provider.id}"
+          Federated = var.oidc.oidc_provider_arn == "" ? aws_iam_openid_connect_provider.oidc_provider[0].id : var.oidc.oidc_provider_arn
         },
         Condition = {
           StringLike = {
@@ -79,7 +80,7 @@ resource "aws_iam_role" "githubactions_infra_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${aws_iam_openid_connect_provider.oidc_provider.id}"
+          Federated = var.oidc.oidc_provider_arn == "" ? aws_iam_openid_connect_provider.oidc_provider[0].id : var.oidc.oidc_provider_arn
         },
         Condition = {
           StringLike = {

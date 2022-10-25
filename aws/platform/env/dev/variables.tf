@@ -36,8 +36,9 @@ variable "vpc" {
 # EKS
 variable "eks" {
   description = "EKS設定"
-  type = object({
+  type = list(object({
     cluster = object({
+      name                         = string
       version                      = string
       endpoint_private_access      = bool
       endpoint_public_access       = bool
@@ -63,55 +64,60 @@ variable "eks" {
       disk_size     = number
     })
     albc_security_group_cloudfront_prefix_list_id = string
-  })
-  default = {
-    # cluster
-    cluster = {
-      # version
-      version = "1.22"
-      # endpoint private access
-      endpoint_private_access = true
-      # endpoint public access
-      endpoint_public_access = true
-      # endpoint public access cidrs
-      endpoint_public_access_cidrs = ["0.0.0.0/0"]
-      # addons
-      addons = {
-        # coredns version
-        coredns_version = "v1.8.7-eksbuild.1"
-        # vpc-cni version
-        vpc_cni_version = "v1.11.0-eksbuild.1"
-        # kube-proxy version
-        kube_proxy_version = "v1.22.6-eksbuild.1"
-      }
-    }
-    # fargate namespaces
-    fargate_selectors = [
-      {
-        namespace = "nautible-app-ms"
-        labels = {
-          nodetype = "fargate"
+  }))
+
+  default = [
+    {
+      # cluster
+      cluster = {
+        # name
+        name = "nautible-dev-cluster"
+        # version
+        version = "1.23"
+        # endpoint private access
+        endpoint_private_access = true
+        # endpoint public access
+        endpoint_public_access = true
+        # endpoint public access cidrs
+        endpoint_public_access_cidrs = ["0.0.0.0/0"]
+        # addons
+        addons = {
+          # coredns version
+          coredns_version = "v1.8.7-eksbuild.1"
+          # vpc-cni version
+          vpc_cni_version = "v1.11.4-eksbuild.1"
+          # kube-proxy version
+          kube_proxy_version = "v1.22.11-eksbuild.2"
         }
       }
-    ]
-    # nodegroup
-    node_group = {
-      # desired size
-      desired_size = 3
-      # max size
-      max_size = 5
-      # min size
-      min_size = 3
-      # instance type
-      instance_type = "t2.medium"
-      # ami type
-      ami_type = "AL2_x86_64"
-      # disk size
-      disk_size = 16
+      # fargate namespaces
+      fargate_selectors = [
+        {
+          namespace = "nautible-app-ms"
+          labels = {
+            nodetype = "fargate"
+          }
+        }
+      ]
+      # nodegroup
+      node_group = {
+        # desired size
+        desired_size = 3
+        # max size
+        max_size = 5
+        # min size
+        min_size = 3
+        # instance type
+        instance_type = "t2.medium"
+        # ami type
+        ami_type = "AL2_x86_64"
+        # disk size
+        disk_size = 16
+      }
+      # AWS LoadBalancerControlelr security group cloudfront prefix list id
+      albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
     }
-    # AWS LoadBalancerControlelr security group cloudfront prefix list id
-    albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
-  }
+  ]
 }
 
 # Cloudfront
@@ -126,8 +132,8 @@ variable "cloudfront" {
     # AWS LoadBalancer Controller dns name
     # AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
     # AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
-    # cloudfront_origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
-    origin_dns_name = "k8s-nautiblealbingres-e139a26662-354258848.ap-northeast-1.elb.amazonaws.com"
+    # cloudfront_origin_dns_name = "k8s-nautiblealbingres-1234567890-0123456789.ap-northeast-1.elb.amazonaws.com"
+    origin_dns_name = ""
     # service api path pattern for cloudfront routing to istio lb
     service_api_path_pattern = "api/*"
   }
@@ -137,16 +143,18 @@ variable "cloudfront" {
 variable "oidc" {
   description = "OIDC用設定"
   type = object({
+    # 既存のoidc providerを利用する場合はarnを指定する
+    oidc_provider_arn   = string
     url                 = string
     github_organization = string
     client_id_list      = list(string)
     thumbprint_list     = list(string)
   })
   default = {
+    oidc_provider_arn    = ""
     url                 = "https://token.actions.githubusercontent.com"
     github_organization = "nautible"
     client_id_list      = ["sts.amazonaws.com"]
     thumbprint_list     = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
-
   }
 }
