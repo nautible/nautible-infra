@@ -51,6 +51,7 @@ module "nautible_azure_app" {
   { administrator_login = var.product_db_administrator_login, administrator_password = var.product_db_administrator_password }) })
   order                                = var.order
   nautible_service_principal_object_id = data.terraform_remote_state.nautible_azure_platform.outputs.app.nautible_service_principal_object_id
+  oidc                                 = merge(var.oidc, { static_web_deploy = merge(var.oidc.static_web_deploy, { storage_account_id = data.terraform_remote_state.nautible_azure_platform.outputs.static_web.storage_account_id }) })
 }
 
 data "terraform_remote_state" "nautible_azure_platform" {

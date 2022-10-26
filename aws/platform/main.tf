@@ -53,7 +53,8 @@ module "cloudfront" {
 }
 
 module "oidc" {
-  source = "./modules/oidc"
-  pjname = var.pjname
-  oidc   = var.oidc
+  source               = "./modules/oidc"
+  pjname               = var.pjname
+  oidc                 = var.oidc
+  static_web_bucket_id = module.cloudfront.static_web_bucket_id
 }

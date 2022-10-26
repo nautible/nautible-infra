@@ -26,3 +26,10 @@ output "dns" {
     redis_private_dns_zone_id      = module.dns.redis_private_dns_zone_id
   }
 }
+
+output "static_web" {
+  value = {
+    primary_web_host   = module.static_web.primary_web_host
+    storage_account_id = module.static_web.storage_account_id
+  }
+}

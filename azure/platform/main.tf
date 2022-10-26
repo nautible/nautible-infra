@@ -52,7 +52,7 @@ module "front_door" {
   pjname                               = var.pjname
   location                             = var.location
   front_door_session_affinity_enabled  = var.frontdoor.session_affinity_enabled
-  static_web_primary_web_host          = module.static_web.static_web_primary_web_host
+  static_web_primary_web_host          = module.static_web.primary_web_host
   istio_ig_lb_ip                       = var.frontdoor.istio_ig_lb_ip
   service_api_path_pattern             = var.frontdoor.service_api_path_pattern
   access_log_storage_account_allow_ips = var.frontdoor.access_log_storage_account_allow_ips
