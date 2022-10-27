@@ -115,6 +115,13 @@ variable "frontdoor" {
 }
 
 variable "dns" {
+  description = "dns設定"
+  type = object({
+    privatelink_keyvault_enable   = bool
+    privatelink_cosmosdb_enable   = bool
+    privatelink_servicebus_enable = bool
+    privatelink_redis_enable      = bool
+  })
   default = {
     # PrivateLinkでアクセスするリソースの有無を設定し、PrivateLink用のprivate DNSを作成します。
     # PrivateLink用のDNSはリソース毎に１つしか作成できないので、platformプロジェクトで一元管理します。

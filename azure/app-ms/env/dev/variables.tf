@@ -81,6 +81,33 @@ variable "order" {
   }
 }
 
+variable "oidc" {
+  description = "OIDC設定"
+  type = object({
+    github_organization = string
+    static_web_deploy = object({
+      github_repo = object({
+        name         = string
+        branches     = list(string)
+        environments = list(string)
+      })
+    })
+  })
+  default = {
+    github_organization = "nautible"
+    static_web_deploy = {
+      # 権限を付与するgit情報
+      github_repo = {
+        name = "nautible-app-ms-front"
+        # branchに権限付与する場合はbranchを指定する。ワイルドカード利用不可。
+        branches = []
+        # github environemntに権限付与する場合はenvironmentを指定する
+        environments = ["develop"]
+      }
+    }
+  }
+}
+
 variable "product_db_administrator_login" {
   description = "商品サービスで利用するDBのadminユーザーID。初回のみ入力する。初回以外の場合はEnterで入力をスキップする。"
 }

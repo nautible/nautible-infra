@@ -6,4 +6,5 @@ variable "common" {}
 variable "product" {}
 variable "order" {}
 variable "dns" {}
+variable "oidc" {}
 variable "nautible_service_principal_object_id" {}
