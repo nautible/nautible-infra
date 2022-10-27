@@ -7,4 +7,5 @@ variable "product" {}
 variable "order" {}
 variable "dns" {}
 variable "oidc" {}
+variable "acr" {}
 variable "nautible_service_principal_object_id" {}

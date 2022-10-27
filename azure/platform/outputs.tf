@@ -33,3 +33,9 @@ output "static_web" {
     storage_account_id = module.static_web.storage_account_id
   }
 }
+
+output "acr" {
+  value = {
+    acr_id = module.acr.acr_id
+  }
+}
