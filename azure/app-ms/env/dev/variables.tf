@@ -92,9 +92,17 @@ variable "oidc" {
         environments = list(string)
       })
     })
+    acr_access = object({
+      git_repos = list(object({
+        name         = string
+        branches     = list(string)
+        environments = list(string)
+      }))
+    })
   })
   default = {
     github_organization = "nautible"
+    # 静的コンテンツデプロイ
     static_web_deploy = {
       # 権限を付与するgit情報
       github_repo = {
@@ -104,6 +112,39 @@ variable "oidc" {
         # github environemntに権限付与する場合はenvironmentを指定する
         environments = ["develop"]
       }
+    }
+    # acrアクセス
+    acr_access = {
+      # 権限を付与するgit情報
+      git_repos = [
+        {
+          name = "nautible-app-ms-customer"
+          # branchに権限付与する場合はbranchを指定する。ワイルドカード利用不可。
+          branches = []
+          # github environemntに権限付与する場合はenvironmentを指定する
+          environments = ["develop"]
+        },
+        {
+          name = "nautible-app-ms-product"
+          branches = []
+          environments = ["develop"]
+        },
+        {
+          name = "nautible-app-ms-stock"
+          branches = []
+          environments = ["develop"]
+        },
+        {
+          name = "nautible-app-ms-order"
+          branches = []
+          environments = ["develop"]
+        },
+        {
+          name = "nautible-app-ms-payment"
+          branches = []
+          environments = ["develop"]
+        }
+      ]
     }
   }
 }

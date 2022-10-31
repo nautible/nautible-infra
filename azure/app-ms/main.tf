@@ -86,4 +86,6 @@ module "oidc" {
   static_web_deploy_github_repo_name         = var.oidc.static_web_deploy.github_repo.name
   static_web_deploy_github_repo_branches     = var.oidc.static_web_deploy.github_repo.branches
   static_web_deploy_github_repo_environments = var.oidc.static_web_deploy.github_repo.environments
+  acr_id                                     = var.acr.acr_id
+  acr_access                                 = var.oidc.acr_access
 }

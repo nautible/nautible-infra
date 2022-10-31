@@ -13,3 +13,6 @@ output "dns" {
 output "static_web" {
   value = module.nautible_azure_platform.static_web
 }
+output "acr" {
+  value = module.nautible_azure_platform.acr
+}
