@@ -13,3 +13,13 @@ resource "aws_ecrpublic_repository" "ecr_examples_go" {
   provider        = aws.us_east_1
   repository_name = "nautible-app-examples-go"
 }
+
+resource "aws_ecrpublic_repository" "ecr_examples_node" {
+  provider        = aws.us_east_1
+  repository_name = "nautible-app-examples-node"
+}
+
+resource "aws_ecrpublic_repository" "ecr_examples_python" {
+  provider        = aws.us_east_1
+  repository_name = "nautible-app-examples-python"
+}
