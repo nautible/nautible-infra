@@ -5,12 +5,18 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    bucket  = "nautible-dev-plugin-tf-ap-northeast-1"
-    region  = "ap-northeast-1"
-    key     = "nautible-dev-plugin.tfstate"
+    # 通常のnautible設定
+    #bucket  = "nautible-dev-plugin-tf-ap-northeast-1"
+    #region  = "ap-northeast-1"
+    #key     = "nautible-dev-plugin.tfstate"
+    bucket  = "nautible-cloudarch-dev-plugin-tf-us-east-1"
+    region  = "us-east-1"
+    key     = "nautible-cloudarch-dev-plugin.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-plugin-tfstate-lock"
+    # 通常のnautible設定
+    #dynamodb_table = "nautible-dev-plugin-tfstate-lock"
+    dynamodb_table = "nautible-cloudarch-dev-plugin-tfstate-lock"
   }
 
   required_providers {
@@ -35,9 +41,10 @@ module "nautible_plugin" {
     vpc_id          = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
     private_subnets = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
   }
-  eks             = local.target_eks
-  auth            = var.auth
-  kong_apigateway = var.kong_apigateway
+  eks                = local.target_eks
+  auth               = var.auth
+  kong_apigateway    = var.kong_apigateway
+  backup_bucket_name = var.backup.s3_bucket_name
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {

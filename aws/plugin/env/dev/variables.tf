@@ -1,10 +1,14 @@
 # Project name
 variable "pjname" {
-  default = "nautible-plugin-dev"
+  # 通常のnautible設定
+  #default = "nautible-plugin-dev"
+  default = "nautible-ca-plugin-dev"
 }
 # AWS region
 variable "region" {
-  default = "ap-northeast-1"
+  # 通常のnautible設定
+  #default = "ap-northeast-1"
+  default = "us-east-1"
 }
 
 # platform tfstate
@@ -16,12 +20,20 @@ variable "platform_tfstate" {
     key    = string
   })
   default = {
+    # 通常のnautible設定
     # platform tfstate bucket
-    bucket = "nautible-dev-platform-tf-ap-northeast-1"
+    #bucket = "nautible-dev-platform-tf-ap-northeast-1"
     # platform tfstate region
-    region = "ap-northeast-1"
+    #region = "ap-northeast-1"
     # platform tfstate key
-    key = "nautible-dev-platform.tfstate"
+    #key = "nautible-dev-platform.tfstate"
+    # platform tfstate bucket
+
+    bucket = "nautible-cloudarch-dev-platform-tf-us-east-1"
+    # platform tfstate region
+    region = "us-east-1"
+    # platform tfstate key
+    key = "nautible-cloudarch-dev-platform.tfstate"
   }
 }
 
@@ -32,7 +44,7 @@ variable "eks" {
     # clusterアップデートのblue/green運用などで複数clusterが存在する場合に、除外するcluster名を指定する。
     # 除外されたclusterのnodeへ付与するPolicyやclusterからのアクセスを許容するためのSecurity Group設定を削除するためなどに利用する。
     # 指定無しの場合は全clusterが有効。
-    # excludes_cluster_names = ["nautible-dev-cluster-v1_22"]
+    excludes_cluster_names = ["nautible-dev-cluster-v1_23"]
   }
 }
 
@@ -67,5 +79,15 @@ variable "kong_apigateway" {
     sqs = {
       message_retention_seconds = 60
     }
+  }
+}
+
+variable "backup" {
+  description = "バックアップ設定"
+  type = object({
+    s3_bucket_name = string
+  })
+  default = {
+    s3_bucket_name = "nautible-velero-backup"
   }
 }

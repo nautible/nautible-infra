@@ -1,10 +1,14 @@
 # Project name
 variable "pjname" {
-  default = "nautible-dev"
+  # 通常のnautible設定
+  #default = "nautible-dev"
+  default = "nautible-ca-dev"
 }
 # AWS region
 variable "region" {
-  default = "ap-northeast-1"
+  # 通常のnautible設定
+  #default = "ap-northeast-1"
+  default = "us-east-1"
 }
 # create IAM resources(user,Role) or not
 variable "create_iam_resources" {
@@ -71,9 +75,11 @@ variable "eks" {
       # cluster
       cluster = {
         # name
-        name = "nautible-dev-cluster"
+        # 通常のnautible設定
+        #name = "nautible-dev-cluster"
+        name = "nautible-dev-cluster-v1_22"
         # version
-        version = "1.23"
+        version = "1.22"
         # endpoint private access
         endpoint_private_access = true
         # endpoint public access
@@ -85,9 +91,9 @@ variable "eks" {
           # coredns version
           coredns_version = "v1.8.7-eksbuild.1"
           # vpc-cni version
-          vpc_cni_version = "v1.11.4-eksbuild.1"
+          vpc_cni_version = "v1.11.0-eksbuild.1"
           # kube-proxy version
-          kube_proxy_version = "v1.22.11-eksbuild.2"
+          kube_proxy_version = "v1.22.6-eksbuild.1"
         }
       }
       # fargate namespaces
@@ -115,7 +121,59 @@ variable "eks" {
         disk_size = 16
       }
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
-      albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+      # 通常のnautible設定
+      #albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+      albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
+    # },
+    # {
+    #   # cluster
+    #   cluster = {
+    #     # name
+    #     name = "nautible-dev-cluster-v1_23"
+    #     # version
+    #     version = "1.23"
+    #     # endpoint private access
+    #     endpoint_private_access = true
+    #     # endpoint public access
+    #     endpoint_public_access = true
+    #     # endpoint public access cidrs
+    #     endpoint_public_access_cidrs = ["0.0.0.0/0"]
+    #     # addons
+    #     addons = {
+    #       # coredns version
+    #       coredns_version = "v1.8.7-eksbuild.2"
+    #       # vpc-cni version
+    #       vpc_cni_version = "v1.11.4-eksbuild.1"
+    #       # kube-proxy version
+    #       kube_proxy_version = "v1.23.8-eksbuild.2"
+    #     }
+    #   }
+    #   # fargate namespaces
+    #   fargate_selectors = [
+    #     {
+    #       namespace = "nautible-app-ms"
+    #       labels = {
+    #         nodetype = "fargate"
+    #       }
+    #     }
+    #   ]
+    #   # nodegroup
+    #   node_group = {
+    #     # desired size
+    #     desired_size = 3
+    #     # max size
+    #     max_size = 5
+    #     # min size
+    #     min_size = 3
+    #     # instance type
+    #     instance_type = "t2.medium"
+    #     # ami type
+    #     ami_type = "AL2_x86_64"
+    #     # disk size
+    #     disk_size = 16
+    #   }
+    #   # AWS LoadBalancerControlelr security group cloudfront prefix list id
+    #   albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
     }
   ]
 }
@@ -151,7 +209,9 @@ variable "oidc" {
     thumbprint_list     = list(string)
   })
   default = {
-    oidc_provider_arn    = ""
+    # 通常のnautible設定
+    #oidc_provider_arn    = ""
+    oidc_provider_arn    = "arn:aws:iam::324837360224:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/507797D608225C886410CF673EB27FE6"
     url                 = "https://token.actions.githubusercontent.com"
     github_organization = "nautible"
     client_id_list      = ["sts.amazonaws.com"]
