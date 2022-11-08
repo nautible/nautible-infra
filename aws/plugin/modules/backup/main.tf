@@ -10,7 +10,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "backup_bucket_ser
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -51,7 +51,7 @@ resource "aws_iam_role_policy" "backup_policy" {
         Resource = "arn:aws:s3:::${aws_s3_bucket.backup_bucket.bucket}/*"
       },
       {
-        Sid = "VeleroBackupListBucket",
+        Sid    = "VeleroBackupListBucket",
         Effect = "Allow",
         Action = [
           "s3:ListBucket"
@@ -59,9 +59,9 @@ resource "aws_iam_role_policy" "backup_policy" {
         Resource = "arn:aws:s3:::${aws_s3_bucket.backup_bucket.bucket}"
       },
       {
-        Sid = "VeleroBackupEc2",
-        Effect   = "Allow",
-        Action   = [
+        Sid    = "VeleroBackupEc2",
+        Effect = "Allow",
+        Action = [
           "ec2:DescribeVolumes",
           "ec2:DescribeSnapshots",
           "ec2:CreateTags",
