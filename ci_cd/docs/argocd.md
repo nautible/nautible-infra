@@ -12,7 +12,7 @@
 
 ※App of Appsは必要に応じて利用する
 
-公式ドキュメントは[こちら](https://argoproj.github.io/argo-cd/)  
+公式ドキュメントは[こちら](https://argo-cd.readthedocs.io/en/stable/)  
 公式リポジトリは[こちら](https://github.com/argoproj/argo-cd)
 
 ## ArgoCDのインストール
@@ -24,11 +24,11 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-[インストールドキュメント](https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd)
+[インストールドキュメント](https://argo-cd.readthedocs.io/en/stable/getting_started/#1-install-argo-cd)
 
 ## CLIの導入
 
-[公式サイトの導入手順](ArgoCDのインストール)に従い、CLIを導入する。
+[公式サイトの導入手順](https://argo-cd.readthedocs.io/en/stable/getting_started/#2-download-argo-cd-cli)に従い、CLIを導入する。
 
 ## ArgoCDプロジェクトの作成
 

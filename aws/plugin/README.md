@@ -23,11 +23,11 @@ plugin
 
 AWS-S3
   │  
-  └─nautible-plugin-terraform              ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+  nautible-dev-plugin-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
         │   nautible-dev-plugin.tfstate    ・・・Terraformのtfstate
 AWS-Dynamodb
   │  
-  └─nautible-nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -52,7 +52,7 @@ AWS-Dynamodb
 
 ### 環境構築手順
 
-* AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
+* AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * plugin/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * plugin/modules/initディレクトリで「terraform init」の実行
@@ -65,4 +65,3 @@ AWS-Dynamodb
   * plugin/env/devディレクトリで「terraform apply」の実行
 
 ※prodの場合はplugin/env/devをprodに読み替えてください。
-
