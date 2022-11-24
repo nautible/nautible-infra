@@ -34,5 +34,7 @@ data:
       name: nautible-app-ms-order-manifest
     - url: https://github.com/nautible/nautible-app-ms-payment-manifest
       name: nautible-app-ms-payment-manifest
+    - url: https://github.com/nautible/nautible-app-ms-delivery-manifest
+      name: nautible-app-ms-delivery-manifest
     - url: https://github.com/nautible/nautible-app-examples-manifest
       name: nautible-app-examples-manifest
