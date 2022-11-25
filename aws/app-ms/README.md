@@ -8,7 +8,7 @@
 app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
-  │  
+  │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
   │  ├─dev
   │  │   │  main.tf
@@ -16,7 +16,7 @@ app-ms
   │  └─prod
   │      │  main.tf
   │      │  variables.tf　・・・本番用の設定値
-  │                                      
+  │
   └─modules　　・・・各種リソースのまとまりでmodule化
       ├─common    ・・・複数リソースで利用するmodule
       ├─product   ・・・商品のリソースのmodule
@@ -32,7 +32,7 @@ AWS-S3
         │   nautible-dev-app-ms.tfstate   ・・・Terraformのtfstate
 AWS-Dynamodb
   │  
-  nautible-dev-app-ms-tfstate-lock
+  └─nautible-dev-app-ms-tfstate-lock
               ・・・teffaromのtfstateのlockテーブル
 ```
 

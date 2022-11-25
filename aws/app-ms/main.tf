@@ -47,3 +47,8 @@ module "payment" {
   source = "./modules/payment"
   pjname = var.pjname
 }
+
+module "delivery" {
+  source = "./modules/delivery"
+  pjname = var.pjname
+}
