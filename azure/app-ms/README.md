@@ -20,6 +20,7 @@ app-ms
   └─modules　　・・・各種リソースのまとまりでmodule化
       ├─init      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─oidc      ・・・OpenIDConnectの利用に必要となるmodule
+      ├─common    ・・・複数リソースで利用するmodule
       ├─product   ・・・商品のリソースのmodule
       ├─order     ・・・注文のリソースのmodule
       ├─stock     ・・・在庫のリソースのmodule

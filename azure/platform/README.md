@@ -46,7 +46,6 @@ Azure-StorageAccount
 * vnet、subnetなどネットワークの基礎リソース
 * aksクラスターなどazureのマネージドなk8sリソース
 * storageaccountなど静的コンテンツなどを配信するためのリソース
-* keyvaultなどsecretsを管理するためのリソース
 * frontdoorなどトラフィック管理、静的コンテンツの配信のためリソース
 ![AzureConfig](AzureConfig.png)
 
