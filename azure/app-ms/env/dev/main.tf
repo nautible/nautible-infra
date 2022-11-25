@@ -7,8 +7,8 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "nautibledevterraform"
     storage_account_name = "nautibledevterraformsa"
-    container_name       = "nautibledevterraformcontainer"
-    key                  = "nautibledevapp.tfstate"
+    container_name       = "nautibledevappmsterraformcontainer"
+    key                  = "nautibledevappms.tfstate"
   }
 
   required_providers {
