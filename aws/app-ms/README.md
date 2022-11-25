@@ -18,9 +18,11 @@ app-ms
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種リソースのまとまりでmodule化
+      ├─common    ・・・複数リソースで利用するmodule
       ├─product   ・・・商品のリソースのmodule
       ├─order     ・・・注文のリソースのmodule
       ├─stock     ・・・在庫のリソースのmodule
+      ├─init      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─payment   ・・・決済のリソースのmodule
       └─customer  ・・・顧客のリソースのmodule
 

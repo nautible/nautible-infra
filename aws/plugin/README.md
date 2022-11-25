@@ -19,7 +19,9 @@ plugin
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
-      └─autn  ・・・認証のリソースを作成するmodule
+      ├─kong-apigateway  ・・・APIGatewayリソースのmodule
+      ├─init             ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      └─autn             ・・・認証のリソースを作成するmodule
 
 AWS-S3
   │  

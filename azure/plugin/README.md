@@ -19,7 +19,9 @@ plugin
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
-      └─autn  ・・・認証のリソースを作成するmodule
+      ├─init   ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のStorage Account作成など。
+      ├─tool   ・・・ツール類
+      └─autn   ・・・認証のリソースを作成するmodule
 
 Azure-StorageAccount
   │

@@ -18,10 +18,14 @@ app-ms
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種リソースのまとまりでmodule化
+      ├─init      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      ├─oidc      ・・・OpenIDConnectの利用に必要となるmodule
       ├─product   ・・・商品のリソースのmodule
       ├─order     ・・・注文のリソースのmodule
       ├─stock     ・・・在庫のリソースのmodule
-      └─customer  ・・・顧客のリソースのmodule
+      ├─payment   ・・・決済のリソースのmodule
+      ├─customer  ・・・顧客のリソースのmodule
+      └─tool      ・・・ツール類
 
 Azure-StorageAccount
   │
@@ -29,7 +33,7 @@ Azure-StorageAccount
         │   
         └─${pjname}terraformcontainer     ・・・Terraformのtfstateを管理するためのコンテナ
               │
-              └─{pjname}app.tfstate     ・・・Terraformのtfstate
+              └─{pjname}appms.tfstate     ・・・Terraformのtfstate
 ```
 
 ※各module配下のファイルは記載を割愛

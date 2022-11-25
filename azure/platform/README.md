@@ -26,9 +26,9 @@ platform
       ├─dns           ・・・DNS関連のリソースのmodule
       ├─frontdoor     ・・・frontdoor関連のリソースのmodule
       ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のStorage Account作成など。
-      ├─keyvault      ・・・keyvault関連のリソースのmodule
-      ├─staticweb     ・・staticweb関連のリソースのmodule
-      └─vnet          ・・・vnet関連のリソースのmodule
+      ├─staticweb     ・・・staticweb関連のリソースのmodule
+      ├─vnet          ・・・vnet関連のリソースのmodule
+      └─tool          ・・・ツール類
 
 Azure-StorageAccount
   │

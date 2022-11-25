@@ -23,7 +23,9 @@ platform
       ├─cloudfront    ・・・cloudfront関連のリソースのmodule
       ├─eks           ・・・eks関連のリソースのmodule
       ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      ├─oidc          ・・・OpenIDConnectの利用に必要となるmodule
       ├─route53       ・・・route53関連のリソースのmodule
+      ├─tool          ・・・ツール類
       └─vpc           ・・・vpc関連のリソースのmodule
 
 AWS-S3
