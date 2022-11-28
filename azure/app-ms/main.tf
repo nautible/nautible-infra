@@ -78,11 +78,19 @@ module "product" {
   depends_on = [module.common]
 }
 
+module "delivery" {
+  source                           = "./modules/delivery"
+  pjname                           = var.pjname
+  location                         = var.location
+
+  depends_on                       = [module.common]
+}
+
 module "oidc" {
   source                                     = "./modules/oidc"
   pjname                                     = var.pjname
   oidc_github_organization                   = var.oidc.github_organization
-  static_web_deploy_storage_account_id       = var.oidc.static_web_deploy.storage_account_id 
+  static_web_deploy_storage_account_id       = var.oidc.static_web_deploy.storage_account_id
   static_web_deploy_github_repo_name         = var.oidc.static_web_deploy.github_repo.name
   static_web_deploy_github_repo_branches     = var.oidc.static_web_deploy.github_repo.branches
   static_web_deploy_github_repo_environments = var.oidc.static_web_deploy.github_repo.environments
