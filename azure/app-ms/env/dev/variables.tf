@@ -148,6 +148,11 @@ variable "oidc" {
           name = "nautible-app-ms-delivery"
           branches = []
           environments = ["develop"]
+        },
+        {
+          name = "nautible-app-examples"
+          branches = []
+          environments = ["develop"]
         }
       ]
     }
