@@ -69,3 +69,22 @@ module "load_balancer_controller_irsa_role" {
     Name = "${var.cluster_name}-AmazonEKSLoadBalancerControllerRole"
   }
 }
+
+module "ebs_csi_driver_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+
+  role_name             = "${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
+  attach_ebs_csi_policy = true
+  policy_name_prefix    = "${var.cluster_name}-"
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
+  }
+}
