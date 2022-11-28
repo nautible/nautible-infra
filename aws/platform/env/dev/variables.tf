@@ -44,9 +44,10 @@ variable "eks" {
       endpoint_public_access       = bool
       endpoint_public_access_cidrs = list(string)
       addons = object({
-        coredns_version    = string
-        vpc_cni_version    = string
-        kube_proxy_version = string
+        coredns_version        = string
+        vpc_cni_version        = string
+        kube_proxy_version     = string
+        ebs_csi_driver_version = string
       })
     })
     fargate_selectors = list(object({
@@ -88,6 +89,8 @@ variable "eks" {
           vpc_cni_version = "v1.11.4-eksbuild.1"
           # kube-proxy version
           kube_proxy_version = "v1.22.11-eksbuild.2"
+          # aws-ebs-csi-driver
+          ebs_csi_driver_version = "v1.13.0-eksbuild.2"
         }
       }
       # fargate namespaces
@@ -151,7 +154,7 @@ variable "oidc" {
     thumbprint_list     = list(string)
   })
   default = {
-    oidc_provider_arn    = ""
+    oidc_provider_arn   = ""
     url                 = "https://token.actions.githubusercontent.com"
     github_organization = "nautible"
     client_id_list      = ["sts.amazonaws.com"]
