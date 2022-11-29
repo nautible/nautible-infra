@@ -8,7 +8,6 @@ GithubActionsはGithubを利用していれば特に導入などはなく利用�
 
 Github画面右上のユーザーアイコン→Settings→Developer SettingからPersonalAccessTokenを作成する。（権限はrepoを与えておく）
 
-
 ## 環境変数
 
 Githubリポジトリ（もしくはOrgnization）のシークレットに以下の定義を登録
@@ -42,7 +41,7 @@ on:
 
 |Actions|用途|備考|
 |:--|:--|:--|
-|actions/checkout@v2|Githubリポジトリのチェックアウト||
+|actions/checkout@v3|Githubリポジトリのチェックアウト||
 |actions/setup-java@v1|Javaの導入|Javaプロジェクトのみで必要|
 |actions/cache@v2|キャッシュ設定|Javaプロジェクトのみ使用（Mavenのキャッシュ）|
 |aws-actions/configure-aws-credentials@v1|AWS認証|イメージのプッシュ先がAWSの場合のみ必要|
@@ -77,9 +76,9 @@ on:
 
 ```yaml
     - name: Checkout repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Checkout manifest repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: nautible/nautible-app-ms-customer-manifest
         path: nautible-app-ms-customer-manifest
