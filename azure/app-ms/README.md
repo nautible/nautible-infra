@@ -8,7 +8,7 @@
 app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
-  │  
+  │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
   │  ├─dev
   │  │   │  main.tf
@@ -16,7 +16,7 @@ app-ms
   │  └─prod
   │      │  main.tf
   │      │  variables.tf　・・・本番用の設定値
-  │                                      
+  │
   └─modules　　・・・各種リソースのまとまりでmodule化
       ├─init      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─oidc      ・・・OpenIDConnectの利用に必要となるmodule
@@ -26,12 +26,13 @@ app-ms
       ├─stock     ・・・在庫のリソースのmodule
       ├─payment   ・・・決済のリソースのmodule
       ├─customer  ・・・顧客のリソースのmodule
+      ├─delivery  ・・・出荷のリソースのmodule
       └─tool      ・・・ツール類
 
 Azure-StorageAccount
   │
   └─${pjname}terraformsa          ・・・Terraformを管理するためのstorageaccount。
-        │   
+        │
         └─${pjname}terraformcontainer     ・・・Terraformのtfstateを管理するためのコンテナ
               │
               └─{pjname}appms.tfstate     ・・・Terraformのtfstate
