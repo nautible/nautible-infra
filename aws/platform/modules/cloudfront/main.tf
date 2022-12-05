@@ -55,6 +55,10 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
         forward = "none"
       }
     }
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = "arn:aws:cloudfront::324837360224:function/ogis-ip-protect"
+    }
     viewer_protocol_policy = "redirect-to-https"
   }
 
@@ -64,7 +68,10 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
     path_pattern           = var.service_api_path_pattern
     target_origin_id       = "aws-load-balancer-controller"
     viewer_protocol_policy = "redirect-to-https"
-
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = "arn:aws:cloudfront::324837360224:function/ogis-ip-protect"
+    }
     cache_policy_id          = data.aws_cloudfront_cache_policy.cache_policy_caching_disabled.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.request_policy_all_viewer.id
   }
@@ -81,6 +88,12 @@ resource "aws_cloudfront_distribution" "cloudfront_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
+  }
+    lifecycle {
+    ignore_changes = [
+      "aliases",
+      "viewer_certificate"
+    ]
   }
 }
 # managed policy CachingDisabled

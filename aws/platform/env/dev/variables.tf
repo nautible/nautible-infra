@@ -51,6 +51,7 @@ variable "eks" {
         coredns_version    = string
         vpc_cni_version    = string
         kube_proxy_version = string
+        ebs_csi_driver_version = string
       })
     })
     fargate_selectors = list(object({
@@ -71,109 +72,111 @@ variable "eks" {
   }))
 
   default = [
-    {
-      # cluster
-      cluster = {
-        # name
-        # 通常のnautible設定
-        #name = "nautible-dev-cluster"
-        name = "nautible-dev-cluster-v1_22"
-        # version
-        version = "1.22"
-        # endpoint private access
-        endpoint_private_access = true
-        # endpoint public access
-        endpoint_public_access = true
-        # endpoint public access cidrs
-        endpoint_public_access_cidrs = ["0.0.0.0/0"]
-        # addons
-        addons = {
-          # coredns version
-          coredns_version = "v1.8.7-eksbuild.1"
-          # vpc-cni version
-          vpc_cni_version = "v1.11.0-eksbuild.1"
-          # kube-proxy version
-          kube_proxy_version = "v1.22.6-eksbuild.1"
-        }
-      }
-      # fargate namespaces
-      fargate_selectors = [
-        {
-          namespace = "nautible-app-ms"
-          labels = {
-            nodetype = "fargate"
+    # {
+    #   # cluster
+    #   cluster = {
+    #     # name
+    #     # 通常のnautible設定
+    #     #name = "nautible-dev-cluster"
+    #     name = "nautible-dev-cluster-v1_22"
+    #     # version
+    #     version = "1.22"
+    #     # endpoint private access
+    #     endpoint_private_access = true
+    #     # endpoint public access
+    #     endpoint_public_access = true
+    #     # endpoint public access cidrs
+    #     endpoint_public_access_cidrs = ["0.0.0.0/0"]
+    #     # addons
+    #     addons = {
+    #       # coredns version
+    #       coredns_version = "v1.8.7-eksbuild.1"
+    #       # vpc-cni version
+    #       vpc_cni_version = "v1.11.0-eksbuild.1"
+    #       # kube-proxy version
+    #       kube_proxy_version = "v1.22.6-eksbuild.1"
+    #     }
+    #   }
+    #   # fargate namespaces
+    #   fargate_selectors = [
+    #     {
+    #       namespace = "nautible-app-ms"
+    #       labels = {
+    #         nodetype = "fargate"
+    #       }
+    #     }
+    #   ]
+    #   # nodegroup
+    #   node_group = {
+    #     # desired size
+    #     desired_size = 3
+    #     # max size
+    #     max_size = 5
+    #     # min size
+    #     min_size = 3
+    #     # instance type
+    #     instance_type = "t2.medium"
+    #     # ami type
+    #     ami_type = "AL2_x86_64"
+    #     # disk size
+    #     disk_size = 16
+    #   }
+    #   # AWS LoadBalancerControlelr security group cloudfront prefix list id
+    #   # 通常のnautible設定
+    #   #albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+    #   albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
+      # },
+      {
+        # cluster
+        cluster = {
+          # name
+          name = "nautible-dev-cluster-v1_23"
+          # version
+          version = "1.23"
+          # endpoint private access
+          endpoint_private_access = true
+          # endpoint public access
+          endpoint_public_access = true
+          # endpoint public access cidrs
+          endpoint_public_access_cidrs = ["158.201.127.1/32"]
+          # addons
+          addons = {
+            # coredns version
+            coredns_version = "v1.8.7-eksbuild.2"
+            # vpc-cni version
+            vpc_cni_version = "v1.11.4-eksbuild.1"
+            # kube-proxy version
+            kube_proxy_version = "v1.23.8-eksbuild.2"
+            # aws-ebs-csi-driver
+            ebs_csi_driver_version = "v1.13.0-eksbuild.2"
           }
         }
-      ]
-      # nodegroup
-      node_group = {
-        # desired size
-        desired_size = 3
-        # max size
-        max_size = 5
-        # min size
-        min_size = 3
-        # instance type
-        instance_type = "t2.medium"
-        # ami type
-        ami_type = "AL2_x86_64"
-        # disk size
-        disk_size = 16
-      }
-      # AWS LoadBalancerControlelr security group cloudfront prefix list id
-      # 通常のnautible設定
-      #albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
-      albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
-      # },
-      # {
-      #   # cluster
-      #   cluster = {
-      #     # name
-      #     name = "nautible-dev-cluster-v1_23"
-      #     # version
-      #     version = "1.23"
-      #     # endpoint private access
-      #     endpoint_private_access = true
-      #     # endpoint public access
-      #     endpoint_public_access = true
-      #     # endpoint public access cidrs
-      #     endpoint_public_access_cidrs = ["0.0.0.0/0"]
-      #     # addons
-      #     addons = {
-      #       # coredns version
-      #       coredns_version = "v1.8.7-eksbuild.2"
-      #       # vpc-cni version
-      #       vpc_cni_version = "v1.11.4-eksbuild.1"
-      #       # kube-proxy version
-      #       kube_proxy_version = "v1.23.8-eksbuild.2"
-      #     }
-      #   }
-      #   # fargate namespaces
-      #   fargate_selectors = [
-      #     {
-      #       namespace = "nautible-app-ms"
-      #       labels = {
-      #         nodetype = "fargate"
-      #       }
-      #     }
-      #   ]
-      #   # nodegroup
-      #   node_group = {
-      #     # desired size
-      #     desired_size = 3
-      #     # max size
-      #     max_size = 5
-      #     # min size
-      #     min_size = 3
-      #     # instance type
-      #     instance_type = "t2.medium"
-      #     # ami type
-      #     ami_type = "AL2_x86_64"
-      #     # disk size
-      #     disk_size = 16
-      #   }
-      #   # AWS LoadBalancerControlelr security group cloudfront prefix list id
-      #   albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
+        # fargate namespaces
+        fargate_selectors = [
+          {
+            namespace = "nautible-app-ms"
+            labels = {
+              nodetype = "fargate"
+            }
+          }
+        ]
+        # nodegroup
+        node_group = {
+          # desired size
+          desired_size = 5
+          # max size
+          max_size = 6
+          # min size
+          min_size = 5
+          # instance type
+          instance_type = "t2.medium"
+          # ami type
+          ami_type = "AL2_x86_64"
+          # disk size
+          disk_size = 16
+        }
+        # AWS LoadBalancerControlelr security group cloudfront prefix list id
+        albc_security_group_cloudfront_prefix_list_id = "pl-3b927c52"
     }
   ]
 }
@@ -190,8 +193,8 @@ variable "cloudfront" {
     # AWS LoadBalancer Controller dns name
     # AWS LoadBalancer Controllerを作成後にdns名を指定してください。cloudfrontを作成し、s3とAWS LoadBalancer Controllerへルーティングします。 
     # AWS LoadBalancer Controller作成前は、ブランクを指定してください（cloudfrontの作成はスキップ）。
-    # cloudfront_origin_dns_name = "k8s-nautiblealbingres-1234567890-0123456789.ap-northeast-1.elb.amazonaws.com"
-    origin_dns_name = ""
+    origin_dns_name = "ca-202211-02.nautible.com"
+    #origin_dns_name = ""
     # service api path pattern for cloudfront routing to istio lb
     service_api_path_pattern = "api/*"
   }

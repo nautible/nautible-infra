@@ -31,6 +31,12 @@ module "eks" {
       resolve_conflicts = "OVERWRITE"
       addon_version     = var.cluster_addons_vpc_cni_version
     }
+    aws-ebs-csi-driver = {
+      name                     = "aws-ebs-csi-driver"
+      resolve_conflicts        = "OVERWRITE"
+      service_account_role_arn = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
+      addon_version            = var.cluster_addons_ebs_csi_driver_version
+    }
   }
 
   eks_managed_node_group_defaults = {
