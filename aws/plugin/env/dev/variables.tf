@@ -69,3 +69,13 @@ variable "kong_apigateway" {
     }
   }
 }
+
+variable "backup" {
+  description = "バックアップ設定"
+  type = object({
+    s3_bucket_name = string
+  })
+  default = {
+    s3_bucket_name = "nautible-plugin-dev-velero-backup"
+  }
+}

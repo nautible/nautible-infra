@@ -19,3 +19,9 @@ module "kong-apigateway" {
   count           = try(var.kong_apigateway, "") != "" ? 1 : 0
   kong_apigateway = var.kong_apigateway
 }
+
+module "backup" {
+  source                              = "./modules/backup"
+  backup_bucket_name                  = var.backup_bucket_name
+  eks_cluster_name_node_role_name_map = zipmap(values(var.eks).*.cluster.name, values(var.eks).*.node.role_name)
+}
