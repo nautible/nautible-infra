@@ -38,7 +38,7 @@ module "nautible_plugin" {
   eks                = local.target_eks
   auth               = var.auth
   kong_apigateway    = var.kong_apigateway
-  backup_bucket_name = var.backup.s3_bucket_name
+  backup             = var.backup
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {

@@ -1,1 +1,1 @@
-variable "kong_apigateway" {}
+variable "message_retention_seconds" {}
