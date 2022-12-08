@@ -1,6 +1,6 @@
 module "auth" {
   source                        = "./modules/auth"
-  count                         = try(var.auth.postgres.engine_version, "") != "" ? 1 : 0
+  count                         = try(var.auth, "") != "" ? 1 : 0
   pjname                        = var.pjname
   vpc_id                        = var.vpc.vpc_id
   region                        = var.region
@@ -15,7 +15,14 @@ module "auth" {
 }
 
 module "kong-apigateway" {
-  source          = "./modules/kong-apigateway"
-  count           = try(var.kong_apigateway, "") != "" ? 1 : 0
-  kong_apigateway = var.kong_apigateway
+  source                    = "./modules/kong-apigateway"
+  count                     = try(var.kong_apigateway, "") != "" ? 1 : 0
+  message_retention_seconds = var.kong_apigateway.sqs.message_retention_seconds
+}
+
+module "backup" {
+  source                              = "./modules/backup"
+  count                               = try(var.backup, "") != "" ? 1 : 0
+  backup_bucket_name                  = var.backup.backup_bucket_name
+  eks_cluster_name_node_role_name_map = zipmap(values(var.eks).*.cluster.name, values(var.eks).*.node.role_name)
 }

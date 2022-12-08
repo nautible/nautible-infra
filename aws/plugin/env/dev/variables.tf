@@ -39,6 +39,8 @@ variable "eks" {
 # authのvariables。authのpluginを利用する場合は値を設定する
 variable "auth" {
   description = "auth設定"
+  # type    = string # authを利用しない場合。
+  # default = ""     # auth pluginを利用しない場合。
   type = object({
     postgres = object({
       engine_version       = string
@@ -48,7 +50,6 @@ variable "auth" {
       allocated_storage    = number
     })
   })
-  # default = "" # auth pluginを利用しない場合。
   default = {
     # postgresql variables
     postgres = {
@@ -62,10 +63,28 @@ variable "auth" {
 }
 
 variable "kong_apigateway" {
-  # default = "" # kong-apigateway pluginを利用しない場合。
+  # type    = string # kong-apigatewayを利用しない場合。
+  # default = ""     # kong-apigateway pluginを利用しない場合。
+  type = object({
+    sqs = object({
+      message_retention_seconds = number
+    })
+  })
   default = {
     sqs = {
       message_retention_seconds = 60
     }
+  }
+}
+
+variable "backup" {
+  description = "バックアップ設定"
+  # type    = string # backup pluginを利用しない場合。
+  # default = ""     # backup pluginを利用しない場合。
+  type = object({
+    backup_bucket_name = string
+  })
+  default = {
+    backup_bucket_name = "nautible-plugin-dev-velero-backup"
   }
 }

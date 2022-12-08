@@ -35,9 +35,10 @@ module "nautible_plugin" {
     vpc_id          = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
     private_subnets = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
   }
-  eks             = local.target_eks
-  auth            = var.auth
-  kong_apigateway = var.kong_apigateway
+  eks                = local.target_eks
+  auth               = var.auth
+  kong_apigateway    = var.kong_apigateway
+  backup             = var.backup
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
