@@ -3,7 +3,7 @@
 resource "aws_s3_bucket" "static_web_bucket" {
   bucket = "${var.pjname}-static-web-${var.region}"
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
