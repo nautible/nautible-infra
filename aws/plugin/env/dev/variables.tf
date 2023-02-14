@@ -76,15 +76,3 @@ variable "kong_apigateway" {
     }
   }
 }
-
-variable "backup" {
-  description = "バックアップ設定"
-  # type    = string # backup pluginを利用しない場合。
-  # default = ""     # backup pluginを利用しない場合。
-  type = object({
-    backup_bucket_name = string
-  })
-  default = {
-    backup_bucket_name = "nautible-plugin-dev-velero-backup"
-  }
-}
