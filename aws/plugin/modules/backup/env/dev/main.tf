@@ -24,9 +24,9 @@ terraform {
 data "terraform_remote_state" "nautible_aws_platform" {
   backend = "s3"
   config = {
-    bucket = var.platform_tfstate.bucket
-    region = var.platform_tfstate.region
-    key    = var.platform_tfstate.key
+    bucket = var.platform_bucket_name
+    region = var.region
+    key    = var.platform_tfstate_key
   }
 }
 
