@@ -1,5 +1,4 @@
 resource "aws_s3_bucket" "backup_bucket" {
-  count  = try(var.backup_bucket_create, "") != "" ? 1 : 0
   bucket = var.backup_bucket_name
   lifecycle {
     prevent_destroy = true
@@ -7,7 +6,6 @@ resource "aws_s3_bucket" "backup_bucket" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "backup_bucket_server_side_encryption" {
-  count  = try(var.backup_bucket_create, "") != "" ? 1 : 0
   bucket = aws_s3_bucket.backup_bucket.id
 
   rule {
@@ -18,7 +16,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "backup_bucket_ser
 }
 
 resource "aws_s3_bucket_versioning" "backup_bucket_versioning" {
-  count  = try(var.backup_bucket_create, "") != "" ? 1 : 0
   bucket = aws_s3_bucket.backup_bucket.id
   versioning_configuration {
     status = "Enabled"
@@ -26,7 +23,6 @@ resource "aws_s3_bucket_versioning" "backup_bucket_versioning" {
 }
 
 resource "aws_s3_bucket_public_access_block" "backup_bucket_public_access" {
-  count                   = try(var.backup_bucket_create, "") != "" ? 1 : 0
   bucket                  = aws_s3_bucket.backup_bucket.id
   block_public_acls       = true
   block_public_policy     = true
