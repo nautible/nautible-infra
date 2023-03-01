@@ -40,6 +40,7 @@ module "order" {
   aks_subnet_ids                   = var.aks.subnet_ids
   vnet_id                          = var.vnet.id
   vnet_rg_name                     = var.vnet.rg_name
+  order_redis_version              = var.order.redis.version
   order_redis_capacity             = var.order.redis.capacity
   order_redis_family               = var.order.redis.family
   order_redis_sku                  = var.order.redis.sku
@@ -79,11 +80,11 @@ module "product" {
 }
 
 module "delivery" {
-  source                           = "./modules/delivery"
-  pjname                           = var.pjname
-  location                         = var.location
+  source   = "./modules/delivery"
+  pjname   = var.pjname
+  location = var.location
 
-  depends_on                       = [module.common]
+  depends_on = [module.common]
 }
 
 module "oidc" {

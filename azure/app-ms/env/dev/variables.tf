@@ -64,6 +64,7 @@ variable "order" {
   description = "order設定"
   type = object({
     redis = object({
+      version  = number
       capacity = number
       family   = string
       sku      = string
@@ -71,6 +72,8 @@ variable "order" {
   })
   default = {
     redis = {
+      # redis(dapr_statestore) version
+      version = 6
       # redis(dapr_statestore) capacity
       capacity = 0
       # redis(dapr_statestore) family
@@ -125,33 +128,33 @@ variable "oidc" {
           environments = ["develop"]
         },
         {
-          name = "nautible-app-ms-product"
-          branches = []
+          name         = "nautible-app-ms-product"
+          branches     = []
           environments = ["develop"]
         },
         {
-          name = "nautible-app-ms-stock"
-          branches = []
+          name         = "nautible-app-ms-stock"
+          branches     = []
           environments = ["develop"]
         },
         {
-          name = "nautible-app-ms-order"
-          branches = []
+          name         = "nautible-app-ms-order"
+          branches     = []
           environments = ["develop"]
         },
         {
-          name = "nautible-app-ms-payment"
-          branches = []
+          name         = "nautible-app-ms-payment"
+          branches     = []
           environments = ["develop"]
         },
         {
-          name = "nautible-app-ms-delivery"
-          branches = []
+          name         = "nautible-app-ms-delivery"
+          branches     = []
           environments = ["develop"]
         },
         {
-          name = "nautible-app-examples"
-          branches = []
+          name         = "nautible-app-examples"
+          branches     = []
           environments = ["develop"]
         }
       ]
