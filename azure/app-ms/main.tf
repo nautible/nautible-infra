@@ -70,6 +70,7 @@ module "product" {
   aks_aci_subnet_cidr               = var.aks.subnet_cidrs[1]
   product_db_subnet_cidr            = var.product.db.subnet_cidr
   product_db_sku                    = var.product.db.sku
+  product_db_zone                   = var.product.db.zone
   vnet_name                         = var.vnet.name
   vnet_rg_name                      = var.vnet.rg_name
   vnet_id                           = var.vnet.id
