@@ -47,6 +47,7 @@ variable "product" {
     db = object({
       subnet_cidr = string
       sku         = string
+      zone        = string
     })
   })
   default = {
@@ -55,6 +56,8 @@ variable "product" {
       subnet_cidr = "192.170.0.0/16"
       # db sku
       sku = "B_Standard_B1s"
+      # zone
+      zone = "2" #2023/03/02 zone1が使えない状態になっている
     }
   }
 }
