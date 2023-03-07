@@ -5,7 +5,6 @@ data "azuread_service_principal" "key_vault" {
 
 resource "azuread_application" "app" {
   display_name = "${var.pjname}app"
-  owners       = [data.azuread_client_config.current.object_id]
   api {
   }
 
