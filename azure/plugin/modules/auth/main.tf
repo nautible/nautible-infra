@@ -96,12 +96,13 @@ resource "azurerm_postgresql_flexible_server_database" "keycloak_db" {
 }
 
 resource "azurerm_key_vault" "keyvault" {
-  name                       = "${var.pjname}auth"
-  location                   = azurerm_resource_group.keycloak_rg.location
-  resource_group_name        = azurerm_resource_group.keycloak_rg.name
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days = 30
-  purge_protection_enabled   = false
+  name                          = "${var.pjname}auth"
+  location                      = azurerm_resource_group.keycloak_rg.location
+  resource_group_name           = azurerm_resource_group.keycloak_rg.name
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days    = 30
+  purge_protection_enabled      = false
+  public_network_access_enabled = false
 
   sku_name = "standard"
   tags     = {}
