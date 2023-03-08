@@ -9,7 +9,6 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name                            = var.vnet_rg_name
   virtual_network_name                           = var.vnet_name
   address_prefixes                               = [var.subnet_cidrs[count.index]]
-  service_endpoints                              = ["Microsoft.KeyVault"]
   enforce_private_link_endpoint_network_policies = true
 
   dynamic "delegation" {
