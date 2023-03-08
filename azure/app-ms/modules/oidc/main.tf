@@ -2,7 +2,6 @@ data "azuread_client_config" "current" {}
 
 resource "azuread_application" "githubactions_static_web_deploy_app" {
   display_name = "${var.pjname}-githubactions-static-web-deploy"
-  owners       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal" "githubactions_static_web_deploy_app_sp" {
@@ -36,7 +35,6 @@ resource "azuread_application_federated_identity_credential" "githubactions_stat
 
 resource "azuread_application" "githubactions_ecr_access_app" {
   display_name = "${var.pjname}-githubactions-ecr-access"
-  owners       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal" "githubactions_ecr_access_app_sp" {
