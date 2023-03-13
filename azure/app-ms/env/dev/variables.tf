@@ -141,6 +141,11 @@ variable "oidc" {
           environments = ["develop"]
         },
         {
+          name         = "nautible-app-ms-stock-batch"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
           name         = "nautible-app-ms-order"
           branches     = []
           environments = ["develop"]

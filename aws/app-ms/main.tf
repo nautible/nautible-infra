@@ -28,6 +28,11 @@ module "stock" {
   pjname = var.pjname
 }
 
+module "stockbatch" {
+  source = "./modules/stockbatch"
+  pjname = var.pjname
+}
+
 module "order" {
   source                                 = "./modules/order"
   pjname                                 = var.pjname

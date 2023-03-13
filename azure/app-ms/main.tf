@@ -33,6 +33,13 @@ module "stock" {
   depends_on                       = [module.common]
 }
 
+module "stockbatch" {
+  source                           = "./modules/stockbatch"
+  pjname                           = var.pjname
+  location                         = var.location
+  depends_on                       = [module.common]
+}
+
 module "order" {
   source                           = "./modules/order"
   pjname                           = var.pjname
