@@ -1,0 +1,1 @@
+# Currently, there are no resources to build on azure, so this file is empty.

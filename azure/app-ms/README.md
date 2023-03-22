@@ -18,16 +18,17 @@ app-ms
   │      │  variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
-      ├─init      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
-      ├─oidc      ・・・OpenIDConnectの利用に必要となるmodule
-      ├─common    ・・・複数リソースで利用するmodule
-      ├─product   ・・・商品のリソースのmodule
-      ├─order     ・・・注文のリソースのmodule
-      ├─stock     ・・・在庫のリソースのmodule
-      ├─payment   ・・・決済のリソースのmodule
-      ├─customer  ・・・顧客のリソースのmodule
-      ├─delivery  ・・・出荷のリソースのmodule
-      └─tool      ・・・ツール類
+      ├─init       ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      ├─oidc       ・・・OpenIDConnectの利用に必要となるmodule
+      ├─common     ・・・複数リソースで利用するmodule
+      ├─product    ・・・商品のリソースのmodule
+      ├─order      ・・・注文のリソースのmodule
+      ├─stock      ・・・在庫のリソースのmodule
+      ├─stockbatch ・・・在庫のリソースのmodule
+      ├─payment    ・・・決済のリソースのmodule
+      ├─customer   ・・・顧客のリソースのmodule
+      ├─delivery   ・・・出荷のリソースのmodule
+      └─tool       ・・・ツール類
 
 Azure-StorageAccount
   │
