@@ -10,7 +10,7 @@ terraform {
     key     = "nautible-dev-backup.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-backup-tfstate-lock"
+    dynamodb_table = "nautible-dev-plugin-tfstate-lock"
   }
 
   required_providers {
