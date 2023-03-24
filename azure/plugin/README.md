@@ -1,6 +1,6 @@
 # plugin
 
-Kubernetesへエコシステムなどの導入に必要なAWSリソースをterraformにて作成します。
+Kubernetesへエコシステムなどの導入に必要なAzureリソースをterraformにて作成します。
 ディレクトリごとに1つのプラグインとして導入に必要なリソースを定義し、plugin/env/dev/variables.tfの定義内容によって各プラグインのリソースの作成可否を制御します。
 
 ## Terraform構成
@@ -20,6 +20,7 @@ plugin
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
       ├─init   ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のStorage Account作成など。
+      ├─backup ・・・バックアップ保管用ストレージリソースを作成するmodule。※ 環境削除時もバックアップは残るように独立したプロジェクトで作成。
       ├─tool   ・・・ツール類
       └─autn   ・・・認証のリソースを作成するmodule
 
@@ -29,7 +30,8 @@ Azure-StorageAccount
         │   
         └─${pjname}terraformcontainer     ・・・Terraformのtfstateを管理するためのコンテナ
               │
-              └─{pjname}plugin.tfstate     ・・・Terraformのtfstate
+              ├─{pjname}plugin.tfstate     ・・・Terraformのtfstate
+              └─{pjname}backup.tfstate     ・・・バックアッププロジェクト用Terraformのtfstate
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -40,17 +42,16 @@ Azure-StorageAccount
 
 ### 環境構築の前に
 
-* AWS環境の環境構築のみサポートしています
+* Azure環境の環境構築のみサポートしています
 * Terraformを利用して環境構築を行います
-* TerraformのAWS認証は環境変数「AWS_PROFILE」でプロファイルを利用して実行することを想定しています（Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です）
+* TerraformのAzure認証は事前にaz loginしている事を前提としています（Terraformの定義ファイルを編集する事で他の方法でも認証可能ですが、SCMへのコミットミスなどに注意が必要です）
 
 ### 環境構築実行環境事前準備
 
 * sh実行可能環境であること
 * [Terraform(cli)のインストール](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-* AWSアカウントの作成
-* [AWS cliのインストール](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-install.html)
-* AWS接続要の[cliプロファイル作成](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-configure-profiles.html)
+* Azureアカウントの作成
+* [Azure cliのインストール](https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli)
 
 ### 環境構築手順
 
@@ -68,3 +69,8 @@ Azure-StorageAccount
 
 ※prodの場合はplugin/env/devをprodに読み替えてください。
 
+## バックアップ環境構築手順
+
+terraform destroyによる環境破棄の際にバックアップデータが消えないようにbackupモジュールのみ独立した環境としています。
+
+バックアップ環境の構築手順は[こちら](./modules/backup/README.md)を参照してください。

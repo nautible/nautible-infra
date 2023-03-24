@@ -2,7 +2,11 @@
 
 ## Azureリソース作成
 
-### 本ディレクトリ上でTerraformを実行し、以下のものを作成
+### バックアップ用リソース
+
+バックアップデータを保管するストレージアカウントおよびコンテナ―を作成します。また、VeleroからAzureリソースにアクセスできるようにロールの作成も行います。
+
+作成するリソースは以下の通りです。
 
 - リソースグループ
 - ストレージアカウント
@@ -11,11 +15,12 @@
   - サービスプリンシパル
   - ロール
 
-```bash
-terraform init
-terraform plan
-terraform apply
-```
+### バックアップリソース構築
+
+- plugin/modules/backup/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+- plugin/modules/backup/env/devディレクトリで「terraform init」の実行
+- plugin/modules/backup/env/devディレクトリで「terraform plan」の実行と内容の確認
+- plugin/modules/backup/env/devディレクトリで「terraform apply」の実行
 
 ### AzurePortal上でパスワードを作成
 
@@ -57,9 +62,9 @@ velero install \
     --image velero/velero:v1.10.0 \
     --plugins velero/velero-plugin-for-microsoft-azure:v1.6.0 \
     --secret-file ~/.azure/credentials-velero \
-    --bucket velero \
-    --backup-location-config resourceGroup=nautibledevbackup,storageAccount=nautibledevbackup \
-    --snapshot-location-config apiTimeout=5m,resourceGroup=nautibledevbackup,subscriptionId=<サブスクリプションID>
+    --bucket <コンテナ名> \
+    --backup-location-config resourceGroup=<リソースグループ名>,storageAccount=<ストレージアカウント名> \
+    --snapshot-location-config apiTimeout=5m,resourceGroup=<リソースグループ名>,subscriptionId=<サブスクリプションID>
 ```
 
 ※ --imageおよび--pluginsに指定するバージョンは最新パッチのバージョンにしてください

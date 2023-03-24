@@ -20,6 +20,7 @@ plugin
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
       ├─kong-apigateway  ・・・APIGatewayリソースのmodule
+      ├─backup           ・・・バックアップ保管用ストレージリソースを作成するmodule。環境削除時もバックアップは残るように独立したプロジェクトで作成。
       ├─init             ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       └─autn             ・・・認証のリソースを作成するmodule
 
@@ -67,3 +68,9 @@ AWS-Dynamodb
   * plugin/env/devディレクトリで「terraform apply」の実行
 
 ※prodの場合はplugin/env/devをprodに読み替えてください。
+
+## バックアップ環境構築手順
+
+terraform destroyによる環境破棄の際にバックアップデータが消えないようにbackupモジュールのみ独立した環境としています。
+
+バックアップ環境の構築手順は[こちら](./modules/backup/README.md)を参照してください。
