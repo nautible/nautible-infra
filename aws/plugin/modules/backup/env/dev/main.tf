@@ -7,10 +7,10 @@ terraform {
   backend "s3" {
     bucket  = "nautible-dev-plugin-tf-ap-northeast-1"
     region  = "ap-northeast-1"
-    key     = "nautible-dev-plugin.tfstate"
+    key     = "nautible-dev-backup.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-plugin-tfstate-lock"
+    dynamodb_table = "nautible-dev-backup-tfstate-lock"
   }
 
   required_providers {
