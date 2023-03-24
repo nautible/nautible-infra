@@ -77,6 +77,15 @@ velero backup create <バックアップ名> --ttl 7200h --wait
 
 ※ TTLを設定しない場合、デフォルト720hとなる
 
+### バックアップ履歴の確認
+
+```bash
+velero backup get
+
+NAME              STATUS      ERRORS   WARNINGS   CREATED                         EXPIRES   STORAGE LOCATION   SELECTOR
+backup-20230324   Completed   0        2          2023-03-24 15:06:25 +0900 JST   299d      default            <none>
+```
+
 ### リストア実行
 
 ```bash
