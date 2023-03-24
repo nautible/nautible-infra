@@ -21,6 +21,14 @@ terraform {
       source  = "hashicorp/azuread"
       version = "~> 2.24.0"
     }
-
   }
+}
+
+module "nautible_backup" {
+  source                        = "../../"
+  pjname                        = var.pjname
+  location                      = var.location
+  backup_resource_group_name    = var.backup_resource_group_name
+  backup_storage_account_name   = var.backup_storage_account_name
+  backup_storage_container_name = var.backup_storage_container_name
 }
