@@ -72,8 +72,10 @@ velero install \
 ### バックアップ実行（オンデマンド）
 
 ```bash
-velero backup create <バックアップ名> --wait
+velero backup create <バックアップ名> --ttl 7200h --wait
 ```
+
+※ TTLを設定しない場合、デフォルト720hとなる
 
 ### リストア実行
 
