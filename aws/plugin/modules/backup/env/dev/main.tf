@@ -37,7 +37,7 @@ locals {
 }
 
 module "backup" {
-  source = "../../"
+  source                              = "../../"
   backup_bucket_name                  = var.backup_bucket_name
   eks_cluster_name_node_role_name_map = zipmap(values(local.target_eks).*.cluster.name, values(local.target_eks).*.node.role_name)
 }
