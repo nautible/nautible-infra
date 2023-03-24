@@ -1,33 +1,4 @@
-provider "azurerm" {
-  features {} // required but empty ok
-}
-
-terraform {
-  # fix folloing value
-  backend "azurerm" {
-    resource_group_name  = "nautibledevterraform"
-    storage_account_name = "nautibledevterraformsa"
-    container_name       = "nautibledevpluginterraformcontainer"
-    key                  = "nautibledevbackup.tfstate"
-  }
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.10.0"
-    }
-
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = "~> 2.24.0"
-    }
-
-  }
-
-}
-
 data "azuread_client_config" "current" {}
-
 data "azurerm_subscription" "current" {}
 
 resource "azurerm_resource_group" "azurerm_resource_group_backup" {
