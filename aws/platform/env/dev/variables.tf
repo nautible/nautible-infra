@@ -105,13 +105,13 @@ variable "eks" {
       # nodegroup
       node_group = {
         # desired size
-        desired_size = 3
+        desired_size = 1
         # max size
-        max_size = 5
+        max_size = 1
         # min size
-        min_size = 3
+        min_size = 1
         # instance type
-        instance_type = "t2.medium"
+        instance_type = "m6a.large"
         # ami type
         ami_type = "AL2_x86_64"
         # disk size
