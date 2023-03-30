@@ -30,13 +30,6 @@ module "eks" {
       name              = "vpc-cni"
       resolve_conflicts = "OVERWRITE"
       addon_version     = var.cluster_addons_vpc_cni_version
-      configuration_values = jsonencode({
-        env = {
-          # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
-          ENABLE_PREFIX_DELEGATION = "true"
-          WARM_PREFIX_TARGET       = "1"
-        }
-      })
     }
     aws-ebs-csi-driver = {
       name                     = "aws-ebs-csi-driver"
@@ -58,7 +51,6 @@ module "eks" {
         delete_on_termination = true
       }
     ]
-  }
 
   eks_managed_node_groups = {
     "eks-default-node" = {
@@ -67,6 +59,20 @@ module "eks" {
       max_size            = var.ng_max_size
       min_size            = var.ng_min_size
       instance_types      = [var.ng_instance_type]
+
+      pre_bootstrap_user_data = <<-EOT
+        #!/bin/bash
+        set -ex
+        cat <<-EOF > /etc/profile.d/bootstrap.sh
+        export USE_MAX_PODS=false
+        export KUBELET_EXTRA_ARGS="--max-pods=110"
+        export CNI_PREFIX_DELEGATION_ENABLED=true
+        EOF
+        # Source extra environment variables in bootstrap script
+        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
+      EOT
+  }
+
     }
   }
 
