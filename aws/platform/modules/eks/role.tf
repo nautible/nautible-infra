@@ -36,7 +36,7 @@ module "cluster_autoscaler_irsa_role" {
 
   role_name                        = "${var.cluster_name}-AmazonEKSClusterAutoscalerRole"
   attach_cluster_autoscaler_policy = true
-  cluster_autoscaler_cluster_ids   = [module.eks.cluster_id]
+  cluster_autoscaler_cluster_ids   = [module.eks.cluster_name]
 
   oidc_providers = {
     ex = {
