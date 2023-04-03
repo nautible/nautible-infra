@@ -5,6 +5,7 @@ variable "vpc_cidr" {}
 variable "public_subnet_ids" {}
 variable "private_subnet_ids" {}
 variable "create_iam_resources" {}
+variable "cluster_name" {}
 variable "cluster_version" {}
 variable "ng_desired_size" {}
 variable "ng_max_size" {}
@@ -18,5 +19,6 @@ variable "cluster_endpoint_public_access_cidrs" {}
 variable "cluster_addons_coredns_version" {}
 variable "cluster_addons_vpc_cni_version" {}
 variable "cluster_addons_kube_proxy_version" {}
+variable "cluster_addons_ebs_csi_driver_version" {}
 variable "fargate_selectors" {}
 variable "albc_security_group_cloudfront_prefix_list_id" {}

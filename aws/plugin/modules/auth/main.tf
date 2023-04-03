@@ -20,11 +20,12 @@ resource "aws_security_group" "keycloak_db_sg" {
 }
 
 resource "aws_security_group_rule" "keycloak_db_inbound" {
+  for_each                 = toset(var.eks_node_security_group_ids)
   type                     = "ingress"
   from_port                = 5432
   to_port                  = 5432
   protocol                 = "tcp"
-  source_security_group_id = var.eks_node_security_group_id
+  source_security_group_id = each.value
   security_group_id        = aws_security_group.keycloak_db_sg.id
 }
 
@@ -63,7 +64,7 @@ resource "aws_iam_role" "auth_secret_access_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${var.eks_oidc_provider_arn}"
+          Federated = var.eks_oidc_provider_arns
         }
       }
     ]

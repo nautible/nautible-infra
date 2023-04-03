@@ -2,7 +2,7 @@ variable "pjname" {}
 variable "platform_pjname" {}
 variable "vpc_id" {}
 variable "private_subnets" {}
-variable "eks_node_security_group_id" {}
+variable "eks_node_security_group_ids" {}
 variable "order_elasticache_node_type" {}
 variable "order_elasticache_parameter_group_name" {}
 variable "order_elasticache_engine_version" {}

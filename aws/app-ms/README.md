@@ -8,7 +8,7 @@
 app-ms
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
-  │  
+  │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
   │  ├─dev
   │  │   │  main.tf
@@ -16,20 +16,24 @@ app-ms
   │  └─prod
   │      │  main.tf
   │      │  variables.tf　・・・本番用の設定値
-  │                                      
+  │
   └─modules　　・・・各種リソースのまとまりでmodule化
-      ├─product   ・・・商品のリソースのmodule
-      ├─order     ・・・注文のリソースのmodule
-      ├─stock     ・・・在庫のリソースのmodule
-      └─customer  ・・・顧客のリソースのmodule
+      ├─common     ・・・複数リソースで利用するmodule
+      ├─product    ・・・商品のリソースのmodule
+      ├─order      ・・・注文のリソースのmodule
+      ├─stock      ・・・在庫のリソースのmodule
+      ├─stockbatch ・・・在庫(バッチ)のリソースのmodule
+      ├─init       ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      ├─payment    ・・・決済のリソースのmodule
+      └─customer   ・・・顧客のリソースのmodule
 
 AWS-S3
   │  
-  └─nautible-app-terraform              ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   nautible-app-dev.tfstate    ・・・Terraformのtfstate
+  └─nautible-dev-app-ms-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+        │   nautible-dev-app-ms.tfstate   ・・・Terraformのtfstate
 AWS-Dynamodb
   │  
-  └─nautible-nautible-app-dev-terraform-state-lock
+  └─nautible-dev-app-ms-tfstate-lock
               ・・・teffaromのtfstateのlockテーブル
 ```
 
@@ -55,7 +59,7 @@ AWS-Dynamodb
 
 ### 環境構築手順
 
-* AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
+* AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * app-ms/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * app-ms/modules/initディレクトリで「terraform init」の実行
@@ -68,4 +72,3 @@ AWS-Dynamodb
   * app-ms/env/devディレクトリで「terraform apply」の実行
 
 ※prodの場合はapp-ms/env/devをprodに読み替えてください。
-

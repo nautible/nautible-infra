@@ -47,6 +47,7 @@ variable "product" {
     db = object({
       subnet_cidr = string
       sku         = string
+      zone        = string
     })
   })
   default = {
@@ -55,6 +56,8 @@ variable "product" {
       subnet_cidr = "192.170.0.0/16"
       # db sku
       sku = "B_Standard_B1s"
+      # zone
+      zone = "2" #2023/03/02 zone1が使えない状態になっている
     }
   }
 }
@@ -64,6 +67,7 @@ variable "order" {
   description = "order設定"
   type = object({
     redis = object({
+      version  = number
       capacity = number
       family   = string
       sku      = string
@@ -71,12 +75,97 @@ variable "order" {
   })
   default = {
     redis = {
+      # redis(dapr_statestore) version
+      version = 6
       # redis(dapr_statestore) capacity
       capacity = 0
       # redis(dapr_statestore) family
       family = "C"
       # redis(dapr_statestore) sku
       sku = "Basic"
+    }
+  }
+}
+
+variable "oidc" {
+  description = "OIDC設定"
+  type = object({
+    github_organization = string
+    static_web_deploy = object({
+      github_repo = object({
+        name         = string
+        branches     = list(string)
+        environments = list(string)
+      })
+    })
+    acr_access = object({
+      git_repos = list(object({
+        name         = string
+        branches     = list(string)
+        environments = list(string)
+      }))
+    })
+  })
+  default = {
+    github_organization = "nautible"
+    # 静的コンテンツデプロイ
+    static_web_deploy = {
+      # 権限を付与するgit情報
+      github_repo = {
+        name = "nautible-app-ms-front"
+        # branchに権限付与する場合はbranchを指定する。ワイルドカード利用不可。
+        branches = []
+        # github environemntに権限付与する場合はenvironmentを指定する
+        environments = ["develop"]
+      }
+    }
+    # acrアクセス
+    acr_access = {
+      # 権限を付与するgit情報
+      git_repos = [
+        {
+          name = "nautible-app-ms-customer"
+          # branchに権限付与する場合はbranchを指定する。ワイルドカード利用不可。
+          branches = []
+          # github environemntに権限付与する場合はenvironmentを指定する
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-product"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-stock"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-stock-batch"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-order"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-payment"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-ms-delivery"
+          branches     = []
+          environments = ["develop"]
+        },
+        {
+          name         = "nautible-app-examples"
+          branches     = []
+          environments = ["develop"]
+        }
+      ]
     }
   }
 }

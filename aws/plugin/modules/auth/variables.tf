@@ -2,8 +2,8 @@ variable "pjname" {}
 variable "vpc_id" {}
 variable "region" {}
 variable "private_subnets" {}
-variable "eks_node_security_group_id" {}
-variable "eks_oidc_provider_arn" {}
+variable "eks_node_security_group_ids" {}
+variable "eks_oidc_provider_arns" {}
 variable "postgres_engine_version" {}
 variable "postgres_instance_class" {}
 variable "postgres_parameter_group_name" {}

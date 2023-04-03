@@ -70,7 +70,7 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
   delegated_subnet_id    = azurerm_subnet.product_db_subnet.id
   private_dns_zone_id    = azurerm_private_dns_zone.product_pdz.id
   sku_name               = var.product_db_sku
-  zone                   = "1"
+  zone                   = var.product_db_zone
 
   depends_on = [azurerm_private_dns_zone_virtual_network_link.product_pdz_vnl]
   lifecycle {

@@ -12,7 +12,7 @@
 
 ※App of Appsは必要に応じて利用する
 
-公式ドキュメントは[こちら](https://argoproj.github.io/argo-cd/)  
+公式ドキュメントは[こちら](https://argo-cd.readthedocs.io/en/stable/)  
 公式リポジトリは[こちら](https://github.com/argoproj/argo-cd)
 
 ## ArgoCDのインストール
@@ -24,21 +24,25 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-[インストールドキュメント](https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd)
+[インストールドキュメント](https://argo-cd.readthedocs.io/en/stable/getting_started/#1-install-argo-cd)
 
 ## CLIの導入
 
-[公式サイトの導入手順](ArgoCDのインストール)に従い、CLIを導入する。
+[公式サイトの導入手順](https://argo-cd.readthedocs.io/en/stable/getting_started/#2-download-argo-cd-cli)に従い、CLIを導入する。
 
 ## ArgoCDプロジェクトの作成
 
 ArgoCDではアプリケーションのデプロイ権限を切り分ける手段としてプロジェクトという単位を提供している。  
 プロジェクト単位で利用可能なソースリポジトリやデプロイ可能なクラスタ、namespeceなどを定義することで、アプリケーションが想定外のデプロイを行わないように制御する。
 
-nautibleではデフォルトのプロジェクト以外にアプリケーション用のプロジェクトとして「application」を作成する。
+nautibleではデフォルトのプロジェクト以外にアプリケーション用のプロジェクトとして「application」、「examples」を作成する。
 
 ```bash
 kubectl apply -f ci_cd/application-project.yaml
+```
+
+```bash
+kubectl apply -f ci_cd/examples-project.yaml
 ```
 
 ### applicationプロジェクトの設定内容
@@ -50,6 +54,16 @@ kubectl apply -f ci_cd/application-project.yaml
 |クラスタスコープのリソース作成|Namespaceの作成のみ許可|
 |ネームスペーススコープのリソース作成|ResourceQuota、LimitRange、NetworkPolicyの作成のみ不可|
 |ロール|applicationプロジェクトにあるapp-roleに対し、applicationプロジェクトへの全操作許可|
+
+### examplesプロジェクトの設定内容
+
+|項目|設定値|
+|:--|:--|
+|ソース|全許可|
+|デプロイ先|自クラスタのnautible-app-examplesネームスペース|
+|クラスタスコープのリソース作成|Namespaceの作成のみ許可|
+|ネームスペーススコープのリソース作成|ResourceQuota、LimitRange、NetworkPolicyの作成のみ不可|
+|ロール|examplesプロジェクトにあるapp-roleに対し、examplesプロジェクトへの全操作許可|
 
 [公式ドキュメントはこちら](https://argo-cd.readthedocs.io/en/stable/operator-manual/project.yaml)
 

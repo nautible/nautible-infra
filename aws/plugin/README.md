@@ -19,15 +19,18 @@ plugin
   │      │  variables.tf　・・・本番用の設定値
   │                                      
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
-      └─autn  ・・・認証のリソースを作成するmodule
+      ├─kong-apigateway  ・・・APIGatewayリソースのmodule
+      ├─backup           ・・・バックアップ保管用ストレージリソースを作成するmodule。環境削除時もバックアップは残るように独立したプロジェクトで作成。
+      ├─init             ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      └─autn             ・・・認証のリソースを作成するmodule
 
 AWS-S3
   │  
-  └─nautible-plugin-terraform              ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+  nautible-dev-plugin-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
         │   nautible-dev-plugin.tfstate    ・・・Terraformのtfstate
 AWS-Dynamodb
   │  
-  └─nautible-nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -52,7 +55,7 @@ AWS-Dynamodb
 
 ### 環境構築手順
 
-* AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
+* AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * plugin/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * plugin/modules/initディレクトリで「terraform init」の実行
@@ -66,3 +69,8 @@ AWS-Dynamodb
 
 ※prodの場合はplugin/env/devをprodに読み替えてください。
 
+## バックアップ環境構築手順
+
+terraform destroyによる環境破棄の際にバックアップデータが消えないようにbackupモジュールのみ独立した環境としています。
+
+バックアップ環境の構築手順は[こちら](./modules/backup/README.md)を参照してください。

@@ -21,6 +21,12 @@ terraform {
   }
 }
 
+# filter eks info
+locals {
+  target_eks = { for k, v in data.terraform_remote_state.nautible_aws_platform.outputs.eks :
+  k => v if !contains(try(var.eks.excludes_cluster_names, []), v.cluster.name) }
+}
+
 module "nautible_aws_app" {
   source          = "../../"
   pjname          = var.pjname
@@ -33,10 +39,7 @@ module "nautible_aws_app" {
     private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
     private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
   }
-  eks = {
-    node_security_group_id = data.terraform_remote_state.nautible_aws_platform.outputs.eks.node.security_group_id
-    oidc_provider_arn      = data.terraform_remote_state.nautible_aws_platform.outputs.eks.oidc.provider_arn
-  }
+  eks   = local.target_eks
   order = var.order
 }
 

@@ -23,16 +23,18 @@ platform
       ├─cloudfront    ・・・cloudfront関連のリソースのmodule
       ├─eks           ・・・eks関連のリソースのmodule
       ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+      ├─oidc          ・・・OpenIDConnectの利用に必要となるmodule
       ├─route53       ・・・route53関連のリソースのmodule
+      ├─tool          ・・・ツール類
       └─vpc           ・・・vpc関連のリソースのmodule
 
 AWS-S3
   │
-  └─${pjname}-terraform              ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   ${pjname}.tfstate        ・・・Terraformのtfstate
+  └─nautible-dev-platform-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+        │   nautible-dev-platform.tfstate   ・・・Terraformのtfstate
 AWS-Dynamodb
   │
-  └─nautible-${pjname}-terraform-state-lock
+  └─nautible-dev-platform-tfstate-lock
               ・・・teffaromのtfstateのlockテーブル
 ```
 
@@ -45,7 +47,6 @@ AWS-Dynamodb
 * Cloudfront、s3など静的コンテンツなどを配信するためのAWSリソース
 * IAM ロール、ユーザーなどAWSIAMリソース  
 ![AWSConfig](AWSConfig.png)
-
 
 ※より詳細なリソース情報については「terraform plan」にて確認してください
 
@@ -74,7 +75,7 @@ AWS-Dynamodb
 <!-- #### 独自ドメインを利用しない場合
 すぐに試してみたい場合はこちら。 -->
 
-* AWSの接続プロファイルを環境変数に設定する「export AWS_PFORILE=profile_name」
+* AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
   * platform/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
   * platform/modules/initディレクトリで「terraform init」の実行

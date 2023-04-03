@@ -19,14 +19,14 @@ data "aws_iam_policy_document" "fargate_assume_role_policy" {
 
 resource "aws_iam_role" "fargate_iam_role" {
   count              = var.create_iam_resources ? 1 : 0
-  name               = "${var.pjname}-AmazonEKSFargatePodExecutionRole"
+  name               = "${var.cluster_name}-AmazonEKSFargatePodExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.fargate_assume_role_policy.json
 
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
   ]
   tags = {
-    Name = "${var.pjname}-AmazonEKSFargatePodExecutionRole"
+    Name = "${var.cluster_name}-AmazonEKSFargatePodExecutionRole"
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_iam_role" "fargate_iam_role" {
 module "cluster_autoscaler_irsa_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  role_name                        = "${var.pjname}-AmazonEKSClusterAutoscalerRole"
+  role_name                        = "${var.cluster_name}-AmazonEKSClusterAutoscalerRole"
   attach_cluster_autoscaler_policy = true
   cluster_autoscaler_cluster_ids   = [module.eks.cluster_id]
 
@@ -46,7 +46,7 @@ module "cluster_autoscaler_irsa_role" {
   }
 
   tags = {
-    Name = "${var.pjname}-AmazonEKSClusterAutoscalerRole"
+    Name = "${var.cluster_name}-AmazonEKSClusterAutoscalerRole"
   }
 
 }
@@ -54,9 +54,9 @@ module "cluster_autoscaler_irsa_role" {
 module "load_balancer_controller_irsa_role" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  role_name                              = "${var.pjname}-AmazonEKSLoadBalancerControllerRole"
+  role_name                              = "${var.cluster_name}-AmazonEKSLoadBalancerControllerRole"
   attach_load_balancer_controller_policy = true
-  policy_name_prefix                     = "${var.pjname}-"
+  policy_name_prefix                     = "${var.cluster_name}-"
 
   oidc_providers = {
     ex = {
@@ -66,6 +66,25 @@ module "load_balancer_controller_irsa_role" {
   }
 
   tags = {
-    Name = "${var.pjname}-AmazonEKSLoadBalancerControllerRole"
+    Name = "${var.cluster_name}-AmazonEKSLoadBalancerControllerRole"
+  }
+}
+
+module "ebs_csi_driver_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+
+  role_name             = "${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
+  attach_ebs_csi_policy = true
+  policy_name_prefix    = "${var.cluster_name}-"
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = {
+    Name = "${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
   }
 }

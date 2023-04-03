@@ -35,6 +35,7 @@ resource "azurerm_redis_cache" "order_dapr_statestore" {
   name                          = "${var.pjname}orderstatestore"
   location                      = azurerm_resource_group.order_rg.location
   resource_group_name           = azurerm_resource_group.order_rg.name
+  redis_version                 = var.order_redis_version
   capacity                      = var.order_redis_capacity
   family                        = var.order_redis_family
   sku_name                      = var.order_redis_sku

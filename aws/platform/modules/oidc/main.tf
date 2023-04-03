@@ -1,5 +1,6 @@
 # OIDC Provider
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
+  count           = var.oidc.oidc_provider_arn == "" ? 1 : 0
   url             = var.oidc.url
   client_id_list  = var.oidc.client_id_list
   thumbprint_list = var.oidc.thumbprint_list
@@ -15,7 +16,7 @@ resource "aws_iam_role" "githubactions_ecr_access_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${aws_iam_openid_connect_provider.oidc_provider.id}"
+          Federated = var.oidc.oidc_provider_arn == "" ? aws_iam_openid_connect_provider.oidc_provider[0].id : var.oidc.oidc_provider_arn
         },
         Condition = {
           StringLike = {
@@ -79,7 +80,7 @@ resource "aws_iam_role" "githubactions_infra_role" {
         Effect = "Allow",
         Action = "sts:AssumeRoleWithWebIdentity",
         Principal = {
-          Federated = "${aws_iam_openid_connect_provider.oidc_provider.id}"
+          Federated = var.oidc.oidc_provider_arn == "" ? aws_iam_openid_connect_provider.oidc_provider[0].id : var.oidc.oidc_provider_arn
         },
         Condition = {
           StringLike = {
@@ -143,6 +144,54 @@ resource "aws_iam_role_policy" "githubactions_infra_role_policy" {
             "iam:PassToService" = "eks.amazonaws.com"
           }
         }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "githubactions_static_web_deploy_role" {
+  name = "${var.pjname}-githubactions-static-web-deploy-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRoleWithWebIdentity",
+        Principal = {
+          Federated = var.oidc.oidc_provider_arn == "" ? aws_iam_openid_connect_provider.oidc_provider[0].id : var.oidc.oidc_provider_arn
+        },
+        Condition = {
+          StringLike = {
+            "token.actions.githubusercontent.com:sub" = [
+              "repo:${var.oidc.github_organization}/*"
+            ]
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "githubactions_static_web_deploy_role_policy" {
+  name = "${aws_iam_role.githubactions_static_web_deploy_role.name}-policy"
+  role = aws_iam_role.githubactions_static_web_deploy_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::${var.static_web_bucket_id}/*",
+          "arn:aws:s3:::${var.static_web_bucket_id}"
+        ]
       }
     ]
   })

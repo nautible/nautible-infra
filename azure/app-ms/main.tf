@@ -33,6 +33,13 @@ module "stock" {
   depends_on                       = [module.common]
 }
 
+module "stockbatch" {
+  source                           = "./modules/stockbatch"
+  pjname                           = var.pjname
+  location                         = var.location
+  depends_on                       = [module.common]
+}
+
 module "order" {
   source                           = "./modules/order"
   pjname                           = var.pjname
@@ -40,6 +47,7 @@ module "order" {
   aks_subnet_ids                   = var.aks.subnet_ids
   vnet_id                          = var.vnet.id
   vnet_rg_name                     = var.vnet.rg_name
+  order_redis_version              = var.order.redis.version
   order_redis_capacity             = var.order.redis.capacity
   order_redis_family               = var.order.redis.family
   order_redis_sku                  = var.order.redis.sku
@@ -69,6 +77,7 @@ module "product" {
   aks_aci_subnet_cidr               = var.aks.subnet_cidrs[1]
   product_db_subnet_cidr            = var.product.db.subnet_cidr
   product_db_sku                    = var.product.db.sku
+  product_db_zone                   = var.product.db.zone
   vnet_name                         = var.vnet.name
   vnet_rg_name                      = var.vnet.rg_name
   vnet_id                           = var.vnet.id
@@ -76,4 +85,24 @@ module "product" {
   product_db_administrator_password = var.product.db.administrator_password
 
   depends_on = [module.common]
+}
+
+module "delivery" {
+  source   = "./modules/delivery"
+  pjname   = var.pjname
+  location = var.location
+
+  depends_on = [module.common]
+}
+
+module "oidc" {
+  source                                     = "./modules/oidc"
+  pjname                                     = var.pjname
+  oidc_github_organization                   = var.oidc.github_organization
+  static_web_deploy_storage_account_id       = var.oidc.static_web_deploy.storage_account_id
+  static_web_deploy_github_repo_name         = var.oidc.static_web_deploy.github_repo.name
+  static_web_deploy_github_repo_branches     = var.oidc.static_web_deploy.github_repo.branches
+  static_web_deploy_github_repo_environments = var.oidc.static_web_deploy.github_repo.environments
+  acr_id                                     = var.acr.acr_id
+  acr_access                                 = var.oidc.acr_access
 }
