@@ -111,7 +111,7 @@ variable "eks" {
         # min size
         min_size = 3
         # instance type
-        instance_type = "t2.medium"
+        instance_type = "t3.medium"
         # ami type
         ami_type = "AL2_x86_64"
         # disk size
