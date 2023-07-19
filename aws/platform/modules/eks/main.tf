@@ -1,6 +1,6 @@
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
-  version                                = "18.20.1"
+  version                                = "19.11.0"
   cluster_version                        = var.cluster_version
   cluster_name                           = var.cluster_name
   subnet_ids                             = var.private_subnet_ids
@@ -30,6 +30,7 @@ module "eks" {
       name              = "vpc-cni"
       resolve_conflicts = "OVERWRITE"
       addon_version     = var.cluster_addons_vpc_cni_version
+      configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\"}}"     
     }
     aws-ebs-csi-driver = {
       name                     = "aws-ebs-csi-driver"
@@ -60,6 +61,18 @@ module "eks" {
       max_size            = var.ng_max_size
       min_size            = var.ng_min_size
       instance_types      = [var.ng_instance_type]
+
+      enable_bootstrap_user_data = true
+      pre_bootstrap_user_data = <<-EOT
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="//"
+
+--//
+Content-Type: text/x-shellscript; charset="us-ascii"
+#!/bin/bash -xe
+/etc/eks/bootstrap.sh '${var.cluster_name}' --use-max-pods false --kubelet-extra-args '--max-pods=110'
+--//--
+      EOT
     }
   }
 
