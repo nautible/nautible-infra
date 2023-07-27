@@ -4,12 +4,6 @@ param(
 [string] $subscriptionid,
 
 [parameter(Mandatory=$true)] 
-[string] $resourcegroupname,
-
-[parameter(Mandatory=$true)] 
-[string] $resourcename,
-
-[parameter(Mandatory=$true)] 
 [string] $action
 ) 
  
@@ -17,36 +11,16 @@ filter timestamp {"[$(Get-Date -Format G)]: $_"}
 
 Write-Output "Script started." | timestamp
 
-# $VerbosePreference = "Continue" ##enable this for verbose logging
-$ErrorActionPreference = "Stop" 
-
-# Authenticate with Azure Automation Run As account (service principal) 
-$connectionName = "AzureRunAsConnection"
-#$connectionName = "AzureRunAsCertificate"
-
 try
 {
-    # Get the connection "AzureRunAsConnection"
-    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName
-
-    Write-Output "Logging in to Azure..."
-    Add-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null 
+    "Logging in to Azure..."
+    Connect-AzAccount -Identity
 }
 catch {
-    if (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = "Connection $connectionName not found."
-        throw $ErrorMessage
-    } else{
-        Write-Error -Message $_.Exception
-        throw $_.Exception
-    }
+    Write-Error -Message $_.Exception
+    throw $_.Exception
 }
-Write-Output "Authenticated with Automation Run As Account."  | timestamp 
+Write-Output "Authenticated with Automation System ID."  | timestamp 
 
 $startTime = Get-Date 
 Write-Output "Azure Automation local time: $startTime." | timestamp 
@@ -62,20 +36,29 @@ $authHeader = @{
 }
 Write-Output "Authentication Token acquired." | timestamp 
 
-#https://management.azure.com/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.ContainerService/managedClusters/clustername1?api-version=2021-03-01
-$clustorInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionId + '/resourceGroups/' `
-    + $resourceGroupName + '/providers/Microsoft.ContainerService/managedClusters/' `
-    + $resourceName + '?api-version=2021-03-01'
+# GET https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.ContainerService/managedClusters?api-version=2023-04-01
+$clustorInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionid + '/providers/Microsoft.ContainerService/managedClusters?api-version=2023-04-01'
 
 $clustorInfoResponse = Invoke-RestMethod -Uri $clustorInfoRestUri -Method GET -Headers $authHeader
 
-if((($action -eq 'start') -And ($clustorInfoResponse.properties.powerState.code -eq 'Stopped')) -Or (($action -eq 'stop') -And !($clustorInfoResponse.properties.powerState.code -eq 'Stopped')))
-{
-    # Invoke the REST API
-    $restUri='https://management.azure.com/subscriptions/' + $subscriptionid + '/resourceGroups/' `
-        + $resourcegroupname + '/providers/Microsoft.ContainerService/managedClusters/' `
-        + $resourcename + '/'+ $action + '?api-version=2020-09-01'
-    $response = Invoke-RestMethod -Uri $restUri -Method POST -Headers $authHeader
+$clustorInfoResponse.value | ForEach-Object {
+    # /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    $idsplit = $_.id.split('/')
+    $subscriptions = $idsplit[2]
+    $resourceGroups = $idsplit[4]
+    $resourceName = $idsplit[8]
+
+    if((($action -eq 'start') -And ($_.properties.powerState.code -eq 'Stopped')) -Or (($action -eq 'stop') -And !($_.properties.powerState.code -eq 'Stopped')))
+    {
+        # Invoke the REST API
+        $restUri='https://management.azure.com/subscriptions/' + $subscriptions + '/resourceGroups/' `
+            + $resourceGroups + '/providers/Microsoft.ContainerService/managedClusters/' `
+            + $resourceName + '/'+ $action + '?api-version=2020-09-01'
+        $stopMsg = 'STOP ' + $restUri
+        Write-Output $stopMsg | timestamp 
+        $response = Invoke-RestMethod -Uri $restUri -Method POST -Headers $authHeader
+    }
+
 }
 
 Write-Output "Script finished." | timestamp

@@ -15,5 +15,5 @@ variable "schedule_weekdays" {
 
 # schedule time
 variable "schedule_time" {
-  default = "2022-08-08T21:00:00+09:00"
+  default = "2023-07-20T21:00:00+09:00"
 }

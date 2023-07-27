@@ -11,18 +11,17 @@ resource "azurerm_automation_account" "rm_servicebus_account" {
   location            = azurerm_resource_group.rm_servicebus.location
   resource_group_name = azurerm_resource_group.rm_servicebus.name
   sku_name            = "Basic"
-  tags                = {}
+  identity {
+    type = "SystemAssigned"
+  }
+  tags = {}
 }
 
-# resource "azurerm_automation_module" "Az_Accounts" {
-#   name                    = "Az.Accounts"
-#   resource_group_name     = azurerm_automation_account.rm_servicebus_account.resource_group_name
-#   automation_account_name = azurerm_automation_account.rm_servicebus_account.name
-
-#   module_link {
-#     uri = "https://www.powershellgallery.com/api/v2/package/Az.Accounts/2.4.0"
-#   }
-# }
+resource "azurerm_role_assignment" "automation_account_ra" {
+  scope                = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_automation_account.rm_servicebus_account.identity[0].principal_id
+}
 
 data "local_file" "rm_servicebus_ps" {
   filename = "${path.module}/rm-servicebus.ps1"
