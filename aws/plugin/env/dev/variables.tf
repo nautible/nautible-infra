@@ -53,7 +53,7 @@ variable "auth" {
   default = {
     # postgresql variables
     postgres = {
-      engine_version       = "14.3"
+      engine_version       = "14.7"
       instance_class       = "db.t3.micro"
       parameter_group_name = "default.postgres14"
       storage_type         = "gp2"
