@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "keycloak_rg" {
 
 resource "azurerm_subnet" "subnet" {
   name                 = var.postgres_subnet_name
-  resource_group_name  = var.vnet_rg_name
+  resource_group_name  = var.rgname
   virtual_network_name = var.vnet_name
   address_prefixes     = [var.postgres_subnet_cidr]
   service_endpoints    = ["Microsoft.Storage"]
@@ -27,7 +27,7 @@ resource "azurerm_subnet" "subnet" {
 resource "azurerm_network_security_group" "subnet_sg" {
   name                = "${var.pjname}postgres"
   location            = var.location
-  resource_group_name = var.vnet_rg_name
+  resource_group_name = var.rgname
 
   security_rule {
     name                       = "postgres"

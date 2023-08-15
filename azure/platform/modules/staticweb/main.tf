@@ -1,13 +1,7 @@
-resource "azurerm_resource_group" "static_web_rg" {
-  name     = "${var.pjname}staticweb"
-  location = var.location
-  tags     = {}
-}
-
 resource "azurerm_storage_account" "static_web_sa" {
-  name                     = azurerm_resource_group.static_web_rg.name
-  resource_group_name      = azurerm_resource_group.static_web_rg.name
-  location                 = azurerm_resource_group.static_web_rg.location
+  name                     = "${var.rgname}staticweb"
+  resource_group_name      = var.rgname
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   dynamic "static_website" {

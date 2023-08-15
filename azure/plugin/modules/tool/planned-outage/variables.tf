@@ -15,10 +15,10 @@ variable "auth_postgresql_start_stop_schedule_weekdays" {
 
 # aks start schedule time
 variable "auth_postgresql_start_schedule_time" {
-  default = "2023-07-21T09:00:00+09:00"
+  default = "2023-08-10T09:00:00+09:00"
 }
 
 # aks stop schedule time
 variable "auth_postgresql_stop_schedule_time" {
-  default = "2023-07-20T21:00:00+09:00"
+  default = "2023-08-09T21:00:00+09:00"
 }

@@ -33,7 +33,7 @@
 
 ### クレデンシャルファイル作成
 
-~/.azure/credentials-verero
+~/.azure/credentials-velero
 
 ```bash
 AZURE_SUBSCRIPTION_ID=<サブスクリプションID>

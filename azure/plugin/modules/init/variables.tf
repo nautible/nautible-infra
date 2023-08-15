@@ -1,6 +1,6 @@
 # resource group name
 variable "terraform_resource_group_name" {
-  default = "nautibledevterraform"
+  default = "nautibledev"
 }
 
 # storage account name

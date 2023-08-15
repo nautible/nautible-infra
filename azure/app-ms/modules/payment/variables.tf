@@ -1,4 +1,5 @@
 variable "pjname" {}
+variable "rgname" {}
 variable "location" {}
 variable "servicebus_max_delivery_count" {}
 variable "servicebus_max_size_in_megabytes" {}

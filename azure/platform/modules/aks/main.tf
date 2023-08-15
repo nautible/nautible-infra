@@ -1,15 +1,10 @@
-resource "azurerm_resource_group" "aks_rg" {
-  name     = "${var.pjname}aks"
-  location = var.location
-}
-
 resource "azurerm_subnet" "subnet" {
-  count                                          = length(var.subnet_names)
-  name                                           = var.subnet_names[count.index]
-  resource_group_name                            = var.vnet_rg_name
-  virtual_network_name                           = var.vnet_name
-  address_prefixes                               = [var.subnet_cidrs[count.index]]
-  enforce_private_link_endpoint_network_policies = true
+  count                                         = length(var.subnet_names)
+  name                                          = var.subnet_names[count.index]
+  resource_group_name                           = var.rgname
+  virtual_network_name                          = var.vnet_name
+  address_prefixes                              = [var.subnet_cidrs[count.index]]
+  private_link_service_network_policies_enabled = true
 
   dynamic "delegation" {
     for_each = var.subnet_names[count.index] == "aksacisubnet" ? ["true"] : []
@@ -26,8 +21,8 @@ resource "azurerm_subnet" "subnet" {
 
 resource "azurerm_network_security_group" "aks_security_group" {
   name                = "${var.pjname}akssg"
-  location            = azurerm_resource_group.aks_rg.location
-  resource_group_name = azurerm_resource_group.aks_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
 
   security_rule {
     name                       = "https"
@@ -56,8 +51,8 @@ resource "azurerm_network_security_group" "aks_security_group" {
 
 resource "azurerm_network_security_group" "aks_aci_security_group" {
   name                = "${var.pjname}aksacisg"
-  location            = azurerm_resource_group.aks_rg.location
-  resource_group_name = azurerm_resource_group.aks_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_subnet_network_security_group_association" "aks_subnet_nsga" {
@@ -76,8 +71,8 @@ resource "azurerm_subnet_network_security_group_association" "aks_aci_subnet_nsg
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
   name                = "${var.pjname}aks"
   kubernetes_version  = var.kubernetes_version
-  location            = azurerm_resource_group.aks_rg.location
-  resource_group_name = azurerm_resource_group.aks_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   dns_prefix          = var.pjname
 
   default_node_pool {
@@ -116,7 +111,9 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   role_based_access_control_enabled = true
 
-  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
+  api_server_access_profile {
+    authorized_ip_ranges = var.api_server_authorized_ip_ranges
+  }
 
   tags = var.tags
 
@@ -133,8 +130,8 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
 resource "azurerm_log_analytics_workspace" "aks_log_aw" {
   name                = "${var.pjname}workspace"
-  location            = azurerm_resource_group.aks_rg.location
-  resource_group_name = azurerm_resource_group.aks_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   retention_in_days   = var.log_analytics_workspace_retention_in_days
 
   tags = var.tags
@@ -142,8 +139,8 @@ resource "azurerm_log_analytics_workspace" "aks_log_aw" {
 
 resource "azurerm_log_analytics_solution" "aks_log_as" {
   solution_name         = "ContainerInsights"
-  location              = azurerm_resource_group.aks_rg.location
-  resource_group_name   = azurerm_resource_group.aks_rg.name
+  location              = var.location
+  resource_group_name   = var.rgname
   workspace_resource_id = azurerm_log_analytics_workspace.aks_log_aw.id
   workspace_name        = azurerm_log_analytics_workspace.aks_log_aw.name
 
@@ -157,7 +154,7 @@ resource "azurerm_log_analytics_solution" "aks_log_as" {
 
 data "azurerm_user_assigned_identity" "aks_aci_identity" {
   name                = "aciconnectorlinux-${azurerm_kubernetes_cluster.aks_cluster.name}"
-  resource_group_name = "MC_${var.pjname}aks_${var.pjname}aks_${azurerm_resource_group.aks_rg.location}"
+  resource_group_name = "MC_${var.pjname}_${var.pjname}aks_${var.location}"
   depends_on          = [azurerm_kubernetes_cluster.aks_cluster]
 }
 
@@ -169,7 +166,7 @@ resource "azurerm_role_assignment" "aks_aci_subnet_assignment" {
 
 data "azurerm_user_assigned_identity" "aks_agentpool_identity" {
   name                = "${var.pjname}aks-agentpool"
-  resource_group_name = "MC_${var.pjname}aks_${var.pjname}aks_${azurerm_resource_group.aks_rg.location}"
+  resource_group_name = "MC_${var.pjname}_${var.pjname}aks_${var.location}"
   depends_on          = [azurerm_kubernetes_cluster.aks_cluster]
 }
 

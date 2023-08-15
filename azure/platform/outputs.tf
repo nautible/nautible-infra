@@ -1,8 +1,7 @@
 output "vnet" {
   value = {
-    vnet_rg_name = module.vnet.vnet_rg_name
-    vnet_id      = module.vnet.vnet_id
-    vnet_name    = module.vnet.vnet_name
+    vnet_id   = module.vnet.vnet_id
+    vnet_name = module.vnet.vnet_name
   }
 }
 output "aks" {

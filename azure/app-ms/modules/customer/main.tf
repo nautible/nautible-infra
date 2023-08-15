@@ -1,6 +1,6 @@
 data "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                = "${var.pjname}cosmosdb"
-  resource_group_name = "${var.pjname}common"
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_cosmosdb_mongo_database" "customer" {

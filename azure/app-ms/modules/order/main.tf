@@ -1,6 +1,6 @@
 data "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                = "${var.pjname}cosmosdb"
-  resource_group_name = "${var.pjname}common"
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_cosmosdb_mongo_database" "order" {
@@ -24,17 +24,11 @@ resource "azurerm_cosmosdb_mongo_collection" "order" {
   }
 }
 
-resource "azurerm_resource_group" "order_rg" {
-  name     = "${var.pjname}order"
-  location = var.location
-  tags     = {}
-}
-
 resource "azurerm_redis_cache" "order_dapr_statestore" {
   # NOTE: the Name used for Redis needs to be globally unique
   name                          = "${var.pjname}orderstatestore"
-  location                      = azurerm_resource_group.order_rg.location
-  resource_group_name           = azurerm_resource_group.order_rg.name
+  location                      = var.location
+  resource_group_name           = var.rgname
   redis_version                 = var.order_redis_version
   capacity                      = var.order_redis_capacity
   family                        = var.order_redis_family
@@ -47,8 +41,8 @@ resource "azurerm_redis_cache" "order_dapr_statestore" {
 
 resource "azurerm_private_endpoint" "order_dapr_statestore_pe" {
   name                = "${var.pjname}orderstatestore"
-  location            = azurerm_resource_group.order_rg.location
-  resource_group_name = azurerm_resource_group.order_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
