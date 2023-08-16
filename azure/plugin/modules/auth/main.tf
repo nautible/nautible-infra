@@ -1,11 +1,5 @@
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_resource_group" "keycloak_rg" {
-  name     = "${var.pjname}keycloak"
-  location = var.location
-  tags     = {}
-}
-
 resource "azurerm_subnet" "subnet" {
   name                 = var.postgres_subnet_name
   resource_group_name  = var.rgname
@@ -51,21 +45,21 @@ resource "azurerm_subnet_network_security_group_association" "subnet_nsga" {
 # name end with .postgres.database.azure.com.
 resource "azurerm_private_dns_zone" "keycloak_db_dns_zone" {
   name                = "keycloak.private.postgres.database.azure.com"
-  resource_group_name = azurerm_resource_group.keycloak_rg.name
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "keycloak_db_dns_zone_vnl" {
   name                  = "keycloak.com"
   private_dns_zone_name = azurerm_private_dns_zone.keycloak_db_dns_zone.name
   virtual_network_id    = var.vnet_id
-  resource_group_name   = azurerm_resource_group.keycloak_rg.name
+  resource_group_name   = var.rgname
 }
 
 # private_dns_zone_id required
 resource "azurerm_postgresql_flexible_server" "keycloak_db_server" {
   name                = "keycloakdbserver"
-  resource_group_name = azurerm_resource_group.keycloak_rg.name
-  location            = azurerm_resource_group.keycloak_rg.location
+  resource_group_name = var.rgname
+  location            = var.location
   version             = var.postgres_version
   delegated_subnet_id = azurerm_subnet.subnet.id
   private_dns_zone_id = azurerm_private_dns_zone.keycloak_db_dns_zone.id
@@ -97,8 +91,8 @@ resource "azurerm_postgresql_flexible_server_database" "keycloak_db" {
 
 resource "azurerm_key_vault" "keyvault" {
   name                          = "${var.pjname}auth"
-  location                      = azurerm_resource_group.keycloak_rg.location
-  resource_group_name           = azurerm_resource_group.keycloak_rg.name
+  location                      = var.location
+  resource_group_name           = var.rgname
   tenant_id                     = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days    = 30
   purge_protection_enabled      = false
@@ -129,8 +123,8 @@ resource "azurerm_key_vault_access_policy" "keyvault_ap" {
 
 resource "azurerm_private_endpoint" "keyvault_pe" {
   name                = "${var.pjname}authkeyvault"
-  location            = azurerm_resource_group.keycloak_rg.location
-  resource_group_name = azurerm_resource_group.keycloak_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   subnet_id           = var.subnet_ids[0]
 
   private_service_connection {
@@ -145,23 +139,3 @@ resource "azurerm_private_endpoint" "keyvault_pe" {
     private_dns_zone_ids = [var.keyvault_private_dns_zone_id]
   }
 }
-
-# resource "azurerm_private_dns_zone" "keyvault_dns_zone" {
-#   name                = "auth.privatelink.vaultcore.azure.net"
-#   resource_group_name = azurerm_resource_group.keycloak_rg.name
-# }
-
-# resource "azurerm_private_dns_a_record" "keyvault_private_dns_a_record" {
-#   name                = "${var.pjname}auth"
-#   zone_name           = azurerm_private_dns_zone.keyvault_dns_zone.name
-#   resource_group_name = azurerm_resource_group.keycloak_rg.name
-#   ttl                 = 300
-#   records             = [azurerm_private_endpoint.keyvault_pe.private_service_connection[0].private_ip_address]
-# }
-
-# resource "azurerm_private_dns_zone_virtual_network_link" "keyvault_dns_zone_virtual_network_link" {
-#   name                  = "${var.pjname}auth"
-#   resource_group_name   = azurerm_resource_group.keycloak_rg.name
-#   private_dns_zone_name = azurerm_private_dns_zone.keyvault_dns_zone.name
-#   virtual_network_id    = var.vnet_id
-# }
