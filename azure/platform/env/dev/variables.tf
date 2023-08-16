@@ -43,7 +43,7 @@ variable "aks" {
   })
   default = {
     # kubernetes version 
-    kubernetes_version = "1.23.5"
+    kubernetes_version = "1.27.3"
     # max pods
     max_pods = 110
     # log analytics workspace retention in days
@@ -60,11 +60,11 @@ variable "aks" {
     }
     node = {
       # node vm size."standard_b2s" can't deploy istio.
-      vm_size = "standard_d2s_v3"
+      vm_size = "standard_d4s_v4"
       # node os disk size gb. min size is 30
       os_disk_size_gb = 30
       # node max count
-      max_count = 3
+      max_count = 5
       # node min count
       min_count = 2
       # node count
@@ -94,9 +94,9 @@ variable "static_web" {
 variable "frontdoor" {
   description = "frontdoor設定"
   type = object({
-    session_affinity_enabled = bool
-    istio_ig_lb_ip           = string
-    service_api_path_pattern = string
+    session_affinity_enabled             = bool
+    istio_ig_lb_ip                       = string
+    service_api_path_pattern             = string
     access_log_storage_account_allow_ips = list(string)
   })
   default = {

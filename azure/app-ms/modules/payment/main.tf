@@ -1,6 +1,6 @@
 data "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                = "${var.pjname}cosmosdb"
-  resource_group_name = "${var.pjname}common"
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_cosmosdb_mongo_database" "payment" {
@@ -73,12 +73,6 @@ resource "azurerm_cosmosdb_mongo_collection" "payment_allocate_history" {
     keys   = ["RequestId"]
     unique = true
   }
-}
-
-resource "azurerm_resource_group" "payment_rg" {
-  name     = "${var.pjname}payment"
-  location = var.location
-  tags     = {}
 }
 
 resource "azurerm_servicebus_topic" "payment_create_topic" {

@@ -1,15 +1,9 @@
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_resource_group" "common_rg" {
-  name     = "${var.pjname}common"
-  location = var.location
-  tags     = {}
-}
-
 resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                          = "${var.pjname}cosmosdb"
-  location                      = azurerm_resource_group.common_rg.location
-  resource_group_name           = azurerm_resource_group.common_rg.name
+  location                      = var.location
+  resource_group_name           = var.rgname
   offer_type                    = "Standard"
   kind                          = "MongoDB"
   public_network_access_enabled = var.cosmosdb_public_network_access_enabled
@@ -29,7 +23,7 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
   }
 
   geo_location {
-    location          = azurerm_resource_group.common_rg.location
+    location          = var.location
     failover_priority = 0
   }
 
@@ -43,8 +37,8 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 
 resource "azurerm_private_endpoint" "cosmosdb_account_pe" {
   name                = "${var.pjname}cosmosdb"
-  location            = azurerm_resource_group.common_rg.location
-  resource_group_name = azurerm_resource_group.common_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
@@ -83,8 +77,8 @@ resource "azurerm_cosmosdb_mongo_collection" "sequence" {
 
 resource "azurerm_servicebus_namespace" "servicebus_namespace" {
   name                = "${var.pjname}servicebusns"
-  location            = azurerm_resource_group.common_rg.location
-  resource_group_name = azurerm_resource_group.common_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   sku                 = var.servicebus_sku
   capacity            = var.servicebus_capacity
   tags                = {}
@@ -101,8 +95,8 @@ resource "azurerm_servicebus_namespace_network_rule_set" "servicebus_namespace_n
 resource "azurerm_private_endpoint" "servicebus_pe" {
   count               = var.servicebus_sku == "Premium" ? 1 : 0
   name                = "${var.pjname}appmsservicebus"
-  location            = azurerm_resource_group.common_rg.location
-  resource_group_name = azurerm_resource_group.common_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {
@@ -120,8 +114,8 @@ resource "azurerm_private_endpoint" "servicebus_pe" {
 
 resource "azurerm_key_vault" "keyvault" {
   name                          = "${var.pjname}appms"
-  location                      = azurerm_resource_group.common_rg.location
-  resource_group_name           = azurerm_resource_group.common_rg.name
+  location                      = var.location
+  resource_group_name           = var.rgname
   tenant_id                     = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days    = 30
   purge_protection_enabled      = false
@@ -153,8 +147,8 @@ resource "azurerm_key_vault_access_policy" "keyvault_ap" {
 
 resource "azurerm_private_endpoint" "keyvault_pe" {
   name                = "${var.pjname}appmskeyvault"
-  location            = azurerm_resource_group.common_rg.location
-  resource_group_name = azurerm_resource_group.common_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
   subnet_id           = var.aks_subnet_ids[0]
 
   private_service_connection {

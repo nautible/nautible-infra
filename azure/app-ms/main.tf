@@ -1,9 +1,9 @@
 module "common" {
   source                                 = "./modules/common"
   pjname                                 = var.pjname
+  rgname                                 = var.rgname
   location                               = var.location
   vnet_id                                = var.vnet.id
-  vnet_rg_name                           = var.vnet.rg_name
   aks_subnet_ids                         = var.aks.subnet_ids
   servicebus_sku                         = var.common.servicebus.sku
   servicebus_capacity                    = var.common.servicebus.capacity
@@ -18,6 +18,7 @@ module "common" {
 module "customer" {
   source   = "./modules/customer"
   pjname   = var.pjname
+  rgname   = var.rgname
   location = var.location
 
   depends_on = [module.common]
@@ -26,6 +27,7 @@ module "customer" {
 module "stock" {
   source                           = "./modules/stock"
   pjname                           = var.pjname
+  rgname                           = var.rgname
   location                         = var.location
   servicebus_max_delivery_count    = var.common.servicebus.max_delivery_count
   servicebus_max_size_in_megabytes = var.common.servicebus.max_size_in_megabytes
@@ -34,19 +36,19 @@ module "stock" {
 }
 
 module "stockbatch" {
-  source                           = "./modules/stockbatch"
-  pjname                           = var.pjname
-  location                         = var.location
-  depends_on                       = [module.common]
+  source     = "./modules/stockbatch"
+  pjname     = var.pjname
+  location   = var.location
+  depends_on = [module.common]
 }
 
 module "order" {
   source                           = "./modules/order"
   pjname                           = var.pjname
+  rgname                           = var.rgname
   location                         = var.location
   aks_subnet_ids                   = var.aks.subnet_ids
   vnet_id                          = var.vnet.id
-  vnet_rg_name                     = var.vnet.rg_name
   order_redis_version              = var.order.redis.version
   order_redis_capacity             = var.order.redis.capacity
   order_redis_family               = var.order.redis.family
@@ -62,6 +64,7 @@ module "order" {
 module "payment" {
   source                           = "./modules/payment"
   pjname                           = var.pjname
+  rgname                           = var.rgname
   location                         = var.location
   servicebus_max_delivery_count    = var.common.servicebus.max_delivery_count
   servicebus_max_size_in_megabytes = var.common.servicebus.max_size_in_megabytes
@@ -73,13 +76,13 @@ module "payment" {
 module "product" {
   source                            = "./modules/product"
   pjname                            = var.pjname
+  rgname                            = var.rgname
   location                          = var.location
   aks_aci_subnet_cidr               = var.aks.subnet_cidrs[1]
   product_db_subnet_cidr            = var.product.db.subnet_cidr
   product_db_sku                    = var.product.db.sku
   product_db_zone                   = var.product.db.zone
   vnet_name                         = var.vnet.name
-  vnet_rg_name                      = var.vnet.rg_name
   vnet_id                           = var.vnet.id
   product_db_administrator_login    = var.product.db.administrator_login
   product_db_administrator_password = var.product.db.administrator_password
@@ -90,6 +93,7 @@ module "product" {
 module "delivery" {
   source   = "./modules/delivery"
   pjname   = var.pjname
+  rgname   = var.rgname
   location = var.location
 
   depends_on = [module.common]

@@ -2,10 +2,10 @@ module "auth" {
   source                               = "./modules/auth"
   count                                = try(var.auth.postgres.version, "") != "" ? 1 : 0
   pjname                               = var.pjname
+  rgname                               = var.rgname
   location                             = var.location
   vnet_id                              = var.vnet.id
   vnet_name                            = var.vnet.name
-  vnet_rg_name                         = var.vnet.rg_name
   subnet_ids                           = var.aks.subnet_ids
   postgres_version                     = var.auth.postgres.version
   postgres_sku_name                    = var.auth.postgres.sku_name

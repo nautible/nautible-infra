@@ -1,15 +1,11 @@
 provider "azurerm" {
   features {} // required but empty ok
 }
-resource "azurerm_resource_group" "rm_servicebus" {
-  name     = "${var.pjname}removeservicebus"
-  location = var.location
-}
 
 resource "azurerm_automation_account" "rm_servicebus_account" {
   name                = "${var.pjname}removeservicebus"
-  location            = azurerm_resource_group.rm_servicebus.location
-  resource_group_name = azurerm_resource_group.rm_servicebus.name
+  location            = var.location
+  resource_group_name = var.pjname
   sku_name            = "Basic"
   identity {
     type = "SystemAssigned"
@@ -29,8 +25,8 @@ data "local_file" "rm_servicebus_ps" {
 
 resource "azurerm_automation_runbook" "rm_servicebus" {
   name                    = "remove_servicebus"
-  location                = azurerm_resource_group.rm_servicebus.location
-  resource_group_name     = azurerm_resource_group.rm_servicebus.name
+  location                = var.location
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.rm_servicebus_account.name
   log_verbose             = "true"
   log_progress            = "true"
@@ -42,7 +38,7 @@ resource "azurerm_automation_runbook" "rm_servicebus" {
 
 resource "azurerm_automation_schedule" "rm_servicebus_schedule" {
   name                    = "removeservicebusschedule"
-  resource_group_name     = azurerm_resource_group.rm_servicebus.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.rm_servicebus_account.name
   frequency               = "Week"
   interval                = 1
@@ -55,7 +51,7 @@ data "azurerm_subscription" "current" {
 }
 
 resource "azurerm_automation_job_schedule" "rm_servicebus_job_schedule" {
-  resource_group_name     = azurerm_resource_group.rm_servicebus.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.rm_servicebus_account.name
   schedule_name           = azurerm_automation_schedule.rm_servicebus_schedule.name
   runbook_name            = azurerm_automation_runbook.rm_servicebus.name

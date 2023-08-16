@@ -1,15 +1,11 @@
 provider "azurerm" {
   features {} // required but empty ok
 }
-resource "azurerm_resource_group" "plugin_planned_outage" {
-  name     = "${var.pjname}pluginplannedoutage"
-  location = var.location
-}
 
 resource "azurerm_automation_account" "plugin_planned_outage_account" {
   name                = "${var.pjname}pluginplannedoutage"
-  location            = azurerm_resource_group.plugin_planned_outage.location
-  resource_group_name = azurerm_resource_group.plugin_planned_outage.name
+  location            = var.location
+  resource_group_name = var.pjname
   sku_name            = "Basic"
   identity {
     type = "SystemAssigned"
@@ -29,8 +25,8 @@ data "local_file" "auth_postgresql_start_stop_ps" {
 
 resource "azurerm_automation_runbook" "auth_postgresql_start_stop" {
   name                    = "authpostgresqlstartstop"
-  location                = azurerm_resource_group.plugin_planned_outage.location
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  location                = var.location
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   log_verbose             = "true"
   log_progress            = "true"
@@ -42,7 +38,7 @@ resource "azurerm_automation_runbook" "auth_postgresql_start_stop" {
 
 resource "azurerm_automation_schedule" "auth_postgresql_start_schedule" {
   name                    = "authpostgresqlstartschedule"
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   frequency               = "Week"
   interval                = 1
@@ -53,7 +49,7 @@ resource "azurerm_automation_schedule" "auth_postgresql_start_schedule" {
 
 resource "azurerm_automation_schedule" "auth_postgresql_stop_schedule" {
   name                    = "authpostgresqlstopschedule"
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   frequency               = "Week"
   interval                = 1
@@ -66,7 +62,7 @@ data "azurerm_subscription" "current" {
 }
 
 resource "azurerm_automation_job_schedule" "auth_postgresql_start_job_schedule" {
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   schedule_name           = azurerm_automation_schedule.auth_postgresql_start_schedule.name
   runbook_name            = azurerm_automation_runbook.auth_postgresql_start_stop.name
@@ -78,7 +74,7 @@ resource "azurerm_automation_job_schedule" "auth_postgresql_start_job_schedule" 
 }
 
 resource "azurerm_automation_job_schedule" "auth_postgresql_stop_job_schedule" {
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   schedule_name           = azurerm_automation_schedule.auth_postgresql_stop_schedule.name
   runbook_name            = azurerm_automation_runbook.auth_postgresql_start_stop.name

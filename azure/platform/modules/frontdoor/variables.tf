@@ -1,4 +1,5 @@
 variable "pjname" {}
+variable "rgname" {}
 variable "location" {}
 variable "front_door_session_affinity_enabled" {}
 variable "static_web_primary_web_host" {}

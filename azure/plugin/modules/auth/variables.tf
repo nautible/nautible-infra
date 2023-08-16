@@ -1,6 +1,6 @@
 variable "pjname" {}
+variable "rgname" {}
 variable "location" {}
-variable "vnet_rg_name" {}
 variable "subnet_ids" {}
 variable "vnet_id" {}
 variable "vnet_name" {}

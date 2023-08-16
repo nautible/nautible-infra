@@ -1,16 +1,10 @@
-resource "azurerm_resource_group" "product_rg" {
-  name     = "${var.pjname}product"
-  location = var.location
-  tags     = {}
-}
-
 resource "azurerm_subnet" "product_db_subnet" {
-  name                                           = "${var.pjname}productdbsubnet"
-  resource_group_name                            = var.vnet_rg_name
-  virtual_network_name                           = var.vnet_name
-  address_prefixes                               = [var.product_db_subnet_cidr]
-  service_endpoints                              = ["Microsoft.Storage"]
-  enforce_private_link_endpoint_network_policies = true
+  name                                          = "${var.pjname}productdbsubnet"
+  resource_group_name                           = var.rgname
+  virtual_network_name                          = var.vnet_name
+  address_prefixes                              = [var.product_db_subnet_cidr]
+  service_endpoints                             = ["Microsoft.Storage"]
+  private_link_service_network_policies_enabled = true
 
   delegation {
     name = "productDbDelegation"
@@ -23,8 +17,8 @@ resource "azurerm_subnet" "product_db_subnet" {
 
 resource "azurerm_network_security_group" "product_db_sg" {
   name                = "${var.pjname}productdbsg"
-  location            = azurerm_resource_group.product_rg.location
-  resource_group_name = azurerm_resource_group.product_rg.name
+  location            = var.location
+  resource_group_name = var.rgname
 
   security_rule {
     name                       = "mysql"
@@ -46,7 +40,7 @@ resource "azurerm_subnet_network_security_group_association" "product_db_subnet_
 
 resource "azurerm_private_dns_zone" "product_pdz" {
   name                = "product-fs.private.mysql.database.azure.com"
-  resource_group_name = azurerm_resource_group.product_rg.name
+  resource_group_name = var.rgname
 
   depends_on = [azurerm_subnet_network_security_group_association.product_db_subnet_nsga]
 }
@@ -55,18 +49,18 @@ resource "azurerm_private_dns_zone_virtual_network_link" "product_pdz_vnl" {
   name                  = "productFsVnetZone.com"
   private_dns_zone_name = azurerm_private_dns_zone.product_pdz.name
   virtual_network_id    = var.vnet_id
-  resource_group_name   = azurerm_resource_group.product_rg.name
+  resource_group_name   = var.rgname
   registration_enabled  = true
 }
 
 resource "azurerm_mysql_flexible_server" "product_fs" {
   name                = "product-fs"
-  resource_group_name = azurerm_resource_group.product_rg.name
-  location            = azurerm_resource_group.product_rg.location
+  resource_group_name = var.rgname
+  location            = var.location
   # 初回以外は入力を求めないようにするため、また、ブランクの場合常にエラーになってしまうのでdummyを設定する。
   administrator_login    = coalesce(var.product_db_administrator_login, "dummy")
   administrator_password = coalesce(var.product_db_administrator_password, "Dummy123")
-  version                = "5.7"
+  version                = "8.0.21"
   delegated_subnet_id    = azurerm_subnet.product_db_subnet.id
   private_dns_zone_id    = azurerm_private_dns_zone.product_pdz.id
   sku_name               = var.product_db_sku
@@ -82,14 +76,14 @@ resource "azurerm_mysql_flexible_server" "product_fs" {
 
 resource "azurerm_mysql_flexible_server_configuration" "product_fsc" {
   name                = "require_secure_transport"
-  resource_group_name = azurerm_resource_group.product_rg.name
+  resource_group_name = var.rgname
   server_name         = azurerm_mysql_flexible_server.product_fs.name
   value               = "OFF"
 }
 
 resource "azurerm_mysql_flexible_database" "product_fd" {
   name                = "product-db"
-  resource_group_name = azurerm_resource_group.product_rg.name
+  resource_group_name = var.rgname
   server_name         = azurerm_mysql_flexible_server.product_fs.name
   charset             = "utf8"
   collation           = "utf8_unicode_ci"

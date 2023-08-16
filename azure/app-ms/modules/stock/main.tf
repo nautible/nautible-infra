@@ -1,6 +1,6 @@
 data "azurerm_cosmosdb_account" "cosmosdb_account" {
   name                = "${var.pjname}cosmosdb"
-  resource_group_name = "${var.pjname}common"
+  resource_group_name = var.rgname
 }
 
 resource "azurerm_cosmosdb_mongo_database" "stock" {
@@ -54,12 +54,6 @@ resource "azurerm_cosmosdb_mongo_collection" "stock_allocate_history" {
     unique = true
   }
 
-}
-
-resource "azurerm_resource_group" "stock_rg" {
-  name     = "${var.pjname}stock"
-  location = var.location
-  tags     = {}
 }
 
 resource "azurerm_servicebus_topic" "stock_reserve_allocate_topic" {
