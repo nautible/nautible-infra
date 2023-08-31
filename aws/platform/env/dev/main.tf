@@ -27,7 +27,6 @@ module "nautible_aws_platform" {
   region               = var.region
   create_iam_resources = var.create_iam_resources
   vpc                  = var.vpc
-  eks                  = var.eks
   cloudfront           = var.cloudfront
   oidc                 = var.oidc
 }

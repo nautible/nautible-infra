@@ -1,6 +1,8 @@
+data "aws_caller_identity" "self" {}
+
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
-  version                                = "19.11.0"
+  version                                = "19.15.3"
   cluster_version                        = var.cluster_version
   cluster_name                           = var.cluster_name
   subnet_ids                             = var.private_subnet_ids
@@ -17,24 +19,29 @@ module "eks" {
 
   cluster_addons = {
     coredns = {
-      name              = "coredns"
-      resolve_conflicts = "OVERWRITE"
-      addon_version     = var.cluster_addons_coredns_version
+      name                     = "coredns"
+      resolve_conflicts_create = "OVERWRITE"
+      resolve_conflicts_update = "OVERWRITE"
+      addon_version            = var.cluster_addons_coredns_version
     }
     kube-proxy = {
-      name              = "kube-proxy"
-      resolve_conflicts = "OVERWRITE"
-      addon_version     = var.cluster_addons_kube_proxy_version
+      name                     = "kube-proxy"
+      resolve_conflicts_create = "OVERWRITE"
+      resolve_conflicts_update = "OVERWRITE"
+      addon_version            = var.cluster_addons_kube_proxy_version
     }
     vpc-cni = {
-      name              = "vpc-cni"
-      resolve_conflicts = "OVERWRITE"
-      addon_version     = var.cluster_addons_vpc_cni_version
-      configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\"}}"     
+      name                     = "vpc-cni"
+      before_compute           = true
+      resolve_conflicts_create = "OVERWRITE"
+      resolve_conflicts_update = "OVERWRITE"
+      addon_version            = var.cluster_addons_vpc_cni_version
+      configuration_values     = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\"}}"
     }
     aws-ebs-csi-driver = {
       name                     = "aws-ebs-csi-driver"
-      resolve_conflicts        = "OVERWRITE"
+      resolve_conflicts_create = "OVERWRITE"
+      resolve_conflicts_update = "OVERWRITE"
       service_account_role_arn = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
       addon_version            = var.cluster_addons_ebs_csi_driver_version
     }
@@ -63,7 +70,7 @@ module "eks" {
       instance_types      = [var.ng_instance_type]
 
       enable_bootstrap_user_data = true
-      pre_bootstrap_user_data = <<-EOT
+      pre_bootstrap_user_data    = <<-EOT
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="//"
 
