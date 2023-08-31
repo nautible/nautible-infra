@@ -45,7 +45,7 @@ variable "eks" {
         # endpoint public access
         endpoint_public_access = true
         # endpoint public access cidrs
-        endpoint_public_access_cidrs = ["0.0.0.0/32"] # TODO 動的設定
+        endpoint_public_access_cidrs = ["0.0.0.0/0"] # TODO 動的設定
         # addons
         addons = {
           # coredns version
