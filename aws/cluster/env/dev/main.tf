@@ -1,4 +1,4 @@
-rovider "aws" {
+provider "aws" {
   region = data.terraform_remote_state.nautible_aws_platform.outputs.region
 }
 
