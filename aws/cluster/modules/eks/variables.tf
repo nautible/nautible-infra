@@ -1,3 +1,4 @@
+variable "group" {}
 variable "pjname" {}
 variable "region" {}
 variable "vpc_id" {}

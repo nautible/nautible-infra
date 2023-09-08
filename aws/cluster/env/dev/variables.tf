@@ -1,3 +1,7 @@
+variable "group" {
+  default  = "" // 変数宣言のみ。値は実行時に設定する。
+}
+
 # EKS
 variable "eks" {
   description = "EKS設定"

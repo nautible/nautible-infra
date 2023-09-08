@@ -30,6 +30,7 @@ module "nautible_aws_cluster" {
   vpc_id               = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
   public_subnets       = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.public_subnets
   private_subnets      = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
+  group                = var.group
   eks                  = var.eks
 }
 

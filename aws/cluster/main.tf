@@ -2,6 +2,7 @@ module "eks" {
   for_each = { for i in var.eks : i.cluster.name => i }
 
   source                                        = "./modules/eks"
+  group                                         = var.group
   pjname                                        = var.pjname
   region                                        = var.region
   vpc_id                                        = var.vpc_id

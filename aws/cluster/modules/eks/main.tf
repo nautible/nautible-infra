@@ -125,6 +125,7 @@ Content-Type: text/x-shellscript; charset="us-ascii"
   }
   tags = {
     Name = "kubernetes.io/cluster/${var.cluster_name}-eks-cluster"
+    Group = "cloudarch/${var.group}"
   }
 
 }
