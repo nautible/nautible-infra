@@ -1,6 +1,6 @@
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
-  version                                = "19.15.3"
+  version                                = "19.20.0"
   cluster_version                        = var.cluster_version
   cluster_name                           = var.cluster_name
   subnet_ids                             = var.private_subnet_ids
@@ -34,7 +34,7 @@ module "eks" {
       resolve_conflicts_create = "OVERWRITE"
       resolve_conflicts_update = "OVERWRITE"
       addon_version     = var.cluster_addons_vpc_cni_version
-      configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\"}}"     
+      configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"WARM_PREFIX_TARGET\":\"1\"}}"     
     }
     aws-ebs-csi-driver = {
       name                     = "aws-ebs-csi-driver"
