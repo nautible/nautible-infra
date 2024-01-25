@@ -4,12 +4,6 @@ param(
 [string] $subscriptionid,
 
 [parameter(Mandatory=$true)] 
-[string] $resourcegroupname,
-
-[parameter(Mandatory=$true)] 
-[string] $resourcename,
-
-[parameter(Mandatory=$true)] 
 [string] $action
 ) 
  
@@ -20,33 +14,16 @@ Write-Output "Script started." | timestamp
 # $VerbosePreference = "Continue" ##enable this for verbose logging
 $ErrorActionPreference = "Stop" 
 
-# Authenticate with Azure Automation Run As account (service principal) 
-$connectionName = "AzureRunAsConnection"
-#$connectionName = "AzureRunAsCertificate"
-
 try
 {
-    # Get the connection "AzureRunAsConnection"
-    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName
-
-    Write-Output "Logging in to Azure..."
-    Add-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null 
+    "Logging in to Azure..."
+    Connect-AzAccount -Identity
 }
 catch {
-    if (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = "Connection $connectionName not found."
-        throw $ErrorMessage
-    } else{
-        Write-Error -Message $_.Exception
-        throw $_.Exception
-    }
+    Write-Error -Message $_.Exception
+    throw $_.Exception
 }
-Write-Output "Authenticated with Automation Run As Account."  | timestamp 
+Write-Output "Authenticated with Automation System ID."  | timestamp 
 
 $startTime = Get-Date 
 Write-Output "Azure Automation local time: $startTime." | timestamp 
@@ -62,23 +39,30 @@ $authHeader = @{
 }
 Write-Output "Authentication Token acquired." | timestamp 
 
-#GET https://management.azure.com/subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/testrg/providers/Microsoft.DBForPostgreSql/flexibleServers/pgtestsvc1?api-version=2020-02-14-preview
-$dbserverInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionId + '/resourceGroups/' `
-    + $resourceGroupName + '/providers/Microsoft.DBForPostgreSql/flexibleServers/' `
-    + $resourceName + '?api-version=2021-06-01'
+# GET https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.DBforPostgreSQL/flexibleServers?api-version=2022-12-01
+$dbserverInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionId + '/providers/Microsoft.DBforPostgreSQL/flexibleServers?api-version=2022-12-01'
 
 $dbserverInfoResponse = Invoke-RestMethod -Uri $dbserverInfoRestUri -Method GET -Headers $authHeader
 
-Write-Output "database status is " + $dbserverInfoResponse.properties.state | timestamp
+$dbserverInfoResponse.value | ForEach-Object {
+    # /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    $idsplit = $_.id.split('/')
+    $subscriptions = $idsplit[2]
+    $resourceGroups = $idsplit[4]
+    $resourceName = $idsplit[8]
 
-if((($action -eq 'start') -And ($dbserverInfoResponse.properties.state -eq 'Stopped')) -Or (($action -eq 'stop') -And !($dbserverInfoResponse.properties.state -eq 'Stopped')))
-{
-    # POST https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DBForPostgreSql/flexibleServers/{serverName}/stop?api-version=2020-02-14-preview
-    # Invoke the REST API
-    $restUri='https://management.azure.com/subscriptions/' + $subscriptionid + '/resourceGroups/' `
-        + $resourcegroupname + '/providers/Microsoft.DBForPostgreSql/flexibleServers/' `
-        + $resourcename + '/'+ $action + '?api-version=2021-06-01'
-    $response = Invoke-RestMethod -Uri $restUri -Method POST -Headers $authHeader
+    if((($action -eq 'start') -And ($_.properties.state -eq 'Stopped')) -Or (($action -eq 'stop') -And !($_.properties.state -eq 'Stopped')))
+    {
+        # POST https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DBForPostgreSql/flexibleServers/{serverName}/stop?api-version=2020-02-14-preview
+        # Invoke the REST API
+        $restUri='https://management.azure.com/subscriptions/' + $subscriptions + '/resourceGroups/' `
+            + $resourceGroups + '/providers/Microsoft.DBForPostgreSql/flexibleServers/' `
+            + $resourceName + '/'+ $action + '?api-version=2021-06-01'
+        $stopMsg = 'STOP ' + $restUri
+        Write-Output $stopMsg | timestamp 
+        $response = Invoke-RestMethod -Uri $restUri -Method POST -Headers $authHeader
+    }
+
 }
 
 Write-Output "Script finished." | timestamp

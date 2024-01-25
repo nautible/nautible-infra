@@ -1,6 +1,7 @@
 module "vnet" {
   source    = "./modules/vnet"
   pjname    = var.pjname
+  rgname    = var.rgname
   location  = var.location
   vnet_cidr = var.vnet.vnet_cidr
 }
@@ -14,6 +15,7 @@ module "app" {
 module "static_web" {
   source                        = "./modules/staticweb"
   pjname                        = var.pjname
+  rgname                        = var.rgname
   location                      = var.location
   static_web_index_document     = var.static_web.index_document
   static_web_error_404_document = var.static_web.error_404_document
@@ -22,14 +24,15 @@ module "static_web" {
 module "acr" {
   source   = "./modules/acr"
   pjname   = var.pjname
+  rgname   = var.rgname
   location = var.location
 }
 
 module "aks" {
   source                                    = "./modules/aks"
   pjname                                    = var.pjname
+  rgname                                    = var.rgname
   location                                  = var.location
-  vnet_rg_name                              = module.vnet.vnet_rg_name
   vnet_name                                 = module.vnet.vnet_name
   subnet_cidrs                              = var.aks.subnet.cidrs
   subnet_names                              = var.aks.subnet.names
@@ -50,6 +53,7 @@ module "aks" {
 module "front_door" {
   source                               = "./modules/frontdoor"
   pjname                               = var.pjname
+  rgname                               = var.rgname
   location                             = var.location
   front_door_session_affinity_enabled  = var.frontdoor.session_affinity_enabled
   static_web_primary_web_host          = module.static_web.primary_web_host
@@ -61,6 +65,7 @@ module "front_door" {
 module "dns" {
   source                        = "./modules/dns"
   pjname                        = var.pjname
+  rgname                        = var.rgname
   location                      = var.location
   vnet_id                       = module.vnet.vnet_id
   privatelink_keyvault_enable   = var.dns.privatelink_keyvault_enable

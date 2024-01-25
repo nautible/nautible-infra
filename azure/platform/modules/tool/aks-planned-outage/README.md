@@ -12,5 +12,4 @@ AzureのautomationにてAKSを計画停止・起動する。夜間や土日を�
 ## 使い方
 * variables.tfの値を実行環境に合わせて編集する
 * terraform applyでデプロイする
-* Azureのコンソールから「実行アカウント＞Azure実行アカウント作成＞作成ボタン押下」
 

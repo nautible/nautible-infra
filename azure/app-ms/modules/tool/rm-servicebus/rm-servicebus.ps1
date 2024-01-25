@@ -8,32 +8,16 @@ filter timestamp {"[$(Get-Date -Format G)]: $_"}
 
 Write-Output "Script started." | timestamp
 
-# Authenticate with Azure Automation Run As account (service principal) 
-$connectionName = "AzureRunAsConnection"
-
 try
 {
-    # Get the connection "AzureRunAsConnection"
-    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName
-
-    Write-Output "Logging in to Azure..."
-    Add-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null 
+    "Logging in to Azure..."
+    Connect-AzAccount -Identity
 }
 catch {
-    if (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = "Connection $connectionName not found."
-        throw $ErrorMessage
-    } else{
-        Write-Error -Message $_.Exception
-        throw $_.Exception
-    }
+    Write-Error -Message $_.Exception
+    throw $_.Exception
 }
-Write-Output "Authenticated with Automation Run As Account."  | timestamp 
+Write-Output "Authenticated with Automation System ID."  | timestamp 
 
 $startTime = Get-Date 
 Write-Output "Azure Automation local time: $startTime." | timestamp 
@@ -51,10 +35,10 @@ Write-Output "Authentication Token acquired." | timestamp
 
 # get all service bus
 #https://management.azure.com/subscriptions/{subscriptionId}/providers/Microsoft.ServiceBus/namespaces?api-version=2021-11-01
-$clustorInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionId + '/providers/Microsoft.ServiceBus/namespaces?api-version=2021-11-01'
-$clustorInfoResponse = Invoke-RestMethod -Uri $clustorInfoRestUri -Method GET -Headers $authHeader
+$serviceBusInfoRestUri='https://management.azure.com/subscriptions/' + $subscriptionid + '/providers/Microsoft.ServiceBus/namespaces?api-version=2021-11-01'
+$ServiceBusInfoResponse = Invoke-RestMethod -Uri $serviceBusInfoRestUri -Method GET -Headers $authHeader
 
-$clustorInfoResponse.value | ForEach-Object{
+$ServiceBusInfoResponse.value | ForEach-Object{
 	$idsplit = $_.id.split('/')
 	$subscriptions = $idsplit[2]
 	$resourceGroups = $idsplit[4]

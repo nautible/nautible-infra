@@ -1,17 +1,22 @@
 provider "azurerm" {
   features {} // required but empty ok
 }
-resource "azurerm_resource_group" "plugin_planned_outage" {
-  name     = "${var.pjname}pluginplannedoutage"
-  location = var.location
-}
 
 resource "azurerm_automation_account" "plugin_planned_outage_account" {
   name                = "${var.pjname}pluginplannedoutage"
-  location            = azurerm_resource_group.plugin_planned_outage.location
-  resource_group_name = azurerm_resource_group.plugin_planned_outage.name
+  location            = var.location
+  resource_group_name = var.pjname
   sku_name            = "Basic"
-  tags                = {}
+  identity {
+    type = "SystemAssigned"
+  }
+  tags = {}
+}
+
+resource "azurerm_role_assignment" "automation_account_ra" {
+  scope                = "/subscriptions/${data.azurerm_subscription.current.subscription_id}"
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_automation_account.plugin_planned_outage_account.identity[0].principal_id
 }
 
 data "local_file" "auth_postgresql_start_stop_ps" {
@@ -20,8 +25,8 @@ data "local_file" "auth_postgresql_start_stop_ps" {
 
 resource "azurerm_automation_runbook" "auth_postgresql_start_stop" {
   name                    = "authpostgresqlstartstop"
-  location                = azurerm_resource_group.plugin_planned_outage.location
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  location                = var.location
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   log_verbose             = "true"
   log_progress            = "true"
@@ -33,7 +38,7 @@ resource "azurerm_automation_runbook" "auth_postgresql_start_stop" {
 
 resource "azurerm_automation_schedule" "auth_postgresql_start_schedule" {
   name                    = "authpostgresqlstartschedule"
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   frequency               = "Week"
   interval                = 1
@@ -44,7 +49,7 @@ resource "azurerm_automation_schedule" "auth_postgresql_start_schedule" {
 
 resource "azurerm_automation_schedule" "auth_postgresql_stop_schedule" {
   name                    = "authpostgresqlstopschedule"
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   frequency               = "Week"
   interval                = 1
@@ -57,29 +62,25 @@ data "azurerm_subscription" "current" {
 }
 
 resource "azurerm_automation_job_schedule" "auth_postgresql_start_job_schedule" {
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   schedule_name           = azurerm_automation_schedule.auth_postgresql_start_schedule.name
   runbook_name            = azurerm_automation_runbook.auth_postgresql_start_stop.name
 
   parameters = {
-    subscriptionid    = data.azurerm_subscription.current.subscription_id
-    resourcegroupname = var.auth_postgresql_rg_name
-    resourcename      = var.auth_postgresql_resource_name
-    action            = "start"
+    subscriptionid = data.azurerm_subscription.current.subscription_id
+    action         = "start"
   }
 }
 
 resource "azurerm_automation_job_schedule" "auth_postgresql_stop_job_schedule" {
-  resource_group_name     = azurerm_resource_group.plugin_planned_outage.name
+  resource_group_name     = var.pjname
   automation_account_name = azurerm_automation_account.plugin_planned_outage_account.name
   schedule_name           = azurerm_automation_schedule.auth_postgresql_stop_schedule.name
   runbook_name            = azurerm_automation_runbook.auth_postgresql_start_stop.name
 
   parameters = {
-    subscriptionid    = data.azurerm_subscription.current.subscription_id
-    resourcegroupname = var.auth_postgresql_rg_name
-    resourcename      = var.auth_postgresql_resource_name
-    action            = "stop"
+    subscriptionid = data.azurerm_subscription.current.subscription_id
+    action         = "stop"
   }
 }

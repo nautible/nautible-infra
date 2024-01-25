@@ -12,7 +12,7 @@ variable "auth" {
   default = {
     # postgresql variables
     postgres = {
-      version               = "13"
+      version               = "15"
       sku_name              = "B_Standard_B1ms"
       storage_mb            = 32768 # 32G
       backup_retention_days = 7

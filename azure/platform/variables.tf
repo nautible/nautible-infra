@@ -1,4 +1,5 @@
 variable "pjname" {}
+variable "rgname" {}
 variable "location" {}
 variable "vnet" {}
 variable "aks" {}

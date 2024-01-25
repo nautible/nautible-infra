@@ -1,8 +1,8 @@
 variable "pjname" {}
+variable "rgname" {}
 variable "location" {}
 variable "aks_subnet_ids" {}
 variable "vnet_id" {}
-variable "vnet_rg_name" {}
 variable "order_redis_version" {}
 variable "order_redis_capacity" {}
 variable "order_redis_family" {}
