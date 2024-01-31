@@ -1,3 +1,5 @@
+data "aws_caller_identity" "self" {}
+
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
   version                                = "19.20.0"

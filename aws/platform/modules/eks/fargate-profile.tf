@@ -1,5 +1,3 @@
-data "aws_caller_identity" "self" {}
-
 resource "aws_eks_fargate_profile" "eks_fargate_profile" {
   count                  = length(var.fargate_selectors) > 0 ? 1 : 0
   cluster_name           = module.eks.cluster_name
