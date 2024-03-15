@@ -11,6 +11,6 @@ output "private_subnet_arns" {
   value = module.vpc.private_subnet_arns
 }
 output "nat_instance_id" {
-  value = var.nat_instance_type == null ? "" : module.nat_instance[0].id[0]
+  value = var.nat_instance_type == null ? "" : module.nat_instance[0].id
 }
 
