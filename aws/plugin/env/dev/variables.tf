@@ -39,8 +39,8 @@ variable "eks" {
 # authのvariables。authのpluginを利用する場合は値を設定する
 variable "auth" {
   description = "auth設定"
-  # type    = string # authを利用しない場合。
-  # default = ""     # auth pluginを利用しない場合。
+  # type        = string # auth pluginを利用しない場合。
+  # default     = ""     # auth pluginを利用しない場合。
   type = object({
     postgres = object({
       engine_version       = string
@@ -63,7 +63,7 @@ variable "auth" {
 }
 
 variable "kong_apigateway" {
-  # type    = string # kong-apigatewayを利用しない場合。
+  # type    = string # kong-apigateway pluginを利用しない場合。
   # default = ""     # kong-apigateway pluginを利用しない場合。
   type = object({
     sqs = object({
@@ -73,6 +73,21 @@ variable "kong_apigateway" {
   default = {
     sqs = {
       message_retention_seconds = 60
+    }
+  }
+}
+
+variable "observation" {
+  # type    = string # observation pluginを利用しない場合。
+  # default = ""     # observation pluginを利用しない場合。
+  type = object({
+    loki = object({
+      name = string
+    })
+  })
+  default = {
+    loki = {
+      name = "test"
     }
   }
 }
