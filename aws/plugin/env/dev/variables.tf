@@ -80,14 +80,6 @@ variable "kong_apigateway" {
 variable "observation" {
   # type    = string # observation pluginを利用しない場合。
   # default = ""     # observation pluginを利用しない場合。
-  type = object({
-    loki = object({
-      name = string
-    })
-  })
-  default = {
-    loki = {
-      name = "test"
-    }
-  }
+  type    = string
+  default = "true"
 }

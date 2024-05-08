@@ -14,7 +14,9 @@ resource "aws_iam_policy" "loki_bucket_policy" {
           "s3:PutObjectTagging",
         ]
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.loki_bucket.bucket}/*"
+          "arn:aws:s3:::${aws_s3_bucket.loki_chunks_bucket.bucket}/*",
+          "arn:aws:s3:::${aws_s3_bucket.loki_ruler_bucket.bucket}/*",
+          "arn:aws:s3:::${aws_s3_bucket.loki_admin_bucket.bucket}/*"
         ]
       },
       {
@@ -23,7 +25,9 @@ resource "aws_iam_policy" "loki_bucket_policy" {
           "s3:ListBucket",
         ]
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.loki_bucket.bucket}"
+          "arn:aws:s3:::${aws_s3_bucket.loki_chunks_bucket.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.loki_ruler_bucket.bucket}",
+          "arn:aws:s3:::${aws_s3_bucket.loki_admin_bucket.bucket}"
         ]
       }
     ]
