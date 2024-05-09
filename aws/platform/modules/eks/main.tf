@@ -1,6 +1,8 @@
+data "aws_caller_identity" "self" {}
+
 module "eks" {
   source                                 = "terraform-aws-modules/eks/aws"
-  version                                = "19.20.0"
+  version                                = "19.21.0"
   cluster_version                        = var.cluster_version
   cluster_name                           = var.cluster_name
   subnet_ids                             = var.private_subnet_ids

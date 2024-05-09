@@ -1,6 +1,6 @@
 module "albc_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "4.0.0"
+  version = "5.1.0"
 
   name                             = "${var.cluster_name}-albc-sg"
   use_name_prefix                  = false
