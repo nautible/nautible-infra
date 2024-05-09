@@ -29,7 +29,7 @@ variable "vpc" {
     # デフォルト（NAT-instance typeを指定しない場合は）はNATGatewayを作成。
     # NAT-instance typeを指定した場合はNATInstanceを作成。
     nat_instance_type = null
-    #nat_instance_type = "t2.small"
+    #nat_instance_type = "t3.small"
   }
 }
 
@@ -72,9 +72,9 @@ variable "eks" {
       # cluster
       cluster = {
         # name
-        name = "nautible-dev-cluster-v1_28"
+        name = "nautible-dev-cluster-v1_29"
         # version
-        version = "1.28"
+        version = "1.29"
         # endpoint private access
         endpoint_private_access = true
         # endpoint public access
@@ -84,13 +84,13 @@ variable "eks" {
         # addons
         addons = {
           # coredns version
-          coredns_version = "v1.10.1-eksbuild.6"
+          coredns_version = "v1.10.1-eksbuild.7"
           # vpc-cni version
-          vpc_cni_version = "v1.15.4-eksbuild.1"
+          vpc_cni_version = "v1.16.2-eksbuild.1"
           # kube-proxy version
-          kube_proxy_version = "v1.28.2-eksbuild.2"
+          kube_proxy_version = "v1.28.4-eksbuild.4"
           # aws-ebs-csi-driver
-          ebs_csi_driver_version = "v1.25.0-eksbuild.1"
+          ebs_csi_driver_version = "v1.27.0-eksbuild.1"
         }
       }
       # fargate namespaces

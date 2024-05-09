@@ -19,3 +19,12 @@ module "kong-apigateway" {
   count                     = try(var.kong_apigateway, "") != "" ? 1 : 0
   message_retention_seconds = var.kong_apigateway.sqs.message_retention_seconds
 }
+
+module "observation" {
+  source                 = "./modules/observation"
+  count                  = try(var.observation, "") != "" ? 1 : 0
+  pjname                 = var.pjname
+  region                 = var.region
+  eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
+  oidc                   = substr(values(var.eks)[0].oidc.provider_arn, 40, -1)
+}

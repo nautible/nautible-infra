@@ -2,7 +2,7 @@
 module "nat_instance_security_group" {
   count   = var.nat_instance_type == null ? 0 : 1
   source  = "terraform-aws-modules/security-group/aws"
-  version = "4.0.0"
+  version = "5.1.0"
 
   name   = "${var.pjname}-nat-instance-sg"
   vpc_id = module.vpc.vpc_id
