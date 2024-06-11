@@ -39,8 +39,9 @@ module "nautible_aws_app" {
     private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
     private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
   }
-  eks   = local.target_eks
-  order = var.order
+  eks       = local.target_eks
+  order     = var.order
+  productdb = var.productdb
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {

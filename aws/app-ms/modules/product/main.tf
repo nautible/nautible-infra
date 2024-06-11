@@ -42,52 +42,15 @@ resource "aws_db_subnet_group" "product_db_dbsubnet" {
 
 resource "aws_db_parameter_group" "product_db_dbpg" {
   name        = "product-db-dbpg"
-  family      = "mysql5.7"
+  family      = var.parameter_family
   description = "db parameter group for product-db"
 
-  parameter {
-    name  = "character_set_client"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "character_set_connection"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "character_set_database"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "character_set_filesystem"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "character_set_results"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "character_set_server"
-    value = "utf8mb4"
-  }
-
-  parameter {
-    name  = "collation_connection"
-    value = "utf8mb4_general_ci"
-  }
-
-  parameter {
-    name  = "collation_server"
-    value = "utf8mb4_general_ci"
-  }
-
-  parameter {
-    name  = "time_zone"
-    value = "Asia/Tokyo"
+  dynamic "parameter" {
+    for_each = var.parameters
+    content {
+      name  = parameter.value.name
+      value = parameter.value.value
+    }
   }
 }
 
@@ -101,15 +64,16 @@ data "aws_ssm_parameter" "product_db_password" {
 
 resource "aws_db_instance" "product_db" {
   identifier                = "product-db"
-  allocated_storage         = 5
-  storage_type              = "gp2"
+  allocated_storage         = var.allocated_storage
+  storage_type              = var.storage_type
   engine                    = "mysql"
-  engine_version            = "5.7"
-  instance_class            = "db.t3.micro"
+  engine_version            = var.engine_version
+  instance_class            = var.instance_class
   db_name                   = "productdb"
   username                  = data.aws_ssm_parameter.product_db_user.value
   password                  = data.aws_ssm_parameter.product_db_password.value
   parameter_group_name      = aws_db_parameter_group.product_db_dbpg.name
+  option_group_name         = var.option_group_name
   backup_retention_period   = 1
   skip_final_snapshot       = false
   final_snapshot_identifier = "product-db-final-snapshot"

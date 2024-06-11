@@ -36,7 +36,6 @@ variable "eks" {
   }
 }
 
-
 # ORDER
 variable "order" {
   description = "ORDER設定"
@@ -62,3 +61,75 @@ variable "order" {
     }
   }
 }
+
+# Product
+variable "productdb" {
+  description = "商品DB用RDS設定"
+  type = object({
+    mysql = object({
+      engine_version    = string
+      instance_class    = string
+      option_group_name = string
+      storage_type      = string
+      allocated_storage = number
+    })
+    parameter_group = object({
+      family = string
+      parameters = list(object({
+        name  = string
+        value = string
+      }))
+    })
+  })
+  default = {
+    mysql = {
+      engine_version    = "8.0.36"
+      instance_class    = "db.t3.micro"
+      option_group_name = "default:mysql-8-0"
+      storage_type      = "gp2"
+      allocated_storage = 5
+    }
+    parameter_group = {
+      family = "mysql8.0"
+      parameters = [
+        {
+          name  = "character_set_client"
+          value = "utf8mb4"
+        },
+        {
+          name  = "character_set_connection"
+          value = "utf8mb4"
+        },
+        {
+          name  = "character_set_database"
+          value = "utf8mb4"
+        },
+        {
+          name  = "character_set_filesystem"
+          value = "utf8mb4"
+        },
+        {
+          name  = "character_set_results"
+          value = "utf8mb4"
+        },
+        {
+          name  = "character_set_server"
+          value = "utf8mb4"
+        },
+        {
+          name  = "collation_connection"
+          value = "utf8mb4_general_ci"
+        },
+        {
+          name  = "collation_server"
+          value = "utf8mb4_general_ci"
+        },
+        {
+          name  = "time_zone"
+          value = "Asia/Tokyo"
+        }
+      ]
+    }
+  }
+}
+
