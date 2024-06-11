@@ -51,11 +51,11 @@ variable "order" {
     # elasticache
     elasticache = {
       # engine version
-      engine_version = "6.x"
+      engine_version = "7.1"
       # node type
-      node_type = "cache.t2.micro"
+      node_type = "cache.t4g.micro"
       # parameter group name
-      parameter_group_name = "default.redis6.x"
+      parameter_group_name = "default.redis7"
       # port
       port = 6379
     }
