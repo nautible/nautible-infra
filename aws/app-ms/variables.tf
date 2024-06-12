@@ -4,4 +4,4 @@ variable "region" {}
 variable "vpc" {}
 variable "eks" {}
 variable "order" {}
-variable "productdb" {}
+variable "product" {}
