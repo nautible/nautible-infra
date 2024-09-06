@@ -28,3 +28,7 @@ output "albc_security_group_id" {
 output "albc_security_group_name" {
   value = module.albc_security_group.security_group_name
 }
+
+output "karpenter_queue" {
+  value = module.karpenter[0].queue_name
+}

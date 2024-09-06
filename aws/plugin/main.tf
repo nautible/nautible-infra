@@ -21,10 +21,9 @@ module "kong-apigateway" {
 }
 
 module "observation" {
-  source                 = "./modules/observation"
-  count                  = try(var.observation, "") != "" ? 1 : 0
-  pjname                 = var.pjname
-  region                 = var.region
-  eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
-  oidc                   = substr(values(var.eks)[0].oidc.provider_arn, 40, -1)
+  source        = "./modules/observation"
+  count         = try(var.observation, "") != "" ? 1 : 0
+  pjname        = var.pjname
+  region        = var.region
+  cluster_names = values(var.eks).*.cluster.name
 }

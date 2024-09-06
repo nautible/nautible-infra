@@ -63,23 +63,23 @@ variable "auth" {
 }
 
 variable "kong_apigateway" {
-  # type    = string # kong-apigateway pluginを利用しない場合。
-  # default = ""     # kong-apigateway pluginを利用しない場合。
-  type = object({
-    sqs = object({
-      message_retention_seconds = number
-    })
-  })
-  default = {
-    sqs = {
-      message_retention_seconds = 60
-    }
-  }
+  type    = string # kong-apigateway pluginを利用しない場合。
+  default = ""     # kong-apigateway pluginを利用しない場合。
+  # type = object({
+  #   sqs = object({
+  #     message_retention_seconds = number
+  #   })
+  # })
+  # default = {
+  #   sqs = {
+  #     message_retention_seconds = 60
+  #   }
+  # }
 }
 
 variable "observation" {
   # type    = string # observation pluginを利用しない場合。
   # default = ""     # observation pluginを利用しない場合。
   type    = string
-  default = "true"
+  default = ""
 }

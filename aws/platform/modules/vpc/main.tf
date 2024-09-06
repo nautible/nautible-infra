@@ -25,6 +25,7 @@ module "vpc" {
 
   private_subnet_tags = merge(
     { for v in var.eks_cluster_names : "kubernetes.io/cluster/${v}" => "shared" },
+    { for v in var.eks_cluster_names : "karpenter.sh/discovery" => "${v}" },
     {
       "kubernetes.io/role/internal-elb" = "1"
       "Name"                            = "${var.pjname}-private-subnet"

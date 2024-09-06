@@ -36,6 +36,7 @@ module "eks" {
   ng_ami_type                                   = each.value.node_group.ami_type
   ng_disk_size                                  = each.value.node_group.disk_size
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
+  use_karpenter                                 = each.value.use_karpenter
 }
 
 module "route53" {

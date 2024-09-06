@@ -26,6 +26,9 @@ output "eks" {
       oidc = {
         provider_arn = v.oidc_provider_arn
       }
+      karpenter = {
+        queue_name = v.karpenter_queue
+      }
     }
   }
 }

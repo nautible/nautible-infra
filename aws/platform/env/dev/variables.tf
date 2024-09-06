@@ -65,6 +65,7 @@ variable "eks" {
       disk_size     = number
     })
     albc_security_group_cloudfront_prefix_list_id = string
+    use_karpenter                                 = bool
   }))
 
   default = [
@@ -114,11 +115,13 @@ variable "eks" {
         instance_type = "t3.medium"
         # ami type
         ami_type = "AL2_x86_64"
-        # disk size
+        # disk sizec
         disk_size = 16
       }
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+      # karpenter
+      use_karpenter = false
     }
   ]
 }
