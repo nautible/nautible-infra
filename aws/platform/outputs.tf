@@ -18,6 +18,10 @@ output "eks" {
         role_name         = v.node_role_name
         security_group_id = v.node_security_group_id
       }
+      albc = {
+        security_group_id   = v.albc_security_group_id
+        security_group_name = v.albc_security_group_name
+      }
       oidc = {
         provider_arn = v.oidc_provider_arn
       }
