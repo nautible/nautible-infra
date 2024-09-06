@@ -36,6 +36,15 @@ module "eks" {
   ng_ami_type                                   = each.value.node_group.ami_type
   ng_disk_size                                  = each.value.node_group.disk_size
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
+  albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
+  csi_driver_role_arn                           = module.eks-pod-identity.csi_driver_role_arn
+  autoscaler_role_arn                           = module.eks-pod-identity.autoscaler_role_arn
+}
+
+module "eks-pod-identity" {
+  source = "./modules/eks-pod-identity"
+
+  pjname = var.pjname
 }
 
 module "route53" {

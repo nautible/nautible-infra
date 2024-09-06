@@ -1,50 +1,52 @@
 data "aws_caller_identity" "self" {}
 
 module "eks" {
-  source                                 = "terraform-aws-modules/eks/aws"
-  version                                = "19.21.0"
-  cluster_version                        = var.cluster_version
-  cluster_name                           = var.cluster_name
-  subnet_ids                             = var.private_subnet_ids
-  vpc_id                                 = var.vpc_id
-  cluster_endpoint_private_access        = var.cluster_endpoint_private_access
-  cluster_endpoint_public_access         = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs   = var.cluster_endpoint_public_access_cidrs
-  cluster_security_group_name            = "${var.cluster_name}-eks-cp-sg"
-  cluster_security_group_use_name_prefix = false
-  node_security_group_name               = "${var.cluster_name}-eks-node-common-sg"
-  node_security_group_use_name_prefix    = false
-  iam_role_name                          = "${var.cluster_name}-AmazonEKSClusterRole"
-  iam_role_use_name_prefix               = false
+  source                                   = "terraform-aws-modules/eks/aws"
+  version                                  = "20.24.0"
+  cluster_version                          = var.cluster_version
+  cluster_name                             = var.cluster_name
+  subnet_ids                               = var.private_subnet_ids
+  vpc_id                                   = var.vpc_id
+  cluster_endpoint_private_access          = var.cluster_endpoint_private_access
+  cluster_endpoint_public_access           = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
+  cluster_security_group_name              = "${var.cluster_name}-eks-cp-sg"
+  cluster_security_group_use_name_prefix   = false
+  node_security_group_name                 = "${var.cluster_name}-eks-node-common-sg"
+  node_security_group_use_name_prefix      = false
+  iam_role_name                            = "${var.cluster_name}-AmazonEKSClusterRole"
+  iam_role_use_name_prefix                 = false
+  authentication_mode                      = "API_AND_CONFIG_MAP"
+  enable_cluster_creator_admin_permissions = true
 
   cluster_addons = {
     coredns = {
-      name              = "coredns"
-      resolve_conflicts_create = "OVERWRITE"
-      resolve_conflicts_update = "OVERWRITE"
-      addon_version     = var.cluster_addons_coredns_version
+      name                        = "coredns"
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = var.cluster_addons_coredns_version
     }
     kube-proxy = {
-      name              = "kube-proxy"
-      resolve_conflicts_create = "OVERWRITE"
-      resolve_conflicts_update = "OVERWRITE"
-      addon_version     = var.cluster_addons_kube_proxy_version
+      name                        = "kube-proxy"
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = var.cluster_addons_kube_proxy_version
     }
     vpc-cni = {
-      name              = "vpc-cni"
-      before_compute    = true
-      resolve_conflicts_create = "OVERWRITE"
-      resolve_conflicts_update = "OVERWRITE"
-      addon_version     = var.cluster_addons_vpc_cni_version
-      configuration_values = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"WARM_PREFIX_TARGET\":\"1\"}}"     
+      name                        = "vpc-cni"
+      before_compute              = true
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = var.cluster_addons_vpc_cni_version
+      configuration_values        = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"WARM_PREFIX_TARGET\":\"1\"}}"
     }
     aws-ebs-csi-driver = {
-      name                     = "aws-ebs-csi-driver"
-      resolve_conflicts_create = "OVERWRITE"
-      resolve_conflicts_update = "OVERWRITE"
-      service_account_role_arn = "arn:aws:iam::${data.aws_caller_identity.self.account_id}:role/${var.cluster_name}-AmazonEKS_EBS_CSI_DriverRole"
-      addon_version            = var.cluster_addons_ebs_csi_driver_version
+      name                        = "aws-ebs-csi-driver"
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
+      addon_version               = var.cluster_addons_ebs_csi_driver_version
     }
+    eks-pod-identity-agent = {}
   }
 
   eks_managed_node_group_defaults = {
@@ -70,7 +72,7 @@ module "eks" {
       instance_types      = [var.ng_instance_type]
 
       enable_bootstrap_user_data = true
-      pre_bootstrap_user_data = <<-EOT
+      pre_bootstrap_user_data    = <<-EOT
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="//"
 
