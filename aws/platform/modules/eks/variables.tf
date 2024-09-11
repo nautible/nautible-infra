@@ -22,3 +22,6 @@ variable "cluster_addons_kube_proxy_version" {}
 variable "cluster_addons_ebs_csi_driver_version" {}
 variable "fargate_selectors" {}
 variable "albc_security_group_cloudfront_prefix_list_id" {}
+variable "albc_role_arn" {}
+variable "csi_driver_role_arn" {}
+variable "autoscaler_role_arn" {}
