@@ -1,4 +1,4 @@
-variable "pjname" {
+variable "project" {
   description = "プロジェクト名称"
 }
 
