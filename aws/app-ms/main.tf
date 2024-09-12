@@ -1,6 +1,6 @@
 module "common" {
   source                              = "./modules/common"
-  pjname                              = var.pjname
+  pjname                              = local.pjname
   region                              = var.region
   platform_pjname                     = var.platform_pjname
   eks_oidc_provider_arns              = values(var.eks).*.oidc.provider_arn
@@ -9,7 +9,7 @@ module "common" {
 
 module "product" {
   source                      = "./modules/product"
-  pjname                      = var.pjname
+  pjname                      = local.pjname
   platform_pjname             = var.platform_pjname
   vpc_id                      = var.vpc.vpc_id
   private_subnets             = var.vpc.private_subnets
@@ -27,22 +27,22 @@ module "product" {
 
 module "customer" {
   source = "./modules/customer"
-  pjname = var.pjname
+  pjname = local.pjname
 }
 
 module "stock" {
   source = "./modules/stock"
-  pjname = var.pjname
+  pjname = local.pjname
 }
 
 module "stockbatch" {
   source = "./modules/stockbatch"
-  pjname = var.pjname
+  pjname = local.pjname
 }
 
 module "order" {
   source                                 = "./modules/order"
-  pjname                                 = var.pjname
+  pjname                                 = local.pjname
   platform_pjname                        = var.platform_pjname
   vpc_id                                 = var.vpc.vpc_id
   private_subnets                        = var.vpc.private_subnets
@@ -57,10 +57,10 @@ module "order" {
 
 module "payment" {
   source = "./modules/payment"
-  pjname = var.pjname
+  pjname = local.pjname
 }
 
 module "delivery" {
   source = "./modules/delivery"
-  pjname = var.pjname
+  pjname = local.pjname
 }

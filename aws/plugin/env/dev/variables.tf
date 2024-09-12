@@ -1,7 +1,13 @@
 # Project name
-variable "pjname" {
-  default = "nautible-plugin-dev"
+variable "project" {
+  description = "プロジェクト名称 ex) nautible"
 }
+
+variable "environment" {
+  description = "環境名定義"
+  default     = "dev"
+}
+
 # AWS region
 variable "region" {
   default = "ap-northeast-1"

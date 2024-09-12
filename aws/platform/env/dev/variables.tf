@@ -1,11 +1,22 @@
 # Project name
-variable "pjname" {
-  default = "nautible-dev"
+variable "project" {
+  description = "プロジェクト名称 ex) nautible"
 }
+
+variable "environment" {
+  description = "環境名定義"
+  default     = "dev"
+}
+
 # AWS region
 variable "region" {
   default = "ap-northeast-1"
 }
+
+variable "github_organization" {
+  description = "CI/CD用のGitHub Organization名"
+}
+
 # create IAM resources(user,Role) or not
 variable "create_iam_resources" {
   default = true
@@ -147,17 +158,15 @@ variable "oidc" {
   description = "OIDC用設定"
   type = object({
     # 既存のoidc providerを利用する場合はarnを指定する
-    oidc_provider_arn   = string
-    url                 = string
-    github_organization = string
-    client_id_list      = list(string)
-    thumbprint_list     = list(string)
+    oidc_provider_arn = string
+    url               = string
+    client_id_list    = list(string)
+    thumbprint_list   = list(string)
   })
   default = {
-    oidc_provider_arn   = ""
-    url                 = "https://token.actions.githubusercontent.com"
-    github_organization = "nautible"
-    client_id_list      = ["sts.amazonaws.com"]
-    thumbprint_list     = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
+    oidc_provider_arn = ""
+    url               = "https://token.actions.githubusercontent.com"
+    client_id_list    = ["sts.amazonaws.com"]
+    thumbprint_list   = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
   }
 }

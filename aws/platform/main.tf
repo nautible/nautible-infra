@@ -1,6 +1,6 @@
 module "vpc" {
   source               = "./modules/vpc"
-  pjname               = var.pjname
+  pjname               = local.pjname
   vpc_cidr             = var.vpc.vpc_cidr
   private_subnet_cidrs = var.vpc.private_subnet_cidrs
   public_subnet_cidrs  = var.vpc.public_subnet_cidrs
@@ -12,7 +12,7 @@ module "eks" {
   for_each = { for i in var.eks : i.cluster.name => i }
 
   source                                        = "./modules/eks"
-  pjname                                        = var.pjname
+  pjname                                        = local.pjname
   region                                        = var.region
   vpc_id                                        = module.vpc.vpc_id
   vpc_cidr                                      = var.vpc.vpc_cidr
@@ -44,19 +44,19 @@ module "eks" {
 module "eks-pod-identity" {
   source = "./modules/eks-pod-identity"
 
-  pjname = var.pjname
+  pjname = local.pjname
 }
 
 module "route53" {
   source = "./modules/route53"
-  pjname = var.pjname
+  pjname = local.pjname
   region = var.region
   vpc_id = module.vpc.vpc_id
 }
 
 module "cloudfront" {
   source                     = "./modules/cloudfront"
-  pjname                     = var.pjname
+  pjname                     = local.pjname
   region                     = var.region
   cloudfront_origin_dns_name = var.cloudfront.origin_dns_name
   service_api_path_pattern   = var.cloudfront.service_api_path_pattern
@@ -64,7 +64,8 @@ module "cloudfront" {
 
 module "oidc" {
   source               = "./modules/oidc"
-  pjname               = var.pjname
+  pjname               = local.pjname
   oidc                 = var.oidc
+  github_organization  = var.github_organization
   static_web_bucket_id = module.cloudfront.static_web_bucket_id
 }
