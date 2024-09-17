@@ -1,5 +1,5 @@
 variable "project" {
-  description = "プロジェクト名称"
+  description = "プロジェクト名称 ex) nautible"
   # default = ""
 }
 
