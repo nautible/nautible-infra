@@ -1,6 +1,7 @@
 # Project name
 variable "project" {
   description = "プロジェクト名称 ex) nautible"
+  # default = ""
 }
 
 variable "environment" {
@@ -15,6 +16,7 @@ variable "region" {
 
 variable "github_organization" {
   description = "CI/CD用のGitHub Organization名"
+  # default = ""
 }
 
 # create IAM resources(user,Role) or not

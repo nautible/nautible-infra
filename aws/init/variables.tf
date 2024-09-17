@@ -1,5 +1,6 @@
 variable "project" {
   description = "プロジェクト名称"
+  # default = ""
 }
 
 variable "environment" {

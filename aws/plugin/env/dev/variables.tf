@@ -1,6 +1,7 @@
 # Project name
 variable "project" {
   description = "プロジェクト名称 ex) nautible"
+  # default = ""
 }
 
 variable "environment" {
@@ -16,7 +17,7 @@ variable "region" {
 # platform tfstate
 variable "platform_tfstate" {
   description = "platform tfstate設定"
-  default = "nautible-dev-platform.tfstate"
+  default     = "nautible-dev-platform.tfstate"
 }
 
 locals {
