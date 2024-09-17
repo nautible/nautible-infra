@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "backup_bucket" {
-  bucket = var.backup_bucket_name
+  bucket = "${var.project}-${var.environment}-backup-${var.region}"
   lifecycle {
     prevent_destroy = true
   }
