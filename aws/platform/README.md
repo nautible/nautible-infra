@@ -32,9 +32,12 @@ platform
       └─vpc              ・・・vpc関連のリソースのmodule
 
 AWS-S3
-  │
-  {プロジェクト名}-{環境名}-tf-{リージョン}    ・・・Terraformを管理するためのS3バケット。バージョニング有効。（各変数はinit実行時に指定）
-      └─nautible-dev-platform.tfstate   ・・・Terraformのtfstate
+  │  
+  {プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+    └─nautible-dev-platform.tfstate        ・・・Terraformのtfstate
+
+  ※プロジェクト名、環境名、リージョンはinit実行時に指定
+  
 AWS-Dynamodb
   │
   └─nautible-dev-tfstate-lock           ・・・teffaromのtfstateのlockテーブル
