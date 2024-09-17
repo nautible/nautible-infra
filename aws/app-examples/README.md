@@ -22,7 +22,7 @@ app-examples
 
 AWS-S3
   │  
-  {プロジェクト名}-{環境名}-tf-{リージョン}    ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+  └─{プロジェクト名}-{環境名}-tf-{リージョン}    ・・・Terraformを管理するためのS3バケット。バージョニング有効。
     └─nautible-dev-app-examples.tfstate    ・・・Terraformのtfstate
 
   ※プロジェクト名、環境名、リージョンはinit実行時に指定
