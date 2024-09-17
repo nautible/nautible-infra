@@ -47,8 +47,10 @@ module "nautible_aws_app" {
 data "terraform_remote_state" "nautible_aws_platform" {
   backend = "s3"
   config = {
-    bucket = var.platform_tfstate.bucket
-    region = var.platform_tfstate.region
-    key    = var.platform_tfstate.key
+    # デフォルトではplatformと同じバケットを使用しているので、自身のバケット、リージョンを指定する
+    # 異なるバックエンドを利用する場合は個別に指定してください
+    bucket = local.backend_config.backend.config.bucket
+    region = local.backend_config.backend.config.region
+    key    = var.platform_tfstate
   }
 }
