@@ -16,10 +16,14 @@
 
 ### バックアップリソース構築
 
-- plugin/modules/backup/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-- plugin/modules/backup/env/devディレクトリで「terraform init」の実行
-- plugin/modules/backup/env/devディレクトリで「terraform plan」の実行と内容の確認
-- plugin/modules/backup/env/devディレクトリで「terraform apply」の実行
+- AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
+- AWS環境の構築
+  - plugin/modules/backup/env/dev の main.tf と variables.tf をファイル内のコメントを参考に用途にあわせて修正
+    - projectはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+  - plugin/modules/backup/env/dev ディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
+    - initの作成については[platformの構築手順](../../../platform/README.md)を参照
+  - plugin/modules/backup/env/devディレクトリで「terraform plan」の実行と内容の確認
+  - plugin/modules/backup/env/devディレクトリで「terraform apply」の実行
 
 ## Velero
 
