@@ -1,5 +1,5 @@
 output "pjname" {
-  value = var.pjname
+  value = "${var.project}-${var.environment}"
 }
 output "vpc" {
   value = module.nautible_aws_platform.vpc

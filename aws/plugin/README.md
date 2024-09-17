@@ -21,17 +21,19 @@ plugin
   └─modules　　・・・各種pluginリソースのまとまりでmodule化
       ├─auth             ・・・認証のリソースを作成するmodule
       ├─backup           ・・・バックアップ保管用ストレージリソースを作成するmodule。環境削除時もバックアップは残るように独立したプロジェクトで作成。
-      ├─init             ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─kong-apigateway  ・・・APIGatewayリソースのmodule
       └─observation      ・・・オブザーバビリティで使用するストレージ（S3）とアクセス権（IRSA）を作成するmodule
 
 AWS-S3
-  │
-  nautible-dev-plugin-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   nautible-dev-plugin.tfstate    ・・・Terraformのtfstate
+  │  
+  └─{プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+      └─nautible-dev-plugin.tfstate          ・・・Terraformのtfstate
+
+  ※プロジェクト名、環境名、リージョンはinit実行時に指定
+
 AWS-Dynamodb
   │
-  └─nautible-dev-plugin-tstate-lock ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-tstate-lock          ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各 module 配下のファイルは記載を割愛
@@ -56,15 +58,12 @@ AWS-Dynamodb
 
 ### 環境構築手順
 
-- AWS の接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
-- tfstate 管理用の S3 バケットの作成（管理者が一度だけ実行。Terraform で作成するのはアンチパターンですが、nautible を簡単に試せるようにするため用意しています）
-  - plugin/modules/init の main.tf と variables.tf をファイル内のコメントを参考に用途にあわせて修正
-  - plugin/modules/init ディレクトリで「terraform init」の実行
-  - plugin/modules/init ディレクトリで「terraform plan」の実行と内容の確認
-  - plugin/modules/init ディレクトリで「terraform apply」の実行
+- AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 - AWS 環境の構築
   - plugin/env/dev の main.tf と variables.tf をファイル内のコメントを参考に用途にあわせて修正
-  - plugin/env/dev ディレクトリで「terraform init」の実行
+    - projectはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+  - plugin/env/dev ディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
+    - initの作成については[platformの構築手順](../platform/README.md)を参照
   - plugin/env/dev ディレクトリで「terraform plan」の実行と内容の確認
   - plugin/env/dev ディレクトリで「terraform apply」の実行
 

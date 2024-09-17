@@ -5,18 +5,17 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    bucket  = "nautible-dev-plugin-tf-ap-northeast-1"
     region  = "ap-northeast-1"
-    key     = "nautible-dev-backup.tfstate"
+    key     = "nautible-dev-plugin-backup.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-plugin-tfstate-lock"
+    dynamodb_table = "nautible-dev-tfstate-lock"
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.30.0"
+      version = "~> 5.66.0"
     }
   }
 }
@@ -24,9 +23,11 @@ terraform {
 data "terraform_remote_state" "nautible_aws_platform" {
   backend = "s3"
   config = {
-    bucket = var.platform_tfstate.bucket
-    region = var.platform_tfstate.region
-    key    = var.platform_tfstate.key
+    # デフォルトではplatformと同じバケットを使用しているので、自身のバケット、リージョンを指定する
+    # 異なるバックエンドを利用する場合は個別に指定してください
+    bucket = local.backend_config.backend.config.bucket
+    region = local.backend_config.backend.config.region
+    key    = var.platform_tfstate
   }
 }
 
@@ -38,6 +39,8 @@ locals {
 
 module "backup" {
   source                              = "../../"
-  backup_bucket_name                  = var.backup_bucket_name
+  project                             = var.project
+  environment                         = var.environment
+  region                              = var.region
   eks_cluster_name_node_role_name_map = zipmap(values(local.target_eks).*.cluster.name, values(local.target_eks).*.node.role_name)
 }

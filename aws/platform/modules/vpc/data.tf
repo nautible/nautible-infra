@@ -1,7 +1,8 @@
 data "aws_region" "current" {
 }
 data "aws_availability_zones" "available" {
-  state = "available"
+  state         = "available"
+  exclude_names = ["ap-northeast-1b"]
 }
 
 data "aws_ami" "nat_ami_recent" {

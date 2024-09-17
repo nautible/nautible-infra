@@ -8,13 +8,13 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.8.0"
+      version = "~> 5.66.0"
     }
   }
 }
 
 resource "aws_s3_bucket" "tfstate_bucket" {
-  bucket = var.terraform_bucket_name
+  bucket = "${var.project}-${var.environment}-tf-${var.region}"
   lifecycle {
     prevent_destroy = true
   }
@@ -46,11 +46,11 @@ resource "aws_s3_bucket_public_access_block" "tfstate_bucket_public_access" {
 }
 
 resource "aws_dynamodb_table" "terraform_state_lock" {
-  count          = var.terraform_state_lock_table_name == null ? 0 : 1
-  name           = var.terraform_state_lock_table_name
-  read_capacity  = 1
-  write_capacity = 1
-  hash_key       = "LockID"
+  count        = var.use_lock_table ? 1 : 0
+  name         = "${var.project}-${var.environment}-tfstate-lock"
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key = "LockID"
 
   attribute {
     name = "LockID"

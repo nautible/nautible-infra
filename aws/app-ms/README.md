@@ -23,18 +23,19 @@ app-ms
       ├─order      ・・・注文のリソースのmodule
       ├─stock      ・・・在庫のリソースのmodule
       ├─stockbatch ・・・在庫(バッチ)のリソースのmodule
-      ├─init       ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
       ├─payment    ・・・決済のリソースのmodule
       └─customer   ・・・顧客のリソースのmodule
 
 AWS-S3
   │  
-  └─nautible-dev-app-ms-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   nautible-dev-app-ms.tfstate   ・・・Terraformのtfstate
+  └─{プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+      └─nautible-dev-app-ms.tfstate          ・・・Terraformのtfstate
+
+  ※プロジェクト名、環境名、リージョンはinit実行時に指定
+
 AWS-Dynamodb
   │  
-  └─nautible-dev-app-ms-tfstate-lock
-              ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-tfstate-lock         ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -60,14 +61,11 @@ AWS-Dynamodb
 ### 環境構築手順
 
 * AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
-* tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * app-ms/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * app-ms/modules/initディレクトリで「terraform init」の実行
-  * app-ms/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * app-ms/modules/initディレクトリで「terraform apply」の実行
 * AWS環境の構築
   * app-ms/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * app-ms/env/devディレクトリで「terraform init」の実行
+    * projectはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+  * app-examples/env/devディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
+    * initの作成については[platformの構築手順](../platform/README.md)を参照
   * app-ms/env/devディレクトリで「terraform plan」の実行と内容の確認
   * app-ms/env/devディレクトリで「terraform apply」の実行
 
