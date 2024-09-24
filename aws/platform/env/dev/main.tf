@@ -5,29 +5,30 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    bucket  = "nautible-dev-platform-tf-ap-northeast-1"
     region  = "ap-northeast-1"
     key     = "nautible-dev-platform.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-platform-tfstate-lock"
+    dynamodb_table = "nautible-dev-tfstate-lock"
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.30.0"
+      version = "~> 5.66.0"
     }
   }
 }
 
 module "nautible_aws_platform" {
   source               = "../../"
-  pjname               = var.pjname
+  project              = var.project
+  environment          = var.environment
   region               = var.region
   create_iam_resources = var.create_iam_resources
   vpc                  = var.vpc
   eks                  = var.eks
   cloudfront           = var.cloudfront
   oidc                 = var.oidc
+  github_organization  = var.github_organization
 }

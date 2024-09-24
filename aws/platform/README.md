@@ -7,6 +7,9 @@ VPCやSubnetなど開発の基礎となるAWSリソースを管理する
 ### Terraform構成
 
 ```text
+init
+  ├─ main.tf      ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
+  └─ variables.tf 
 platform
   │  main.tf      ・・・リソース定義の全量を定義する(全moduleの実行定義)
   │  variables.tf
@@ -20,22 +23,24 @@ platform
   │      │  variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
-      ├─cloudfront    ・・・cloudfront関連のリソースのmodule
-      ├─eks           ・・・eks関連のリソースのmodule
-      ├─init          ・・・このTerraformリソース全体の初期化用のmodule。tfstate管理のS3バケット作成など。
-      ├─oidc          ・・・OpenIDConnectの利用に必要となるmodule
-      ├─route53       ・・・route53関連のリソースのmodule
-      ├─tool          ・・・ツール類
-      └─vpc           ・・・vpc関連のリソースのmodule
+      ├─cloudfront       ・・・cloudfront関連のリソースのmodule
+      ├─eks              ・・・eks関連のリソースのmodule
+      ├─eks-pod-identity ・・・EKS Pod Identityで付与するIAMロール/ポリシー
+      ├─oidc             ・・・OpenIDConnectの利用に必要となるmodule
+      ├─route53          ・・・route53関連のリソースのmodule
+      ├─tool             ・・・ツール類
+      └─vpc              ・・・vpc関連のリソースのmodule
 
 AWS-S3
-  │
-  └─nautible-dev-platform-tf-ap-northeast-1 ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-        │   nautible-dev-platform.tfstate   ・・・Terraformのtfstate
+  │  
+  └─{プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+      └─nautible-dev-platform.tfstate        ・・・Terraformのtfstate
+
+  ※プロジェクト名、環境名、リージョンはinit実行時に指定
+
 AWS-Dynamodb
   │
-  └─nautible-dev-platform-tfstate-lock
-              ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-tfstate-lock           ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -77,13 +82,15 @@ AWS-Dynamodb
 
 * AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
 * tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * platform/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * platform/modules/initディレクトリで「terraform init」の実行
-  * platform/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * platform/modules/initディレクトリで「terraform apply」の実行
+  * initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
+    * projectはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+  * initディレクトリで「terraform init」の実行
+  * initディレクトリで「terraform plan」の実行と内容の確認
+  * initディレクトリで「terraform apply」の実行
 * AWS環境の構築
   * platform/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * platform/env/devディレクトリで「terraform init」の実行
+    * projectとgithub_organizationはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+  * platform/env/devディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
   * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
   * platform/env/devディレクトリで「terraform apply」の実行
   * IstioのIngressgatewayのロードバランサー作成後に、platform/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。

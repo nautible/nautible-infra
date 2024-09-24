@@ -19,7 +19,6 @@ output "eks" {
         security_group_id = v.node_security_group_id
       }
       albc = {
-        role_arn            = v.albc_role_arn
         security_group_id   = v.albc_security_group_id
         security_group_name = v.albc_security_group_name
       }

@@ -21,7 +21,7 @@ resource "aws_iam_role" "githubactions_ecr_access_role" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              "repo:${var.oidc.github_organization}/*"
+              "repo:${var.github_organization}/*"
             ]
           }
         }
@@ -85,7 +85,7 @@ resource "aws_iam_role" "githubactions_infra_role" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              "repo:${var.oidc.github_organization}/*"
+              "repo:${var.github_organization}/*"
             ]
           }
         }
@@ -164,7 +164,7 @@ resource "aws_iam_role" "githubactions_static_web_deploy_role" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              "repo:${var.oidc.github_organization}/*"
+              "repo:${var.github_organization}/*"
             ]
           }
         }

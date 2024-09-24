@@ -22,12 +22,14 @@ app-examples
 
 AWS-S3
   │  
-  └─nautible-dev-app-examples-tf-ap-northeast-1         ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-    └─nautible-dev-app-examples.tfstate                 ・・・Terraformのtfstate
+  └─{プロジェクト名}-{環境名}-tf-{リージョン}    ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+      └─nautible-dev-app-examples.tfstate     ・・・Terraformのtfstate
+
+  ※プロジェクト名、環境名、リージョンはinit実行時に指定
 
 AWS-Dynamodb
   │  
-  └─nautible-dev-app-examples-tfstate-lock              ・・・teffaromのtfstateのlockテーブル
+  └─nautible-dev-tfstate-lock              ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
@@ -54,14 +56,10 @@ AWS-Dynamodb
 ### 環境構築手順
 
 * AWSの接続プロファイルを環境変数に設定する「export AWS_PROFILE=profile_name」
-* tfstate管理用のS3バケットの作成（管理者が一度だけ実行。Terraformで作成するのはアンチパターンですが、nautibleを簡単に試せるようにするため用意しています）
-  * app-examples/modules/initのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * app-examples/modules/initディレクトリで「terraform init」の実行
-  * app-examples/modules/initディレクトリで「terraform plan」の実行と内容の確認
-  * app-examples/modules/initディレクトリで「terraform apply」の実行
 * AWS環境の構築
   * app-examples/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
-  * app-examples/env/devディレクトリで「terraform init」の実行
+  * app-examples/env/devディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
+    * initの作成については[platformの構築手順](../platform/README.md)を参照
   * app-examples/env/devディレクトリで「terraform plan」の実行と内容の確認
   * app-examples/env/devディレクトリで「terraform apply」の実行
 

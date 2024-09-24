@@ -1,7 +1,14 @@
 # Project name
-variable "pjname" {
-  default = "nautible-plugin-dev"
+variable "project" {
+  description = "プロジェクト名称 ex) nautible"
+  # default = ""
 }
+
+variable "environment" {
+  description = "環境名定義"
+  default     = "dev"
+}
+
 # AWS region
 variable "region" {
   default = "ap-northeast-1"
@@ -10,19 +17,11 @@ variable "region" {
 # platform tfstate
 variable "platform_tfstate" {
   description = "platform tfstate設定"
-  type = object({
-    bucket = string
-    region = string
-    key    = string
-  })
-  default = {
-    # platform tfstate bucket
-    bucket = "nautible-dev-platform-tf-ap-northeast-1"
-    # platform tfstate region
-    region = "ap-northeast-1"
-    # platform tfstate key
-    key = "nautible-dev-platform.tfstate"
-  }
+  default     = "nautible-dev-platform.tfstate"
+}
+
+locals {
+  backend_config = jsondecode(file(".terraform/terraform.tfstate"))
 }
 
 # EKS
@@ -53,9 +52,9 @@ variable "auth" {
   default = {
     # postgresql variables
     postgres = {
-      engine_version       = "14.7"
+      engine_version       = "16.3"
       instance_class       = "db.t3.micro"
-      parameter_group_name = "default.postgres14"
+      parameter_group_name = "default.postgres16"
       storage_type         = "gp2"
       allocated_storage    = 20
     }
@@ -63,23 +62,23 @@ variable "auth" {
 }
 
 variable "kong_apigateway" {
-  # type    = string # kong-apigateway pluginを利用しない場合。
-  # default = ""     # kong-apigateway pluginを利用しない場合。
-  type = object({
-    sqs = object({
-      message_retention_seconds = number
-    })
-  })
-  default = {
-    sqs = {
-      message_retention_seconds = 60
-    }
-  }
+  type    = string # kong-apigateway pluginを利用しない場合。
+  default = ""     # kong-apigateway pluginを利用しない場合。
+  # type = object({
+  #   sqs = object({
+  #     message_retention_seconds = number
+  #   })
+  # })
+  # default = {
+  #   sqs = {
+  #     message_retention_seconds = 60
+  #   }
+  # }
 }
 
 variable "observation" {
-  # type    = string # observation pluginを利用しない場合。
-  # default = ""     # observation pluginを利用しない場合。
-  type    = string
-  default = "true"
+  type    = string # observation pluginを利用しない場合。
+  default = ""     # observation pluginを利用しない場合。
+  # type    = string
+  # default = "true"
 }

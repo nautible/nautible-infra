@@ -1,7 +1,7 @@
 module "auth" {
   source                        = "./modules/auth"
   count                         = try(var.auth, "") != "" ? 1 : 0
-  pjname                        = var.pjname
+  pjname                        = local.pjname
   vpc_id                        = var.vpc.vpc_id
   region                        = var.region
   private_subnets               = var.vpc.private_subnets
@@ -23,7 +23,7 @@ module "kong-apigateway" {
 module "observation" {
   source                 = "./modules/observation"
   count                  = try(var.observation, "") != "" ? 1 : 0
-  pjname                 = var.pjname
+  pjname                 = local.pjname
   region                 = var.region
   eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
   oidc                   = substr(values(var.eks)[0].oidc.provider_arn, 40, -1)

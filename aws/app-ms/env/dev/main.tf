@@ -5,18 +5,17 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    bucket  = "nautible-dev-app-ms-tf-ap-northeast-1"
     region  = "ap-northeast-1"
     key     = "nautible-dev-app-ms.tfstate"
     encrypt = true
     # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-app-ms-tfstate-lock"
+    dynamodb_table = "nautible-dev-tfstate-lock"
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.30.0"
+      version = "~> 5.66.0"
     }
   }
 }
@@ -29,7 +28,8 @@ locals {
 
 module "nautible_aws_app" {
   source          = "../../"
-  pjname          = var.pjname
+  project         = var.project
+  environment     = var.environment
   region          = var.region
   platform_pjname = data.terraform_remote_state.nautible_aws_platform.outputs.pjname
   vpc = {
@@ -39,15 +39,18 @@ module "nautible_aws_app" {
     private_zone_id   = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_id
     private_zone_name = data.terraform_remote_state.nautible_aws_platform.outputs.route53.private_zone_name
   }
-  eks   = local.target_eks
-  order = var.order
+  eks     = local.target_eks
+  order   = var.order
+  product = var.product
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
   backend = "s3"
   config = {
-    bucket = var.platform_tfstate.bucket
-    region = var.platform_tfstate.region
-    key    = var.platform_tfstate.key
+    # デフォルトではplatformと同じバケットを使用しているので、自身のバケット、リージョンを指定する
+    # 異なるバックエンドを利用する場合は個別に指定してください
+    bucket = local.backend_config.backend.config.bucket
+    region = local.backend_config.backend.config.region
+    key    = var.platform_tfstate
   }
 }
