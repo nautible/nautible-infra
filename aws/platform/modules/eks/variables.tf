@@ -12,6 +12,7 @@ variable "ng_max_size" {}
 variable "ng_min_size" {}
 variable "ng_instance_type" {}
 variable "ng_ami_type" {}
+variable "ng_ami_id" {}
 variable "ng_disk_size" {}
 variable "cluster_endpoint_private_access" {}
 variable "cluster_endpoint_public_access" {}

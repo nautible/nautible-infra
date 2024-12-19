@@ -49,6 +49,7 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type                               = var.ng_ami_type
+    ami_id                                 = var.ng_ami_id
     disk_size                              = var.ng_disk_size
     update_launch_template_default_version = true
     iam_role_name                          = "${var.cluster_name}-AmazonEKSNodeRole"

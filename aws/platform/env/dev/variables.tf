@@ -62,6 +62,7 @@ variable "eks" {
       min_size      = number
       instance_type = string
       ami_type      = string
+      ami_id        = string
       disk_size     = number
     })
     albc_security_group_cloudfront_prefix_list_id = string
@@ -114,6 +115,11 @@ variable "eks" {
         instance_type = "t3.medium"
         # ami type
         ami_type = "AL2_x86_64"
+        # ami id
+        # Allows setting of specific AMI ID to be used for EKS node group creation.
+        # e.g. Ubuntu EKS Worker Node image
+        # **make sure pre_bootstrap_user_data in EKS module is valid for the image**
+        # ami_id = ""
         # disk size
         disk_size = 16
       }
