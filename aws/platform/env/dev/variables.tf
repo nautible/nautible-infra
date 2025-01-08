@@ -78,14 +78,7 @@ variable "eks" {
       ami_id                     = string
       enable_bootstrap_user_data = string
       pre_bootstrap_user_data    = string
-      post_bootstrap_user_data   = string
       cloudinit_pre_nodeadm = list(object({
-        content      = string
-        content_type = optional(string)
-        filename     = optional(string)
-        merge_type   = optional(string)
-      }))
-      cloudinit_post_nodeadm = list(object({
         content      = string
         content_type = optional(string)
         filename     = optional(string)
@@ -131,7 +124,7 @@ variable "eks" {
           }
         }
       ]
-      # nodegroup
+      # nodegroup デフォルトではAmazonLinux2023のノードを作成
       node_group = {
         # desired size
         desired_size = 3
@@ -144,26 +137,13 @@ variable "eks" {
         # ami type（ami_idを指定する場合は設定不要）
         ami_type = "AL2023_x86_64_STANDARD"
         # ami id（ami_typeを指定する場合は設定不要）
-        # 明示的にAMIを指定する場合もbootstrapの動作確認ができているAmazonLinux2の指定を推奨
         ami_id = ""
-        # bootstrap user data（AmazonLinux2のAMI_TYPEを指定した際に使用）
+        # pre_bootstrap_user_data（AmazonLinux2のAMI_TYPEを指定した際に利用）
         pre_bootstrap_user_data = ""
-        #         pre_bootstrap_user_data = <<-EOT
-        # MIME-Version: 1.0
-        # Content-Type: multipart/mixed; boundary="//"
-
-        # --//
-        # Content-Type: text/x-shellscript; charset="us-ascii"
-        # #!/bin/bash -xe
-        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
-        # --//--
-        #         EOT
-        # post_bootstrap_user_data
-        post_bootstrap_user_data = ""
-        # enable bootstrap user data（AmazonLinux2のAMI_IDを利用する際に指定）
+        # enable bootstrap user data（AmazonLinux2のAMI_IDを指定した際に利用）
         enable_bootstrap_user_data = ""
-        #enable_bootstrap_user_data = "--use-max-pods false --kubelet-extra-args '--max-pods=110'"
-        # cloudinit user data （AmazonLinux2023のAMI_TYPEを指定した際に使用）
+        # cloudinit_pre_nodeadm （AmazonLinux2023のAMI_TYPEを指定した際に利用）
+        # example https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/eks-managed-node-group/eks-al2023.tf
         cloudinit_pre_nodeadm = [
           {
             content_type = "application/node.eks.aws"
@@ -180,7 +160,22 @@ variable "eks" {
           EOT
           }
         ]
-        cloudinit_post_nodeadm = []
+
+        # enable_bootstrap_user_data 記載例
+        #enable_bootstrap_user_data = "--use-max-pods false --kubelet-extra-args '--max-pods=110'"
+
+        # pre_bootstrap_user_data 記載例
+        #         pre_bootstrap_user_data = <<-EOT
+        # MIME-Version: 1.0
+        # Content-Type: multipart/mixed; boundary="//"
+
+        # --//
+        # Content-Type: text/x-shellscript; charset="us-ascii"
+        # #!/bin/bash -xe
+        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
+        # --//--
+        #         EOT
+
         # disk size
         disk_size = 20
       }

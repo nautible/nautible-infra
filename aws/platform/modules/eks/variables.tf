@@ -16,9 +16,7 @@ variable "ng_ami_id" {}
 variable "ng_disk_size" {}
 variable "ng_enable_bootstrap_user_data" {}
 variable "ng_pre_bootstrap_user_data" {}
-variable "ng_post_bootstrap_user_data" {}
 variable "ng_cloudinit_pre_nodeadm" {}
-variable "ng_cloudinit_post_nodeadm" {}
 variable "cluster_endpoint_private_access" {}
 variable "cluster_endpoint_public_access" {}
 variable "cluster_endpoint_public_access_cidrs" {}

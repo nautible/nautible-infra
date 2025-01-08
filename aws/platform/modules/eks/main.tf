@@ -74,9 +74,7 @@ module "eks" {
       enable_bootstrap_user_data = true
       bootstrap_extra_args       = var.ng_enable_bootstrap_user_data
       pre_bootstrap_user_data    = var.ng_pre_bootstrap_user_data
-      post_bootstrap_user_data   = var.ng_post_bootstrap_user_data
       cloudinit_pre_nodeadm      = var.ng_cloudinit_pre_nodeadm
-      cloudinit_post_nodeadm     = var.ng_cloudinit_post_nodeadm
     }
   }
 
