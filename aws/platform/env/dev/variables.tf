@@ -124,7 +124,7 @@ variable "eks" {
           }
         }
       ]
-      # nodegroup デフォルトではAmazonLinux2023のノードを作成
+      # nodegroup
       node_group = {
         # desired size
         desired_size = 3
@@ -134,9 +134,10 @@ variable "eks" {
         min_size = 3
         # instance type
         instance_type = "t3.medium"
-        # ami type（ami_idを指定する場合は設定不要）
+        # ami_type（ami_idを指定する場合は設定不要）
         ami_type = "AL2023_x86_64_STANDARD"
-        # ami id（ami_typeを指定する場合は設定不要）
+        # ami_id（ami_typeを指定する場合は設定不要）
+        # なお、ami_idを指定する場合、追加のuser_data指定はAMIによるので個別に対応が必要
         ami_id = ""
         # pre_bootstrap_user_data（AmazonLinux2のAMI_TYPEを指定した際に利用）
         pre_bootstrap_user_data = ""
