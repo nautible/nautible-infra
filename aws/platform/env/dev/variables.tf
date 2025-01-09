@@ -94,9 +94,9 @@ variable "eks" {
       # cluster
       cluster = {
         # name
-        name = "nautible-dev-cluster-v1_29"
+        name = "nautible-dev-cluster-v1_31"
         # version
-        version = "1.29"
+        version = "1.31"
         # endpoint private access
         endpoint_private_access = true
         # endpoint public access
@@ -106,13 +106,13 @@ variable "eks" {
         # addons
         addons = {
           # coredns version
-          coredns_version = "v1.10.1-eksbuild.7"
+          coredns_version = "v1.11.4-eksbuild.2"
           # vpc-cni version
-          vpc_cni_version = "v1.16.2-eksbuild.1"
+          vpc_cni_version = "v1.19.2-eksbuild.1"
           # kube-proxy version
-          kube_proxy_version = "v1.28.4-eksbuild.4"
+          kube_proxy_version = "v1.31.3-eksbuild.2"
           # aws-ebs-csi-driver
-          ebs_csi_driver_version = "v1.27.0-eksbuild.1"
+          ebs_csi_driver_version = "v1.38.1-eksbuild.1"
         }
       }
       # fargate namespaces
