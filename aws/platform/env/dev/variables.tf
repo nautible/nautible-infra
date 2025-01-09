@@ -139,10 +139,28 @@ variable "eks" {
         # ami_id（ami_typeを指定する場合は設定不要）
         # なお、ami_idを指定する場合、追加のuser_data指定はAMIによるので個別に対応が必要
         ami_id = ""
+        # disk size
+        disk_size = 20
+
         # pre_bootstrap_user_data（AmazonLinux2のAMI_TYPEを指定した際に利用）
         pre_bootstrap_user_data = ""
+        # pre_bootstrap_user_data 記載例
+        #         pre_bootstrap_user_data = <<-EOT
+        # MIME-Version: 1.0
+        # Content-Type: multipart/mixed; boundary="//"
+
+        # --//
+        # Content-Type: text/x-shellscript; charset="us-ascii"
+        # #!/bin/bash -xe
+        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
+        # --//--
+        #         EOT
+
         # enable bootstrap user data（AmazonLinux2のAMI_IDを指定した際に利用）
         enable_bootstrap_user_data = ""
+        # enable_bootstrap_user_data 記載例
+        #enable_bootstrap_user_data = "--use-max-pods false --kubelet-extra-args '--max-pods=110'"
+
         # cloudinit_pre_nodeadm （AmazonLinux2023のAMI_TYPEを指定した際に利用）
         # example https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/eks-managed-node-group/eks-al2023.tf
         cloudinit_pre_nodeadm = [
@@ -161,24 +179,6 @@ variable "eks" {
           EOT
           }
         ]
-
-        # enable_bootstrap_user_data 記載例
-        #enable_bootstrap_user_data = "--use-max-pods false --kubelet-extra-args '--max-pods=110'"
-
-        # pre_bootstrap_user_data 記載例
-        #         pre_bootstrap_user_data = <<-EOT
-        # MIME-Version: 1.0
-        # Content-Type: multipart/mixed; boundary="//"
-
-        # --//
-        # Content-Type: text/x-shellscript; charset="us-ascii"
-        # #!/bin/bash -xe
-        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
-        # --//--
-        #         EOT
-
-        # disk size
-        disk_size = 20
       }
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
