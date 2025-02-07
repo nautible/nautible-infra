@@ -70,12 +70,21 @@ variable "eks" {
       })
     }))
     node_group = object({
-      desired_size  = number
-      max_size      = number
-      min_size      = number
-      instance_type = string
-      ami_type      = string
-      disk_size     = number
+      desired_size               = number
+      max_size                   = number
+      min_size                   = number
+      instance_type              = string
+      ami_type                   = string
+      ami_id                     = string
+      enable_bootstrap_user_data = string
+      pre_bootstrap_user_data    = string
+      cloudinit_pre_nodeadm = list(object({
+        content      = string
+        content_type = optional(string)
+        filename     = optional(string)
+        merge_type   = optional(string)
+      }))
+      disk_size = number
     })
     albc_security_group_cloudfront_prefix_list_id = string
   }))
@@ -85,9 +94,9 @@ variable "eks" {
       # cluster
       cluster = {
         # name
-        name = "nautible-dev-cluster-v1_29"
+        name = "nautible-dev-cluster-v1_31"
         # version
-        version = "1.29"
+        version = "1.31"
         # endpoint private access
         endpoint_private_access = true
         # endpoint public access
@@ -97,13 +106,13 @@ variable "eks" {
         # addons
         addons = {
           # coredns version
-          coredns_version = "v1.10.1-eksbuild.7"
+          coredns_version = "v1.11.4-eksbuild.2"
           # vpc-cni version
-          vpc_cni_version = "v1.16.2-eksbuild.1"
+          vpc_cni_version = "v1.19.2-eksbuild.1"
           # kube-proxy version
-          kube_proxy_version = "v1.28.4-eksbuild.4"
+          kube_proxy_version = "v1.31.3-eksbuild.2"
           # aws-ebs-csi-driver
-          ebs_csi_driver_version = "v1.27.0-eksbuild.1"
+          ebs_csi_driver_version = "v1.38.1-eksbuild.1"
         }
       }
       # fargate namespaces
@@ -125,10 +134,51 @@ variable "eks" {
         min_size = 3
         # instance type
         instance_type = "t3.medium"
-        # ami type
-        ami_type = "AL2_x86_64"
+        # ami_type（ami_idを指定する場合は設定不要）
+        ami_type = "AL2023_x86_64_STANDARD"
+        # ami_id（ami_typeを指定する場合は設定不要）
+        # なお、ami_idを指定する場合、追加のuser_data指定はAMIによるので個別に対応が必要
+        ami_id = ""
         # disk size
-        disk_size = 16
+        disk_size = 20
+
+        # pre_bootstrap_user_data（AmazonLinux2のAMI_TYPEを指定した際に利用）
+        pre_bootstrap_user_data = ""
+        # pre_bootstrap_user_data 記載例
+        #         pre_bootstrap_user_data = <<-EOT
+        # MIME-Version: 1.0
+        # Content-Type: multipart/mixed; boundary="//"
+
+        # --//
+        # Content-Type: text/x-shellscript; charset="us-ascii"
+        # #!/bin/bash -xe
+        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
+        # --//--
+        #         EOT
+
+        # enable bootstrap user data（AmazonLinux2のAMI_IDを指定した際に利用）
+        enable_bootstrap_user_data = ""
+        # enable_bootstrap_user_data 記載例
+        #enable_bootstrap_user_data = "--use-max-pods false --kubelet-extra-args '--max-pods=110'"
+
+        # cloudinit_pre_nodeadm （AmazonLinux2023のAMI_TYPEを指定した際に利用）
+        # example https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/examples/eks-managed-node-group/eks-al2023.tf
+        cloudinit_pre_nodeadm = [
+          {
+            content_type = "application/node.eks.aws"
+            content      = <<-EOT
+            ---
+            apiVersion: node.eks.aws/v1alpha1
+            kind: NodeConfig
+            spec:
+              kubelet:
+                config:
+                  shutdownGracePeriod: 30s
+                  featureGates:
+                    DisableKubeletCloudCredentialProviders: true
+          EOT
+          }
+        ]
       }
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
