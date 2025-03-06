@@ -5,6 +5,7 @@ variable "private_subnets" {}
 variable "eks_node_security_group_ids" {}
 variable "order_elasticache_node_type" {}
 variable "order_elasticache_parameter_group_name" {}
+variable "order_elasticache_engine" {}
 variable "order_elasticache_engine_version" {}
 variable "order_elasticache_port" {}
 variable "private_zone_id" {}

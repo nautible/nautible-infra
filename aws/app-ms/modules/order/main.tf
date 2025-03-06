@@ -40,6 +40,7 @@ resource "aws_elasticache_replication_group" "order_elasticache_replication_grou
   replication_group_id       = "order-statestore"
   description                = "order statestore"
   node_type                  = var.order_elasticache_node_type
+  engine                     = var.order_elasticache_engine
   engine_version             = var.order_elasticache_engine_version
   parameter_group_name       = var.order_elasticache_parameter_group_name
   port                       = var.order_elasticache_port
