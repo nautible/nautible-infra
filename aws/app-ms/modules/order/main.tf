@@ -50,11 +50,6 @@ resource "aws_elasticache_replication_group" "order_elasticache_replication_grou
   auth_token                 = data.aws_ssm_parameter.order_elasticache_password.value
 }
 
-resource "aws_elasticache_cluster" "order_elasticache" {
-  cluster_id           = "order-statestore"
-  replication_group_id = aws_elasticache_replication_group.order_elasticache_replication_group.id
-}
-
 resource "aws_route53_record" "order_statestore_r53record" {
   zone_id = var.private_zone_id
   name    = "order-statestore.${var.private_zone_name}"
