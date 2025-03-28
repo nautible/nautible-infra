@@ -42,6 +42,7 @@ variable "order" {
       engine               = string
       engine_version       = string
       node_type            = string
+      cache_clusters       = number
       parameter_group_name = string
       port                 = number
     })
@@ -55,6 +56,8 @@ variable "order" {
       engine_version = "8.0"
       # node type
       node_type = "cache.t4g.micro"
+      # number cache_clusters
+      cache_clusters = 1
       # parameter group name
       parameter_group_name = "default.valkey8"
       # port

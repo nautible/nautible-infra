@@ -50,6 +50,7 @@ module "order" {
   private_zone_name                      = var.vpc.private_zone_name
   eks_node_security_group_ids            = values(var.eks).*.node.security_group_id
   order_elasticache_node_type            = var.order.elasticache.node_type
+  order_elasticache_cache_clusters       = var.order.elasticache.cache_clusters
   order_elasticache_parameter_group_name = var.order.elasticache.parameter_group_name
   order_elasticache_engine               = var.order.elasticache.engine
   order_elasticache_engine_version       = var.order.elasticache.engine_version

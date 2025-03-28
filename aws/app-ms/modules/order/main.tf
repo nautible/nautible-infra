@@ -42,6 +42,7 @@ resource "aws_elasticache_replication_group" "order_elasticache_replication_grou
   node_type                  = var.order_elasticache_node_type
   engine                     = var.order_elasticache_engine
   engine_version             = var.order_elasticache_engine_version
+  num_cache_clusters         = var.order_elasticache_cache_clusters
   parameter_group_name       = var.order_elasticache_parameter_group_name
   port                       = var.order_elasticache_port
   subnet_group_name          = aws_elasticache_subnet_group.order_elasticache_subnet_group.name
