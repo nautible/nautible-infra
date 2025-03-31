@@ -16,7 +16,7 @@ variable "region" {
 # platform tfstate
 variable "platform_tfstate" {
   description = "platform tfstate設定"
-  default = "nautible-dev-platform.tfstate"
+  default     = "nautible-dev-platform.tfstate"
 }
 
 locals {
@@ -39,8 +39,10 @@ variable "order" {
   description = "ORDER設定"
   type = object({
     elasticache = object({
+      engine               = string
       engine_version       = string
       node_type            = string
+      cache_clusters       = number
       parameter_group_name = string
       port                 = number
     })
@@ -48,12 +50,16 @@ variable "order" {
   default = {
     # elasticache
     elasticache = {
+      # engine
+      engine = "valkey"
       # engine version
-      engine_version = "7.1"
+      engine_version = "8.0"
       # node type
       node_type = "cache.t4g.micro"
+      # number cache_clusters
+      cache_clusters = 1
       # parameter group name
-      parameter_group_name = "default.redis7"
+      parameter_group_name = "default.valkey8"
       # port
       port = 6379
     }
