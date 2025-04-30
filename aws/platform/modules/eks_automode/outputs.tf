@@ -21,7 +21,7 @@ output "cluster_primary_security_group_id" {
 }
 
 output "node_role_name" {
-  value = "${var.cluster_name}-AmazonEKSNodeRole" # eks module outputで出力されない
+  value = module.eks.node_iam_role_name
 }
 
 output "node_security_group_id" {
