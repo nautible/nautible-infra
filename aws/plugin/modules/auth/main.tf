@@ -54,42 +54,43 @@ resource "aws_db_instance" "keycloak_db" {
   db_subnet_group_name   = aws_db_subnet_group.keycloak_db_dbsubnet.name
 }
 
-resource "aws_iam_role" "auth_secret_access_role" {
-  name = "${var.pjname}-auth-secret-access-role"
+### OIDC用（コメントアウトで残しておく）
+# resource "aws_iam_role" "auth_secret_access_role" {
+#   name = "${var.pjname}-auth-secret-access-role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = "sts:AssumeRoleWithWebIdentity",
-        Principal = {
-          Federated = var.eks_oidc_provider_arns
-        }
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Action = "sts:AssumeRoleWithWebIdentity",
+#         Principal = {
+#           Federated = var.eks_oidc_provider_arns
+#         }
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_role_policy" "auth_secret_access_role_policy" {
-  name = "${var.pjname}-auth-secret-access-role-policy"
-  role = aws_iam_role.auth_secret_access_role.id
+# resource "aws_iam_role_policy" "auth_secret_access_role_policy" {
+#   name = "${var.pjname}-auth-secret-access-role-policy"
+#   role = aws_iam_role.auth_secret_access_role.id
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "secretsmanager:GetResourcePolicy",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:ListSecretVersionIds"
-        ],
-        Resource = [
-          "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.self.account_id}:secret:nautible-plugin-keycloak*"
-        ]
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "secretsmanager:GetResourcePolicy",
+#           "secretsmanager:GetSecretValue",
+#           "secretsmanager:DescribeSecret",
+#           "secretsmanager:ListSecretVersionIds"
+#         ],
+#         Resource = [
+#           "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.self.account_id}:secret:nautible-plugin-keycloak*"
+#         ]
+#       }
+#     ]
+#   })
+# }

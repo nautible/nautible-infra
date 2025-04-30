@@ -3,9 +3,12 @@ variable "vpc_id" {}
 variable "region" {}
 variable "private_subnets" {}
 variable "eks_node_security_group_ids" {}
-variable "eks_oidc_provider_arns" {}
+#variable "eks_oidc_provider_arns" {}
 variable "postgres_engine_version" {}
 variable "postgres_instance_class" {}
 variable "postgres_parameter_group_name" {}
 variable "postgres_storage_type" {}
 variable "postgres_allocated_storage" {}
+variable "eks_cluster_name" {}
+variable "namespace" {}
+variable "service_account" {}

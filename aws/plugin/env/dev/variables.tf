@@ -47,7 +47,10 @@ variable "auth" {
       parameter_group_name = string
       storage_type         = string
       allocated_storage    = number
-    })
+    }),
+    namespace       = string
+    service_account = string
+
   })
   default = {
     # postgresql variables
@@ -55,9 +58,11 @@ variable "auth" {
       engine_version       = "16.3"
       instance_class       = "db.t3.micro"
       parameter_group_name = "default.postgres16"
-      storage_type         = "gp2"
+      storage_type         = "gp3"
       allocated_storage    = 20
-    }
+    },
+    namespace       = "external-secrets"
+    service_account = "secretstore"
   }
 }
 
@@ -76,6 +81,19 @@ variable "kong_apigateway" {
   # }
 }
 
+variable "external_secrets" {
+  # type    = string # external-secrets pluginを利用しない場合。
+  # default = ""     # external-secrets pluginを利用しない場合。
+  type = object({
+    namespace       = string
+    service_account = string
+  })
+  default = {
+    namespace       = "external-secrets"
+    service_account = "external-secrets"
+  }
+
+}
 variable "observation" {
   type    = string # observation pluginを利用しない場合。
   default = ""     # observation pluginを利用しない場合。
