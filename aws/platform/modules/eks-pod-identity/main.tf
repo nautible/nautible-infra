@@ -1,3 +1,6 @@
+# EKS NodeGroup時にPodIdentity設定を追加するためのモジュール
+# EKS AutoModeではデフォルトで設定されるため、本モジュールの設定は利用しません
+
 module "load_balancer_controller_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
 
