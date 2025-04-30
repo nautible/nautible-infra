@@ -7,8 +7,13 @@ output "vpc" {
   }
 }
 
+locals {
+  # eks_modeに基づいて適切なモジュール出力を選択
+  eks_outputs = var.eks_mode == "automode" ? module.eks_automode : module.eks
+}
+
 output "eks" {
-  value = { for v in module.eks : v.cluster_name =>
+  value = { for v in local.eks_outputs : v.cluster_name =>
     {
       cluster = {
         name                      = v.cluster_name
@@ -28,6 +33,28 @@ output "eks" {
     }
   }
 }
+
+# output "eks_automode" {
+#   value = { for v in module.eks_automode : v.cluster_name =>
+#     {
+#       cluster = {
+#         name                      = v.cluster_name
+#         primary_security_group_id = v.cluster_primary_security_group_id
+#       }
+#       node = {
+#         role_name         = v.node_role_name
+#         security_group_id = v.node_security_group_id
+#       }
+#       albc = {
+#         security_group_id   = v.albc_security_group_id
+#         security_group_name = v.albc_security_group_name
+#       }
+#       oidc = {
+#         provider_arn = v.oidc_provider_arn
+#       }
+#     }
+#   }
+# }
 
 output "route53" {
   value = {

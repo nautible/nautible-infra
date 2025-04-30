@@ -15,7 +15,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.66.0"
+      version = "~> 5.96.0"
     }
   }
 }
@@ -27,7 +27,9 @@ module "nautible_aws_platform" {
   region               = var.region
   create_iam_resources = var.create_iam_resources
   vpc                  = var.vpc
+  eks_mode             = var.eks_mode
   eks                  = var.eks
+  eks_automode         = var.eks_automode
   cloudfront           = var.cloudfront
   oidc                 = var.oidc
   github_organization  = var.github_organization
