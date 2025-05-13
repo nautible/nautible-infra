@@ -1,0 +1,21 @@
+apiVersion: eks.amazonaws.com/v1
+kind: NodeClass
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: eks
+  name: general
+spec:
+  ephemeralStorage:
+    iops: 3000 # Range: 3000-16000
+    size: 20Gi # Range: 1-59000Gi or 1-64000G or 1-58Ti or 1-64T
+    throughput: 125 # Range: 125-1000
+  networkPolicy: DefaultAllow
+  networkPolicyEventLogs: Disabled
+  role: nautible-dev-cluster-v1_32-eks-auto-20250507004805307600000001 # FIXME ノード用ロール
+  securityGroupSelectorTerms: # FIXME ノードに付与するセキュリティグループ（タグ指定）
+  - tags:
+      Name: "nautible-dev-cluster-v1_32-eks-node-common-sg"
+  snatPolicy: Random
+  subnetSelectorTerms: # FIXME ノードを配置するサブネット（タグ指定）
+  - tags:
+      Name: "nautible-dev-private-subnet"

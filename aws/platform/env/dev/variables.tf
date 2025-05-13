@@ -47,6 +47,12 @@ variable "vpc" {
 }
 
 # EKS
+
+variable "eks_mode" {
+  description = "EKSの運用モード。automode or nodegroup"
+  default     = "automode"
+}
+
 variable "eks" {
   description = "EKS設定"
   type = list(object({
@@ -94,9 +100,9 @@ variable "eks" {
       # cluster
       cluster = {
         # name
-        name = "nautible-dev-cluster-v1_31"
+        name = "nautible-dev-cluster-v1_32"
         # version
-        version = "1.31"
+        version = "1.32"
         # endpoint private access
         endpoint_private_access = true
         # endpoint public access
@@ -179,6 +185,47 @@ variable "eks" {
           EOT
           }
         ]
+      }
+      # AWS LoadBalancerControlelr security group cloudfront prefix list id
+      albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
+    }
+  ]
+}
+
+variable "eks_automode" {
+  description = "EKS設定"
+  type = list(object({
+    cluster = object({
+      name                         = string
+      version                      = string
+      node_pools                   = list(string)
+      endpoint_private_access      = bool
+      endpoint_public_access       = bool
+      endpoint_public_access_cidrs = list(string)
+      addons = object({
+        metrics_server_version           = string
+        kube_state_metrics_version       = string
+        prometheus_node_exporter_version = string
+      })
+    })
+    albc_security_group_cloudfront_prefix_list_id = string
+  }))
+
+  default = [
+    {
+      # cluster
+      cluster = {
+        name                         = "nautible-dev-cluster-v1_32"
+        version                      = "1.32"
+        node_pools                   = ["system", "general-purpose"]
+        endpoint_private_access      = true
+        endpoint_public_access       = true
+        endpoint_public_access_cidrs = ["0.0.0.0/0"]
+        addons = {
+          metrics_server_version           = "v0.7.2-eksbuild.2"
+          kube_state_metrics_version       = "v2.14.0-eksbuild.1"
+          prometheus_node_exporter_version = "v1.8.2-eksbuild.2"
+        }
       }
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"

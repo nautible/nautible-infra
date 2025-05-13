@@ -45,6 +45,30 @@ module "eks" {
   autoscaler_role_arn                           = module.eks-pod-identity.autoscaler_role_arn
 }
 
+module "eks_automode" {
+  for_each = { for i in var.eks_automode : i.cluster.name => i }
+
+  source                                          = "./modules/eks_automode"
+  pjname                                          = local.pjname
+  region                                          = var.region
+  vpc_id                                          = module.vpc.vpc_id
+  vpc_cidr                                        = var.vpc.vpc_cidr
+  public_subnet_ids                               = module.vpc.public_subnets
+  private_subnet_ids                              = module.vpc.private_subnets
+  create_iam_resources                            = var.create_iam_resources
+  cluster_name                                    = each.value.cluster.name
+  cluster_version                                 = each.value.cluster.version
+  cluster_node_pools                              = each.value.cluster.node_pools
+  cluster_endpoint_private_access                 = each.value.cluster.endpoint_private_access
+  cluster_endpoint_public_access                  = each.value.cluster.endpoint_public_access
+  cluster_endpoint_public_access_cidrs            = each.value.cluster.endpoint_public_access_cidrs
+  cluster_addons_metrics_server_version           = each.value.cluster.addons.metrics_server_version
+  cluster_addons_kube_state_metrics_version       = each.value.cluster.addons.kube_state_metrics_version
+  cluster_addons_prometheus_node_exporter_version = each.value.cluster.addons.prometheus_node_exporter_version
+  albc_security_group_cloudfront_prefix_list_id   = each.value.albc_security_group_cloudfront_prefix_list_id
+  albc_role_arn                                   = module.eks-pod-identity.albc_role_arn
+}
+
 module "eks-pod-identity" {
   source = "./modules/eks-pod-identity"
 
