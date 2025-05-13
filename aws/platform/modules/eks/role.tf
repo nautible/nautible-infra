@@ -22,10 +22,13 @@ resource "aws_iam_role" "fargate_iam_role" {
   name               = "${var.cluster_name}-AmazonEKSFargatePodExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.fargate_assume_role_policy.json
 
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  ]
   tags = {
     Name = "${var.cluster_name}-AmazonEKSFargatePodExecutionRole"
   }
+}
+
+resource "aws_iam_role_policy_attachment" "fargate_iam_role_attach" {
+  count      = var.create_iam_resources ? 1 : 0
+  role       = aws_iam_role.fargate_iam_role[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
 }

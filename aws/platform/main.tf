@@ -34,7 +34,11 @@ module "eks" {
   ng_min_size                                   = each.value.node_group.min_size
   ng_instance_type                              = each.value.node_group.instance_type
   ng_ami_type                                   = each.value.node_group.ami_type
+  ng_ami_id                                     = each.value.node_group.ami_id
   ng_disk_size                                  = each.value.node_group.disk_size
+  ng_enable_bootstrap_user_data                 = each.value.node_group.enable_bootstrap_user_data
+  ng_pre_bootstrap_user_data                    = each.value.node_group.pre_bootstrap_user_data
+  ng_cloudinit_pre_nodeadm                      = each.value.node_group.cloudinit_pre_nodeadm
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
   albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
   csi_driver_role_arn                           = module.eks-pod-identity.csi_driver_role_arn

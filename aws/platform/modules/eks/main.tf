@@ -2,7 +2,7 @@ data "aws_caller_identity" "self" {}
 
 module "eks" {
   source                                   = "terraform-aws-modules/eks/aws"
-  version                                  = "20.24.0"
+  version                                  = "20.31.6"
   cluster_version                          = var.cluster_version
   cluster_name                             = var.cluster_name
   subnet_ids                               = var.private_subnet_ids
@@ -51,6 +51,7 @@ module "eks" {
 
   eks_managed_node_group_defaults = {
     ami_type                               = var.ng_ami_type
+    ami_id                                 = var.ng_ami_id
     disk_size                              = var.ng_disk_size
     update_launch_template_default_version = true
     iam_role_name                          = "${var.cluster_name}-AmazonEKSNodeRole"
@@ -65,23 +66,15 @@ module "eks" {
 
   eks_managed_node_groups = {
     "eks-default-node" = {
-      security_group_name = "${var.cluster_name}-eks-default-node-sg"
-      desired_size        = var.ng_desired_size
-      max_size            = var.ng_max_size
-      min_size            = var.ng_min_size
-      instance_types      = [var.ng_instance_type]
-
+      security_group_name        = "${var.cluster_name}-eks-default-node-sg"
+      desired_size               = var.ng_desired_size
+      max_size                   = var.ng_max_size
+      min_size                   = var.ng_min_size
+      instance_types             = [var.ng_instance_type]
       enable_bootstrap_user_data = true
-      pre_bootstrap_user_data    = <<-EOT
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="//"
-
---//
-Content-Type: text/x-shellscript; charset="us-ascii"
-#!/bin/bash -xe
-/etc/eks/bootstrap.sh '${var.cluster_name}' --use-max-pods false --kubelet-extra-args '--max-pods=110'
---//--
-      EOT
+      bootstrap_extra_args       = var.ng_enable_bootstrap_user_data
+      pre_bootstrap_user_data    = var.ng_pre_bootstrap_user_data
+      cloudinit_pre_nodeadm      = var.ng_cloudinit_pre_nodeadm
     }
   }
 

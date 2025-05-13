@@ -70,9 +70,6 @@ resource "aws_iam_role_policy" "githubactions_ecr_access_role_policy" {
 
 resource "aws_iam_role" "githubactions_infra_role" {
   name = "${var.pjname}-githubactions-infra-role"
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/ReadOnlyAccess"
-  ]
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -92,6 +89,11 @@ resource "aws_iam_role" "githubactions_infra_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "githubactions_infra_role_attach" {
+  role       = aws_iam_role.githubactions_infra_role.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy" "githubactions_infra_role_policy" {
