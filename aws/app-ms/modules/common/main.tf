@@ -1,80 +1,4 @@
-# policy for nautible app service.
-resource "random_id" "app_policy_random" {
-  byte_length = 8
-}
-
 data "aws_caller_identity" "self" {}
-
-resource "aws_iam_role_policy" "app_policy" {
-  for_each = var.eks_cluster_name_node_role_name_map
-  name     = "${each.key}-eks-app-policy"
-  role     = each.value
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Sid = "Dynamodb",
-        Action = [
-          "dynamodb:BatchGetItem",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:PartiQLUpdate",
-          "dynamodb:Scan",
-          "dynamodb:Query",
-          "dynamodb:UpdateItem",
-          "dynamodb:ListStreams",
-          "dynamodb:PartiQLSelect",
-          "dynamodb:GetShardIterator",
-          "dynamodb:PartiQLInsert",
-          "dynamodb:GetItem",
-          "dynamodb:GetRecords",
-          "dynamodb:PartiQLDelete"
-        ],
-        Effect   = "Allow",
-        Resource = "*"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "secretsmanager:GetResourcePolicy",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:ListSecretVersionIds"
-        ],
-        Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.self.account_id}:secret:nautible-*"
-      },
-      {
-        Effect   = "Allow",
-        Action   = "ssm:GetParameter",
-        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.self.account_id}:parameter/sample-*"
-      },
-      {
-        Effect   = "Allow",
-        Action   = "ssm:GetParameter",
-        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.self.account_id}:parameter/nautible-*"
-      },
-      {
-        Effect   = "Allow",
-        Action   = ["SQS:SendMessage", "SQS:SendMessageBatch", "SQS:ReceiveMessage", "SQS:DeleteMessage"],
-        Resource = "*"
-      },
-      {
-        Sid      = "DaprPubsubSqs",
-        Effect   = "Allow",
-        Action   = ["SQS:ChangeMessageVisibility", "SQS:CreateQueue", "SQS:SendMessage", "SQS:SendMessageBatch", "SQS:ReceiveMessage", "SQS:DeleteMessage", "SQS:DeleteMessageBatch", "SQS:GetQueueAttributes", "SQS:GetQueueUrl", "SQS:SetQueueAttributes", "SQS:TagQueue"],
-        Resource = "*"
-      },
-      {
-        Sid      = "DaprPubsubSns",
-        Effect   = "Allow",
-        Action   = ["SNS:ListTopics", "SNS:ListSubscriptionsByTopic", "SNS:GetTopicAttributes", "SNS:CreateTopic", "SNS:Subscribe", "SNS:Publish", "SNS:TagResource"],
-        Resource = "*"
-      }
-    ]
-  })
-}
 
 resource "aws_dynamodb_table" "sequence" {
   name           = "Sequence"
@@ -119,42 +43,106 @@ ITEM
   }
 }
 
-resource "aws_iam_role" "app_secret_access_role" {
-  name = "${var.pjname}-app-secret-access-role"
+resource "aws_eks_pod_identity_association" "app_ms_application_access_identity_association" {
+  for_each = toset(var.eks_cluster_name)
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = "sts:AssumeRoleWithWebIdentity",
-        Principal = {
-          Federated = var.eks_oidc_provider_arns
-        }
-      }
-    ]
-  })
+  cluster_name    = each.value
+  namespace       = "nautible-app-ms"
+  service_account = "nautible-app-ms-sa"
+  role_arn        = aws_iam_role.app_ms_application_access_role.arn
 }
 
-resource "aws_iam_role_policy" "app_secret_access_role_policy" {
-  name = "${var.pjname}-app-secret-access-role-policy"
-  role = aws_iam_role.app_secret_access_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "secretsmanager:GetResourcePolicy",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:ListSecretVersionIds"
-        ],
-        Resource = [
-          "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.self.account_id}:secret:nautible-app-ms-*"
-        ]
-      }
+data "aws_iam_policy_document" "app_ms_application_access_policy_document" {
+  statement {
+    sid    = "DynamodbAccess"
+    effect = "Allow"
+    actions = [
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:PartiQLUpdate",
+      "dynamodb:Scan",
+      "dynamodb:Query",
+      "dynamodb:UpdateItem",
+      "dynamodb:ListStreams",
+      "dynamodb:PartiQLSelect",
+      "dynamodb:GetShardIterator",
+      "dynamodb:PartiQLInsert",
+      "dynamodb:GetItem",
+      "dynamodb:GetRecords",
+      "dynamodb:PartiQLDelete"
     ]
-  })
+    resources = ["*"]
+  }
+
+  statement {
+    sid     = "SSMParameterAccess"
+    effect  = "Allow"
+    actions = ["ssm:GetParameter"]
+    resources = [
+      "arn:aws:ssm:${var.region}:${data.aws_caller_identity.self.account_id}:parameter/sample-*",
+      "arn:aws:ssm:${var.region}:${data.aws_caller_identity.self.account_id}:parameter/nautible-*"
+    ]
+  }
+
+  statement {
+    sid    = "SQSAccess"
+    effect = "Allow"
+    actions = [
+      "SQS:CreateQueue",
+      "SQS:TagQueue",
+      "SQS:GetQueueAttributes",
+      "SQS:SetQueueAttributes",
+      "SQS:SendMessage",
+      "SQS:ReceiveMessage",
+      "SQS:DeleteMessage"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "SNSAccess"
+    effect = "Allow"
+    actions = [
+      "SNS:ListTopics",
+      "SNS:ListSubscriptionsByTopic",
+      "SNS:GetTopicAttributes",
+      "SNS:CreateTopic",
+      "SNS:Subscribe",
+      "SNS:Publish",
+      "SNS:TagResource"
+    ]
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "podidentity_access_role_document" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:TagSession",
+      "sts:AssumeRole"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["pods.eks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "app_ms_application_access_role" {
+  name               = "${var.pjname}-app-ms-access-role"
+  assume_role_policy = data.aws_iam_policy_document.podidentity_access_role_document.json
+}
+
+resource "aws_iam_policy" "app_ms_application_access_policy" {
+  name   = "${var.pjname}-app-ms-application-access-policy"
+  policy = data.aws_iam_policy_document.app_ms_application_access_policy_document.json
+}
+
+resource "aws_iam_role_policy_attachment" "app_ms_application_access_policy_attachment" {
+  role       = aws_iam_role.app_ms_application_access_role.name
+  policy_arn = aws_iam_policy.app_ms_application_access_policy.arn
 }

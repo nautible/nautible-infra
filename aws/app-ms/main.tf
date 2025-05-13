@@ -1,10 +1,10 @@
 module "common" {
-  source                              = "./modules/common"
-  pjname                              = local.pjname
-  region                              = var.region
-  platform_pjname                     = var.platform_pjname
-  eks_oidc_provider_arns              = values(var.eks).*.oidc.provider_arn
-  eks_cluster_name_node_role_name_map = zipmap(values(var.eks).*.cluster.name, values(var.eks).*.node.role_name)
+  source                 = "./modules/common"
+  pjname                 = local.pjname
+  region                 = var.region
+  platform_pjname        = var.platform_pjname
+  eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
+  eks_cluster_name       = values(var.eks).*.cluster.name
 }
 
 module "product" {
