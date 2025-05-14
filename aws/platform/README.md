@@ -2,7 +2,7 @@
 
 ## Terraform
 
-VPCやSubnetなど開発の基礎となるAWSリソースを管理する
+VPCやSubnetなどのネットワーク構成、およびEKSクラスタなど開発の基礎となるAWSリソースを管理する
 
 ### Terraform構成
 
@@ -107,6 +107,7 @@ EKSクラスタ作成後、管理端末からアクセスするためにアク�
 ```bash
 aws eks update-kubeconfig --region region-code --name my-cluster
 ```
+参考） https://docs.aws.amazon.com/ja_jp/eks/latest/userguide/create-kubeconfig.html
 
 接続確認します
 
