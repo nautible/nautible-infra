@@ -17,14 +17,15 @@ platform
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
   │  ├─dev
   │  │   │  main.tf
-  │  │   │  variables.tf　・・・開発用の設定値
+  │  │   └─ variables.tf　・・・開発用の設定値
   │  └─prod
   │      │  main.tf
-  │      │  variables.tf　・・・本番用の設定値
+  │      └─ variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
       ├─cloudfront       ・・・cloudfront関連のリソースのmodule
-      ├─eks              ・・・eks関連のリソースのmodule
+      ├─eks              ・・・EKS(ManagedNodeGroup)関連のリソースのmodule
+      ├─eks-automode     ・・・EKS(AutoMode)関連のリソースのmodule
       ├─eks-pod-identity ・・・EKS Pod Identityで付与するIAMロール/ポリシー
       ├─oidc             ・・・OpenIDConnectの利用に必要となるmodule
       ├─route53          ・・・route53関連のリソースのmodule
@@ -74,6 +75,7 @@ AWS-Dynamodb
 * AWSアカウントの作成
 * [AWS cliのインストール](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-install.html)
 * AWS接続要の[cliプロファイル作成](https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-configure-profiles.html)
+* [kubectlのインストール](https://kubernetes.io/ja/docs/tasks/tools/)
 
 ### 環境構築手順
 
@@ -90,12 +92,49 @@ AWS-Dynamodb
 * AWS環境の構築
   * platform/env/devのmain.tfとvariables.tfをファイル内のコメントを参考に用途にあわせて修正
     * projectとgithub_organizationはvariables.tfでdefaultを指定しない場合、planおよびapply実行時に入力が促されます
+    * EKSのノード管理はManagedNodeGroupかAutoModeか選択します
+      * eks_mode=nodegroupの場合、変数eksの内容を定義します
+      * eks_mode=automodeの場合、変数eks_automodeの内容を定義します
   * platform/env/devディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
   * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
   * platform/env/devディレクトリで「terraform apply」の実行
   * IstioのIngressgatewayのロードバランサー作成後に、platform/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。
 
 ※prodの場合はplatform/env/devをprodに読み替えてください。
+
+EKSクラスタ作成後、管理端末からアクセスするためにアクセス情報を保存します
+
+```bash
+aws eks update-kubeconfig --region region-code --name my-cluster
+```
+
+接続確認します
+
+```bash
+kubectl get ns
+```
+
+出力結果例
+
+```
+NAME               STATUS   AGE
+default            Active   6h
+kube-node-lease    Active   6h
+kube-public        Active   6h
+kube-system        Active   6h
+```
+
+#### EKS AutoMode固有設定
+
+ノード管理にEKS AutoModeを選択している場合、EKSクラスタ作成後必要に応じて以下のマニフェストをデプロイします
+
+* 独自のスペック設定でノードを管理する場合
+  * manifests/eks-automode/nodeclass.yaml
+  * manifests/eks-automode/nodepool.yaml
+* 永続ストレージとしてEBSを利用する場合
+  * manifests/eks-automode/storageclass.yaml
+
+※ 設定は例なので、要件に応じて変更してください
 
 ### terraformのGitOpsとGithub Actionsについて
 
