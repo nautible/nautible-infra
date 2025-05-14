@@ -41,12 +41,11 @@ on:
 
 |Actions|用途|備考|
 |:--|:--|:--|
-|actions/checkout@v3|Githubリポジトリのチェックアウト||
-|actions/setup-java@v1|Javaの導入|Javaプロジェクトのみで必要|
-|actions/cache@v2|キャッシュ設定|Javaプロジェクトのみ使用（Mavenのキャッシュ）|
-|aws-actions/configure-aws-credentials@v1|AWS認証|イメージのプッシュ先がAWSの場合のみ必要|
+|actions/checkout@v4|Githubリポジトリのチェックアウト||
+|actions/setup-java@v4|Javaの導入|Javaプロジェクトのみで必要|
+|actions/cache@v4|キャッシュ設定|Javaプロジェクトのみ使用（Mavenのキャッシュ）|
+|aws-actions/configure-aws-credentials@v4|AWS認証|イメージのプッシュ先がAWSの場合のみ必要|
 |azure/login@v1|Azure認証|イメージのプッシュ先がAzureの場合のみ必要|
-|azure/docker-login@v1|ACRログイン|イメージのプッシュ先がAzureの場合のみ必要|
 
 ### ワークフロー
 
@@ -76,9 +75,9 @@ on:
 
 ```yaml
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Checkout manifest repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: nautible/nautible-app-ms-customer-manifest
         path: nautible-app-ms-customer-manifest
