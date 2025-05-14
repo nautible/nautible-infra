@@ -48,7 +48,7 @@ module "eks" {
 module "eks_automode" {
   for_each = { for i in var.eks_automode : i.cluster.name => i }
 
-  source                                          = "./modules/eks_automode"
+  source                                          = "./modules/eks-automode"
   pjname                                          = local.pjname
   region                                          = var.region
   vpc_id                                          = module.vpc.vpc_id
