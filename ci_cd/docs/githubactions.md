@@ -85,6 +85,38 @@ on:
 +       token: ${{ secrets.PAT }}
 ```
 
+## 静的解析
+
+### actionlint
+
+ローカルインストール
+
+```bash
+go install github.com/rhysd/actionlint/cmd/actionlint@latest
+```
+
+実行（Javaプロジェクト例）
+
+```bash
+actionlint .github/workflows/maven.yml
+```
+
+### ghalint
+
+ローカルインストール
+
+```bash
+go install github.com/suzuki-shunsuke/ghalint/cmd/ghalint@latest
+```
+
+実行
+
+ワークフロー（.github/workflows/*）チェック
+
+```bash
+ghalint run
+```
+
 ## 参考
 
 [公式ドキュメント](https://docs.github.com/ja/actions)
