@@ -32,11 +32,22 @@ module "kong_apigateway" {
   message_retention_seconds = var.kong_apigateway.sqs.message_retention_seconds
 }
 
-module "observation" {
-  source                 = "./modules/observation"
-  count                  = try(var.observation, "") != "" ? 1 : 0
+module "grafana" {
+  source                 = "./modules/grafana"
+  count                  = try(var.grafana, "") != "" ? 1 : 0
   pjname                 = local.pjname
   region                 = var.region
+  eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
+  oidc                   = substr(values(var.eks)[0].oidc.provider_arn, 40, -1)
+}
+
+module "openobserve" {
+  source                 = "./modules/openobserve"
+  count                  = try(var.openobserve, "") != "" ? 1 : 0
+  pjname                 = local.pjname
+  region                 = var.region
+  namespace              = var.openobserve.namespace
+  eks_cluster_name       = values(var.eks).*.cluster.name
   eks_oidc_provider_arns = values(var.eks).*.oidc.provider_arn
   oidc                   = substr(values(var.eks)[0].oidc.provider_arn, 40, -1)
 }

@@ -39,7 +39,8 @@ module "nautible_plugin" {
   auth             = var.auth
   external_secrets = var.external_secrets
   kong_apigateway  = var.kong_apigateway
-  observation      = var.observation
+  grafana          = var.grafana
+  openobserve      = var.openobserve
 }
 
 data "terraform_remote_state" "nautible_aws_platform" {
