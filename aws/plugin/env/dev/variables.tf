@@ -94,9 +94,22 @@ variable "external_secrets" {
   }
 
 }
-variable "observation" {
+variable "grafana" {
   type    = string # observation pluginを利用しない場合。
   default = ""     # observation pluginを利用しない場合。
   # type    = string
   # default = "true"
+}
+
+variable "openobserve" {
+  #type    = string # observation pluginを利用しない場合。
+  #default = ""     # observation pluginを利用しない場合。
+  type = object({
+    namespace       = string
+    service_account = string
+  })
+  default = {
+    namespace       = "openobserve"
+    service_account = "openobserve"
+  }
 }
