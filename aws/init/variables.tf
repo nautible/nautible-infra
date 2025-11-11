@@ -8,11 +8,6 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "use_lock_table" {
-  description = "ロックテーブル（DynamoDB）の利用有無"
-  default     = true
-}
-
 # aws region 
 variable "region" {
   default = "ap-northeast-1"
