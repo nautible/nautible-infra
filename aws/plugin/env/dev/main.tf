@@ -5,9 +5,9 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    region  = "ap-northeast-1"
-    key     = "nautible-dev-plugin.tfstate"
-    encrypt = true
+    region       = "ap-northeast-1"
+    key          = "nautible-dev-plugin.tfstate"
+    encrypt      = true
     use_lockfile = true
   }
 
@@ -26,10 +26,10 @@ locals {
 }
 
 module "nautible_plugin" {
-  source      = "../../"
-  project     = var.project
-  environment = var.environment
-  region      = var.region
+  source       = "../../"
+  project      = var.project
+  environment  = var.environment
+  region       = var.region
   cluster_name = var.cluster_name
   vpc = {
     vpc_id          = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id

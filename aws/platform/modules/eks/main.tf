@@ -1,18 +1,18 @@
 data "aws_caller_identity" "self" {}
 
 module "eks" {
-  source                                   = "terraform-aws-modules/eks/aws"
-  version                                  = "21.8.0"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "21.8.0"
 
   kubernetes_version                       = var.cluster_version
   name                                     = var.cluster_name
   subnet_ids                               = var.private_subnet_ids
   vpc_id                                   = var.vpc_id
-  endpoint_private_access          = var.cluster_endpoint_private_access
-  endpoint_public_access           = var.cluster_endpoint_public_access
-  endpoint_public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
-  security_group_name              = "${var.cluster_name}-eks-cp-sg"
-  security_group_use_name_prefix   = false
+  endpoint_private_access                  = var.cluster_endpoint_private_access
+  endpoint_public_access                   = var.cluster_endpoint_public_access
+  endpoint_public_access_cidrs             = var.cluster_endpoint_public_access_cidrs
+  security_group_name                      = "${var.cluster_name}-eks-cp-sg"
+  security_group_use_name_prefix           = false
   node_security_group_name                 = "${var.cluster_name}-eks-node-common-sg"
   node_security_group_use_name_prefix      = false
   iam_role_name                            = "${var.cluster_name}-AmazonEKSClusterRole"

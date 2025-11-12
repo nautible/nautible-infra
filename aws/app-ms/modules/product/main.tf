@@ -55,8 +55,8 @@ resource "aws_db_parameter_group" "product_db_dbpg" {
 }
 
 resource "aws_db_option_group" "product_db_dbog" {
-  name_prefix        = "${var.pjname}-mysql-8-4-og"
-  engine_name        = "mysql"
+  name_prefix          = "${var.pjname}-mysql-8-4-og"
+  engine_name          = "mysql"
   major_engine_version = "8.4"
 
   # 必要に応じてオプション設定を追加

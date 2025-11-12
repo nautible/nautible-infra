@@ -5,9 +5,9 @@ provider "aws" {
 terraform {
   # fix folloing value
   backend "s3" {
-    region  = "ap-northeast-1"
-    key     = "nautible-dev-app-ms.tfstate"
-    encrypt = true
+    region       = "ap-northeast-1"
+    key          = "nautible-dev-app-ms.tfstate"
+    encrypt      = true
     use_lockfile = true
   }
 

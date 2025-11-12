@@ -48,23 +48,23 @@ module "eks" {
 module "eks_automode" {
   for_each = var.eks_mode == "automode" ? { for i in var.eks_automode : i.cluster.name => i } : {}
 
-  source                                          = "./modules/eks-automode"
-  pjname                                          = local.pjname
-  region                                          = var.region
-  vpc_id                                          = module.vpc.vpc_id
-  vpc_cidr                                        = var.vpc.vpc_cidr
-  public_subnet_ids                               = module.vpc.public_subnets
-  private_subnet_ids                              = module.vpc.private_subnets
-  create_iam_resources                            = var.create_iam_resources
-  cluster_name                                    = each.value.cluster.name
-  cluster_version                                 = each.value.cluster.version
-  cluster_node_pools                              = each.value.cluster.node_pools
-  cluster_endpoint_private_access                 = each.value.cluster.endpoint_private_access
-  cluster_endpoint_public_access                  = each.value.cluster.endpoint_public_access
-  cluster_endpoint_public_access_cidrs            = each.value.cluster.endpoint_public_access_cidrs
+  source                                        = "./modules/eks-automode"
+  pjname                                        = local.pjname
+  region                                        = var.region
+  vpc_id                                        = module.vpc.vpc_id
+  vpc_cidr                                      = var.vpc.vpc_cidr
+  public_subnet_ids                             = module.vpc.public_subnets
+  private_subnet_ids                            = module.vpc.private_subnets
+  create_iam_resources                          = var.create_iam_resources
+  cluster_name                                  = each.value.cluster.name
+  cluster_version                               = each.value.cluster.version
+  cluster_node_pools                            = each.value.cluster.node_pools
+  cluster_endpoint_private_access               = each.value.cluster.endpoint_private_access
+  cluster_endpoint_public_access                = each.value.cluster.endpoint_public_access
+  cluster_endpoint_public_access_cidrs          = each.value.cluster.endpoint_public_access_cidrs
   cloudwatch_log_group_retention_in_days        = each.value.cloudwatch_log_group_retention_in_days
-  albc_security_group_cloudfront_prefix_list_id   = each.value.albc_security_group_cloudfront_prefix_list_id
-  albc_role_arn                                   = module.eks-pod-identity.albc_role_arn
+  albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
+  albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
 }
 
 module "eks-pod-identity" {

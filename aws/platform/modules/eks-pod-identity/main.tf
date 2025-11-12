@@ -2,7 +2,7 @@
 # EKS AutoModeではデフォルトで設定されるため、本モジュールの設定は利用しません
 
 module "load_balancer_controller_pod_identity" {
-  source = "terraform-aws-modules/eks-pod-identity/aws"
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "2.2.1"
 
   name                            = "${var.pjname}-LoadBalancerRole"
@@ -11,7 +11,7 @@ module "load_balancer_controller_pod_identity" {
 }
 
 module "ebs_csi_driver_pod_identity" {
-  source = "terraform-aws-modules/eks-pod-identity/aws"
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "2.2.1"
 
   name                      = "${var.pjname}-EbsCsiDriverRole"
@@ -21,7 +21,7 @@ module "ebs_csi_driver_pod_identity" {
 }
 
 module "cluster_autoscaler_pod_identity" {
-  source = "terraform-aws-modules/eks-pod-identity/aws"
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "2.2.1"
 
   name = "${var.pjname}-ClusterAutoscalerRole"

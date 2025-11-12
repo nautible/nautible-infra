@@ -26,8 +26,8 @@ locals {
 
 variable "cluster_name" {
   description = "プラグインを導入するEKSクラスタ名"
-  type       = string
-  default    = "nautible-dev-cluster-v1_34"
+  type        = string
+  default     = "nautible-dev-cluster-v1_34"
 }
 # EKS
 variable "eks" {

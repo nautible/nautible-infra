@@ -50,7 +50,7 @@ variable "vpc" {
 
 variable "eks_mode" {
   description = "EKSの運用モード。automode or nodegroup"
-  default     = "automode"
+  default     = "nodegroup"
 }
 
 variable "eks_nodegroup" {
@@ -86,7 +86,7 @@ variable "eks_nodegroup" {
       }))
       disk_size = number
     })
-    cloudwatch_log_group_retention_in_days = number
+    cloudwatch_log_group_retention_in_days        = number
     albc_security_group_cloudfront_prefix_list_id = string
   }))
 
@@ -94,26 +94,21 @@ variable "eks_nodegroup" {
     {
       # cluster
       cluster = {
-        # name
-        name = "nautible-dev-cluster-v1_32"
-        # version
-        version = "1.32"
-        # endpoint private access
-        endpoint_private_access = true
-        # endpoint public access
-        endpoint_public_access = true
-        # endpoint public access cidrs
+        name                         = "nautible-dev-cluster-v1_34"
+        version                      = "1.34"
+        endpoint_private_access      = true
+        endpoint_public_access       = true
         endpoint_public_access_cidrs = ["0.0.0.0/0"]
         # addons
         addons = {
           # coredns version
-          coredns_version = "v1.11.4-eksbuild.2"
+          coredns_version = "v1.12.4-eksbuild.1"
           # vpc-cni version
-          vpc_cni_version = "v1.19.2-eksbuild.1"
+          vpc_cni_version = "v1.20.4-eksbuild.1"
           # kube-proxy version
-          kube_proxy_version = "v1.31.3-eksbuild.2"
+          kube_proxy_version = "v1.34.0-eksbuild.5"
           # aws-ebs-csi-driver
-          ebs_csi_driver_version = "v1.38.1-eksbuild.1"
+          ebs_csi_driver_version = "v1.52.1-eksbuild.1"
         }
       }
       # nodegroup
@@ -189,13 +184,8 @@ variable "eks_automode" {
       endpoint_private_access      = bool
       endpoint_public_access       = bool
       endpoint_public_access_cidrs = list(string)
-      addons = object({
-        metrics_server_version           = string
-        kube_state_metrics_version       = string
-        prometheus_node_exporter_version = string
-      })
     })
-    cloudwatch_log_group_retention_in_days = number
+    cloudwatch_log_group_retention_in_days        = number
     albc_security_group_cloudfront_prefix_list_id = string
   }))
 
@@ -209,11 +199,6 @@ variable "eks_automode" {
         endpoint_private_access      = true
         endpoint_public_access       = true
         endpoint_public_access_cidrs = ["0.0.0.0/0"]
-        addons = {
-          metrics_server_version           = "v0.7.2-eksbuild.2"
-          kube_state_metrics_version       = "v2.14.0-eksbuild.1"
-          prometheus_node_exporter_version = "v1.8.2-eksbuild.2"
-        }
       }
       cloudwatch_log_group_retention_in_days = 30
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
