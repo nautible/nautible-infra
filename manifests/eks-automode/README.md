@@ -13,7 +13,7 @@ EKS AutoModeではNodeClass、NodePoolの２つのマニフェストで生成す
 
 ※ nautible-infraのデフォルトパラメータではgeneral-purposeノードプールは作成しません
 
-systemノードプールはアドオン用、general-purposeノードプールはアドオン以外の通常のPod用として定義されています。上記組込以外のNodeClass、NodePoolを利用する場合は独自にマニフェストをデプロイする必要があります。
+systemノードプールはコアなアドオン用、general-purposeノードプールはコアなアドオン以外の通常のPod用として定義されています。上記組込以外のNodeClass、NodePoolを利用する場合は独自にマニフェストをデプロイする必要があります。
 
 例として、開発環境用に低コストのノード（Spotインスタンス）を割り当てるNodePoolを導入します。
 
