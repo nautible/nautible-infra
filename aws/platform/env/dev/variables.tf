@@ -53,7 +53,7 @@ variable "eks_mode" {
   default     = "automode"
 }
 
-variable "eks" {
+variable "eks_nodegroup" {
   description = "EKS設定"
   type = list(object({
     cluster = object({
@@ -69,12 +69,6 @@ variable "eks" {
         ebs_csi_driver_version = string
       })
     })
-    fargate_selectors = list(object({
-      namespace = string
-      labels = object({
-        nodetype = string
-      })
-    }))
     node_group = object({
       desired_size               = number
       max_size                   = number
@@ -92,6 +86,7 @@ variable "eks" {
       }))
       disk_size = number
     })
+    cloudwatch_log_group_retention_in_days = number
     albc_security_group_cloudfront_prefix_list_id = string
   }))
 
@@ -121,15 +116,6 @@ variable "eks" {
           ebs_csi_driver_version = "v1.38.1-eksbuild.1"
         }
       }
-      # fargate namespaces
-      fargate_selectors = [
-        {
-          namespace = "nautible-app-ms"
-          labels = {
-            nodetype = "fargate"
-          }
-        }
-      ]
       # nodegroup
       node_group = {
         # desired size
@@ -186,6 +172,7 @@ variable "eks" {
           }
         ]
       }
+      cloudwatch_log_group_retention_in_days = 30
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
     }
@@ -208,6 +195,7 @@ variable "eks_automode" {
         prometheus_node_exporter_version = string
       })
     })
+    cloudwatch_log_group_retention_in_days = number
     albc_security_group_cloudfront_prefix_list_id = string
   }))
 
@@ -215,9 +203,9 @@ variable "eks_automode" {
     {
       # cluster
       cluster = {
-        name                         = "nautible-dev-cluster-v1_32"
-        version                      = "1.32"
-        node_pools                   = ["system", "general-purpose"]
+        name                         = "nautible-dev-cluster-v1_34"
+        version                      = "1.34"
+        node_pools                   = ["system"]
         endpoint_private_access      = true
         endpoint_public_access       = true
         endpoint_public_access_cidrs = ["0.0.0.0/0"]
@@ -227,6 +215,7 @@ variable "eks_automode" {
           prometheus_node_exporter_version = "v1.8.2-eksbuild.2"
         }
       }
+      cloudwatch_log_group_retention_in_days = 30
       # AWS LoadBalancerControlelr security group cloudfront prefix list id
       albc_security_group_cloudfront_prefix_list_id = "pl-58a04531"
     }

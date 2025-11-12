@@ -5,11 +5,11 @@ module "vpc" {
   private_subnet_cidrs = var.vpc.private_subnet_cidrs
   public_subnet_cidrs  = var.vpc.public_subnet_cidrs
   nat_instance_type    = var.vpc.nat_instance_type
-  eks_cluster_names    = var.eks.*.cluster.name
+  eks_cluster_names    = toset(local.eks_cluster_names)
 }
 
 module "eks" {
-  for_each = { for i in var.eks : i.cluster.name => i }
+  for_each = var.eks_mode == "nodegroup" ? { for i in var.eks_nodegroup : i.cluster.name => i } : {}
 
   source                                        = "./modules/eks"
   pjname                                        = local.pjname
@@ -28,7 +28,7 @@ module "eks" {
   cluster_addons_vpc_cni_version                = each.value.cluster.addons.vpc_cni_version
   cluster_addons_kube_proxy_version             = each.value.cluster.addons.kube_proxy_version
   cluster_addons_ebs_csi_driver_version         = each.value.cluster.addons.ebs_csi_driver_version
-  fargate_selectors                             = each.value.fargate_selectors
+  cloudwatch_log_group_retention_in_days        = each.value.cloudwatch_log_group_retention_in_days
   ng_desired_size                               = each.value.node_group.desired_size
   ng_max_size                                   = each.value.node_group.max_size
   ng_min_size                                   = each.value.node_group.min_size
@@ -46,7 +46,7 @@ module "eks" {
 }
 
 module "eks_automode" {
-  for_each = { for i in var.eks_automode : i.cluster.name => i }
+  for_each = var.eks_mode == "automode" ? { for i in var.eks_automode : i.cluster.name => i } : {}
 
   source                                          = "./modules/eks-automode"
   pjname                                          = local.pjname
@@ -62,9 +62,7 @@ module "eks_automode" {
   cluster_endpoint_private_access                 = each.value.cluster.endpoint_private_access
   cluster_endpoint_public_access                  = each.value.cluster.endpoint_public_access
   cluster_endpoint_public_access_cidrs            = each.value.cluster.endpoint_public_access_cidrs
-  cluster_addons_metrics_server_version           = each.value.cluster.addons.metrics_server_version
-  cluster_addons_kube_state_metrics_version       = each.value.cluster.addons.kube_state_metrics_version
-  cluster_addons_prometheus_node_exporter_version = each.value.cluster.addons.prometheus_node_exporter_version
+  cloudwatch_log_group_retention_in_days        = each.value.cloudwatch_log_group_retention_in_days
   albc_security_group_cloudfront_prefix_list_id   = each.value.albc_security_group_cloudfront_prefix_list_id
   albc_role_arn                                   = module.eks-pod-identity.albc_role_arn
 }
