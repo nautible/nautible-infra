@@ -3,6 +3,7 @@
 
 module "load_balancer_controller_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.2.1"
 
   name                            = "${var.pjname}-LoadBalancerRole"
   attach_aws_lb_controller_policy = true
@@ -11,6 +12,7 @@ module "load_balancer_controller_pod_identity" {
 
 module "ebs_csi_driver_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.2.1"
 
   name                      = "${var.pjname}-EbsCsiDriverRole"
   attach_aws_ebs_csi_policy = true
@@ -20,6 +22,7 @@ module "ebs_csi_driver_pod_identity" {
 
 module "cluster_autoscaler_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.2.1"
 
   name = "${var.pjname}-ClusterAutoscalerRole"
 

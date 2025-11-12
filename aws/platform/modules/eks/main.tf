@@ -2,16 +2,17 @@ data "aws_caller_identity" "self" {}
 
 module "eks" {
   source                                   = "terraform-aws-modules/eks/aws"
-  version                                  = "20.31.6"
-  cluster_version                          = var.cluster_version
-  cluster_name                             = var.cluster_name
+  version                                  = "21.8.0"
+
+  kubernetes_version                       = var.cluster_version
+  name                                     = var.cluster_name
   subnet_ids                               = var.private_subnet_ids
   vpc_id                                   = var.vpc_id
-  cluster_endpoint_private_access          = var.cluster_endpoint_private_access
-  cluster_endpoint_public_access           = var.cluster_endpoint_public_access
-  cluster_endpoint_public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
-  cluster_security_group_name              = "${var.cluster_name}-eks-cp-sg"
-  cluster_security_group_use_name_prefix   = false
+  endpoint_private_access          = var.cluster_endpoint_private_access
+  endpoint_public_access           = var.cluster_endpoint_public_access
+  endpoint_public_access_cidrs     = var.cluster_endpoint_public_access_cidrs
+  security_group_name              = "${var.cluster_name}-eks-cp-sg"
+  security_group_use_name_prefix   = false
   node_security_group_name                 = "${var.cluster_name}-eks-node-common-sg"
   node_security_group_use_name_prefix      = false
   iam_role_name                            = "${var.cluster_name}-AmazonEKSClusterRole"
@@ -19,7 +20,16 @@ module "eks" {
   authentication_mode                      = "API_AND_CONFIG_MAP"
   enable_cluster_creator_admin_permissions = true
 
-  cluster_addons = {
+  cloudwatch_log_group_class             = "STANDARD"
+  cloudwatch_log_group_retention_in_days = var.cloudwatch_log_group_retention_in_days
+  enabled_log_types = [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler",
+  ]
+  addons = {
     coredns = {
       name                        = "coredns"
       resolve_conflicts_on_create = "OVERWRITE"
@@ -49,24 +59,17 @@ module "eks" {
     eks-pod-identity-agent = {}
   }
 
-  eks_managed_node_group_defaults = {
-    ami_type                               = var.ng_ami_type
-    ami_id                                 = var.ng_ami_id
-    disk_size                              = var.ng_disk_size
-    update_launch_template_default_version = true
-    iam_role_name                          = "${var.cluster_name}-AmazonEKSNodeRole"
-    iam_role_use_name_prefix               = false
-    security_group_use_name_prefix         = false
-    network_interfaces = [
-      {
-        delete_on_termination = true
-      }
-    ]
-  }
-
   eks_managed_node_groups = {
     "eks-default-node" = {
-      security_group_name        = "${var.cluster_name}-eks-default-node-sg"
+      ami_type                               = var.ng_ami_type
+      ami_id                                 = var.ng_ami_id
+      disk_size                              = var.ng_disk_size
+      update_launch_template_default_version = true
+      iam_role_name                          = "${var.cluster_name}-AmazonEKSNodeRole"
+      iam_role_use_name_prefix               = false
+      security_group_name                    = "${var.cluster_name}-eks-default-node-sg"
+      security_group_use_name_prefix         = false
+
       desired_size               = var.ng_desired_size
       max_size                   = var.ng_max_size
       min_size                   = var.ng_min_size
@@ -75,10 +78,16 @@ module "eks" {
       bootstrap_extra_args       = var.ng_enable_bootstrap_user_data
       pre_bootstrap_user_data    = var.ng_pre_bootstrap_user_data
       cloudinit_pre_nodeadm      = var.ng_cloudinit_pre_nodeadm
+
+      network_interfaces = [
+        {
+          delete_on_termination = true
+        }
+      ]
     }
   }
 
-  cluster_security_group_additional_rules = {
+  security_group_additional_rules = {
     ingress_node_all = {
       description                = "Node to cluster all ports/protocols ingress"
       protocol                   = "-1"
