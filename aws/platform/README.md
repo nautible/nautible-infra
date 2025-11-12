@@ -16,10 +16,12 @@ platform
   │
   ├─env     ・・・環境毎のディレクトリ。基本的にvariablesに定義する値だけ環境毎に変えることでコントロールする。
   │  ├─dev
-  │  │   │  main.tf
+  │  │   ├─ main.tf
+  │  │   ├─ outputs.tf    ・・・出力値
   │  │   └─ variables.tf　・・・開発用の設定値
   │  └─prod
-  │      │  main.tf
+  │  │   ├─ main.tf
+  │  │   ├─ outputs.tf    ・・・出力値
   │      └─ variables.tf　・・・本番用の設定値
   │
   └─modules　　・・・各種リソースのまとまりでmodule化
@@ -32,24 +34,25 @@ platform
       ├─tool             ・・・ツール類
       └─vpc              ・・・vpc関連のリソースのmodule
 
-AWS-S3
-  │  
-  └─{プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
-      └─nautible-dev-platform.tfstate        ・・・Terraformのtfstate
-
   ※プロジェクト名、環境名、リージョンはinit実行時に指定
-
-AWS-Dynamodb
-  │
-  └─nautible-dev-tfstate-lock           ・・・teffaromのtfstateのlockテーブル
 ```
 
 ※各module配下のファイルは記載を割愛
 
+### tfstateファイル
+
+S3上で管理
+
+```
+{プロジェクト名}-{環境名}-tf-{リージョン}   ・・・Terraformを管理するためのS3バケット。バージョニング有効。
+
+例）nautible-dev-platform.tfstate
+```
+
 ### 環境構築対象の主なリソース
 
 * VPC、Subnet、IGWなどAWSネットワークの基礎リソース
-* EKSクラスター、FargeteプロファイルなどAWSのマネージドなk8sリソース
+* EKS（AWSのマネージドなk8sリソース）クラスター
 * Cloudfront、s3など静的コンテンツなどを配信するためのAWSリソース
 * IAM ロール、ユーザーなどAWSIAMリソース  
 ![AWSConfig](AWSConfig.png)
@@ -98,7 +101,7 @@ AWS-Dynamodb
   * platform/env/devディレクトリで「terraform init -backend-config="bucket=<initで作成したバケット名>"」の実行
   * platform/env/devディレクトリで「terraform plan」の実行と内容の確認
   * platform/env/devディレクトリで「terraform apply」の実行
-  * IstioのIngressgatewayのロードバランサー作成後に、platform/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。
+  * IstioのIngressgatewayのロードバランサー（nautible-plugin参照）作成後に、platform/env/devのvariables.tfにロードバランサーのnameを指定してapplyを再実行(cloudfrontが追加されます)。
 
 ※prodの場合はplatform/env/devをprodに読み替えてください。
 

@@ -40,3 +40,10 @@ Terraformを使いVPC等Kubernetesを稼働させる環境の構築やKubernetes
   - [EKS上にマイクロサービスアプリケーション用リソースを構築](https://github.com/nautible/nautible-infra/tree/main/aws/app-ms/README.md)
   - [AKS上にマイクロサービスアプリケーション用リソースを構築](https://github.com/nautible/nautible-infra/tree/main/azure/app-ms/README.md)
 - [CI/CD環境構築](https://github.com/nautible/nautible-infra/tree/main/ci_cd/README.md)
+
+## 利用要件
+
+- Terraform
+  - v1.12以降
+- AWS Provider
+  - v6以降
