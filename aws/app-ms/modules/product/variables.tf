@@ -7,7 +7,6 @@ variable "private_zone_name" {}
 variable "eks_node_security_group_ids" {}
 variable "engine_version" {}
 variable "instance_class" {}
-variable "option_group_name" {}
 variable "storage_type" {}
 variable "allocated_storage" {}
 variable "parameter_family" {}

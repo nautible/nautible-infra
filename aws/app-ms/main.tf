@@ -18,7 +18,6 @@ module "product" {
   eks_node_security_group_ids = values(var.eks).*.node.security_group_id
   engine_version              = var.product.mysql.engine_version
   instance_class              = var.product.mysql.instance_class
-  option_group_name           = var.product.mysql.option_group_name
   storage_type                = var.product.mysql.storage_type
   allocated_storage           = var.product.mysql.allocated_storage
   parameter_family            = var.product.mysql.parameter_group.family

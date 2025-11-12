@@ -73,7 +73,6 @@ variable "product" {
     mysql = object({
       engine_version    = string
       instance_class    = string
-      option_group_name = string
       storage_type      = string
       allocated_storage = number
       parameter_group = object({
@@ -87,13 +86,12 @@ variable "product" {
   })
   default = {
     mysql = {
-      engine_version    = "8.0.36"
+      engine_version    = "8.4.7"
       instance_class    = "db.t3.micro"
-      option_group_name = "default:mysql-8-0"
       storage_type      = "gp2"
       allocated_storage = 5
       parameter_group = {
-        family = "mysql8.0"
+        family = "mysql8.4"
         parameters = [
           {
             name  = "character_set_client"

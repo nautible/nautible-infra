@@ -54,6 +54,18 @@ resource "aws_db_parameter_group" "product_db_dbpg" {
   }
 }
 
+resource "aws_db_option_group" "product_db_dbog" {
+  name_prefix        = "${var.pjname}-mysql-8-4-og"
+  engine_name        = "mysql"
+  major_engine_version = "8.4"
+
+  # 必要に応じてオプション設定を追加
+  # option {
+  #   option_name = "SOME_OPTION"
+  #   # ... 他の設定 ...
+  # }
+}
+
 data "aws_ssm_parameter" "product_db_user" {
   name = "nautible-app-ms-product-db-user"
 }
@@ -73,7 +85,7 @@ resource "aws_db_instance" "product_db" {
   username                  = data.aws_ssm_parameter.product_db_user.value
   password                  = data.aws_ssm_parameter.product_db_password.value
   parameter_group_name      = aws_db_parameter_group.product_db_dbpg.name
-  option_group_name         = var.option_group_name
+  option_group_name         = aws_db_option_group.product_db_dbog.name
   backup_retention_period   = 1
   skip_final_snapshot       = false
   final_snapshot_identifier = "product-db-final-snapshot"
