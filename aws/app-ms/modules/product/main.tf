@@ -86,8 +86,8 @@ resource "aws_db_instance" "product_db" {
   password                  = data.aws_ssm_parameter.product_db_password.value
   parameter_group_name      = aws_db_parameter_group.product_db_dbpg.name
   option_group_name         = aws_db_option_group.product_db_dbog.name
-  backup_retention_period   = 1
-  skip_final_snapshot       = false
+  backup_retention_period   = 0
+  skip_final_snapshot       = true
   final_snapshot_identifier = "product-db-final-snapshot"
   vpc_security_group_ids    = [aws_security_group.product_db_sg.id]
   db_subnet_group_name      = aws_db_subnet_group.product_db_dbsubnet.name
