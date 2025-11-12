@@ -11,8 +11,6 @@ variable "cluster_node_pools" {}
 variable "cluster_endpoint_private_access" {}
 variable "cluster_endpoint_public_access" {}
 variable "cluster_endpoint_public_access_cidrs" {}
-variable "cluster_addons_metrics_server_version" {}
-variable "cluster_addons_kube_state_metrics_version" {}
-variable "cluster_addons_prometheus_node_exporter_version" {}
+variable "cloudwatch_log_group_retention_in_days" {}
 variable "albc_security_group_cloudfront_prefix_list_id" {}
 variable "albc_role_arn" {}

@@ -24,6 +24,11 @@ locals {
   backend_config = jsondecode(file(".terraform/terraform.tfstate"))
 }
 
+variable "cluster_name" {
+  description = "プラグインを導入するEKSクラスタ名"
+  type       = string
+  default    = "nautible-dev-cluster-v1_34"
+}
 # EKS
 variable "eks" {
   default = {
@@ -33,6 +38,37 @@ variable "eks" {
     # 指定無しの場合は全clusterが有効。
     # excludes_cluster_names = ["nautible-dev-cluster-v1_22"]
   }
+}
+
+# EKSに追加するアドオンの設定
+# https://docs.aws.amazon.com/ja_jp/eks/latest/userguide/workloads-add-ons-available-eks.html
+# https://docs.aws.amazon.com/ja_jp/eks/latest/userguide/community-addons.html
+variable "eks_addon" {
+  description = "アドオン設定"
+  type = list(object({
+    addon_name                   = string
+    addon_version                = string
+    enable_pod_identity          = bool
+    pod_identity_service_account = string
+    service_policy_arns          = list(string)
+    statements = optional(list(object({
+      effect    = string
+      actions   = list(string)
+      resources = list(string)
+      principals = optional(list(object({
+        type        = string
+        identifiers = list(string)
+      })))
+    })))
+  }))
+  default = [{
+    addon_name                   = "amazon-cloudwatch-observability"
+    addon_version                = "v4.6.0-eksbuild.1"
+    enable_pod_identity          = true
+    pod_identity_service_account = "cloudwatch-agent"
+    statements                   = null
+    service_policy_arns          = ["arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess", "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
+  }]
 }
 
 # authのvariables。authのpluginを利用する場合は値を設定する
@@ -55,9 +91,9 @@ variable "auth" {
   default = {
     # postgresql variables
     postgres = {
-      engine_version       = "16.3"
+      engine_version       = "17.4"
       instance_class       = "db.t3.micro"
-      parameter_group_name = "default.postgres16"
+      parameter_group_name = "default.postgres17"
       storage_type         = "gp3"
       allocated_storage    = 20
     },

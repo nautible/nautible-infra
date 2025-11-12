@@ -1,3 +1,16 @@
+module "eks-addon" {
+  for_each = { for i in var.eks_addon : i.addon_name => i }
+
+  source = "./modules/eks-addon"
+  region = var.region
+  cluster_name                  = var.cluster_name
+  name                          = each.value.addon_name
+  addon_version                 = each.value.addon_version
+  enable_pod_identity           = each.value.enable_pod_identity
+  pod_identity_service_account  = each.value.pod_identity_service_account
+  service_policy_arns           = each.value.service_policy_arns
+}
+
 module "auth" {
   source                        = "./modules/auth"
   count                         = try(var.auth, "") != "" ? 1 : 0
