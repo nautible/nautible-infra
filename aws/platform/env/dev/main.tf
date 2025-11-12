@@ -8,14 +8,13 @@ terraform {
     region  = "ap-northeast-1"
     key     = "nautible-dev-platform.tfstate"
     encrypt = true
-    # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-tfstate-lock"
+    use_lockfile = true
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.96.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -28,7 +27,7 @@ module "nautible_aws_platform" {
   create_iam_resources = var.create_iam_resources
   vpc                  = var.vpc
   eks_mode             = var.eks_mode
-  eks                  = var.eks
+  eks_nodegroup        = var.eks_nodegroup
   eks_automode         = var.eks_automode
   cloudfront           = var.cloudfront
   oidc                 = var.oidc

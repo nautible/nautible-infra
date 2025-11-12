@@ -2,7 +2,7 @@
 module "nat_instance" {
   count   = var.nat_instance_type == null ? 0 : 1
   source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "5.6.0"
+  version = "6.1.4"
 
   name                        = "${var.pjname}-nat-instance"
   ami                         = data.aws_ami.nat_ami_recent[0].id

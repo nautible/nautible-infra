@@ -8,14 +8,13 @@ terraform {
     region  = "ap-northeast-1"
     key     = "nautible-dev-plugin.tfstate"
     encrypt = true
-    # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-tfstate-lock"
+    use_lockfile = true
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.66.0"
+      version = "~> 6.0"
     }
   }
 }
@@ -31,11 +30,13 @@ module "nautible_plugin" {
   project     = var.project
   environment = var.environment
   region      = var.region
+  cluster_name = var.cluster_name
   vpc = {
     vpc_id          = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.vpc_id
     private_subnets = data.terraform_remote_state.nautible_aws_platform.outputs.vpc.private_subnets
   }
   eks              = local.target_eks
+  eks_addon        = var.eks_addon
   auth             = var.auth
   external_secrets = var.external_secrets
   kong_apigateway  = var.kong_apigateway

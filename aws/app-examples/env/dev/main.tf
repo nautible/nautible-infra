@@ -8,14 +8,13 @@ terraform {
     region  = "ap-northeast-1"
     key     = "nautible-dev-app-examples.tfstate"
     encrypt = true
-    # if you don't need to dynamodb tfstate lock, comment out this line.
-    dynamodb_table = "nautible-dev-tfstate-lock"
+    use_lockfile = true
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.66.0"
+      version = "~> 6.0"
     }
   }
 }
