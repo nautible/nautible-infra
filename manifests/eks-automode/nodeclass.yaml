@@ -11,10 +11,10 @@ spec:
     throughput: 125 # Range: 125-1000
   networkPolicy: DefaultAllow
   networkPolicyEventLogs: Disabled
-  role: nautible-dev-cluster-v1_32-eks-auto-20250507004805307600000001 # FIXME ノード用ロール
+  role: nautible-dev-cluster-v1_34-eks-auto-20251112000101547000000006 # FIXME ノード用ロール
   securityGroupSelectorTerms: # FIXME ノードに付与するセキュリティグループ（タグ指定）
   - tags:
-      Name: "nautible-dev-cluster-v1_32-eks-node-common-sg"
+      Name: "nautible-dev-cluster-v1_34-eks-node-common-sg"
   snatPolicy: Random
   subnetSelectorTerms: # FIXME ノードを配置するサブネット（タグ指定）
   - tags:
