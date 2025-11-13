@@ -27,7 +27,6 @@ module "eks" {
   cluster_addons_coredns_version                = each.value.cluster.addons.coredns_version
   cluster_addons_vpc_cni_version                = each.value.cluster.addons.vpc_cni_version
   cluster_addons_kube_proxy_version             = each.value.cluster.addons.kube_proxy_version
-  cluster_addons_ebs_csi_driver_version         = each.value.cluster.addons.ebs_csi_driver_version
   cloudwatch_log_group_retention_in_days        = each.value.cloudwatch_log_group_retention_in_days
   ng_desired_size                               = each.value.node_group.desired_size
   ng_max_size                                   = each.value.node_group.max_size

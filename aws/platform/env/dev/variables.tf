@@ -66,7 +66,6 @@ variable "eks_nodegroup" {
         coredns_version        = string
         vpc_cni_version        = string
         kube_proxy_version     = string
-        ebs_csi_driver_version = string
       })
     })
     node_group = object({
@@ -104,11 +103,9 @@ variable "eks_nodegroup" {
           # coredns version
           coredns_version = "v1.12.4-eksbuild.1"
           # vpc-cni version
-          vpc_cni_version = "v1.20.4-eksbuild.1"
+          vpc_cni_version = "v1.20.4-eksbuild.2"
           # kube-proxy version
-          kube_proxy_version = "v1.34.0-eksbuild.5"
-          # aws-ebs-csi-driver
-          ebs_csi_driver_version = "v1.52.1-eksbuild.1"
+          kube_proxy_version = "v1.34.0-eksbuild.4"
         }
       }
       # nodegroup
@@ -139,7 +136,7 @@ variable "eks_nodegroup" {
         # --//
         # Content-Type: text/x-shellscript; charset="us-ascii"
         # #!/bin/bash -xe
-        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_29 --use-max-pods false --kubelet-extra-args '--max-pods=110'
+        # /etc/eks/bootstrap.sh nautible-dev-cluster-v1_34 --use-max-pods false --kubelet-extra-args '--max-pods=110'
         # --//--
         #         EOT
 
@@ -161,8 +158,6 @@ variable "eks_nodegroup" {
               kubelet:
                 config:
                   shutdownGracePeriod: 30s
-                  featureGates:
-                    DisableKubeletCloudCredentialProviders: true
           EOT
           }
         ]

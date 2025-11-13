@@ -50,12 +50,6 @@ module "eks" {
       addon_version               = var.cluster_addons_vpc_cni_version
       configuration_values        = "{\"env\":{\"ENABLE_PREFIX_DELEGATION\":\"true\", \"WARM_PREFIX_TARGET\":\"1\"}}"
     }
-    aws-ebs-csi-driver = {
-      name                        = "aws-ebs-csi-driver"
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-      addon_version               = var.cluster_addons_ebs_csi_driver_version
-    }
     eks-pod-identity-agent = {}
   }
 
