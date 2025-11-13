@@ -61,14 +61,57 @@ variable "eks_addon" {
       })))
     })))
   }))
-  default = [{
-    addon_name                   = "amazon-cloudwatch-observability"
-    addon_version                = "v4.6.0-eksbuild.1"
-    enable_pod_identity          = true
-    pod_identity_service_account = "cloudwatch-agent"
-    statements                   = null
-    service_policy_arns          = ["arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess", "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
-  }]
+  default = [
+    {
+      # EKSのタイプをNodeGroupにした場合のみ設定する
+      addon_name                   = "aws-ebs-csi-driver"
+      addon_version                = "v1.52.1-eksbuild.1"
+      enable_pod_identity          = true
+      pod_identity_service_account = "ebs-csi-controller-sa"
+      statements                   = null
+      service_policy_arns          = ["arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"]
+    },
+    {
+      addon_name                   = "amazon-cloudwatch-observability"
+      addon_version                = "v4.6.0-eksbuild.1"
+      enable_pod_identity          = true
+      pod_identity_service_account = "cloudwatch-agent"
+      statements                   = null
+      service_policy_arns          = ["arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess", "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
+    },
+    {
+      addon_name                   = "metrics-server"
+      addon_version                = "v0.8.0-eksbuild.3"
+      enable_pod_identity          = false
+      pod_identity_service_account = null
+      statements                   = null
+      service_policy_arns          = []
+    },
+    {
+      addon_name                   = "kube-state-metrics"
+      addon_version                = "v2.17.0-eksbuild.3"
+      enable_pod_identity          = false
+      pod_identity_service_account = null
+      statements                   = null
+      service_policy_arns          = []
+    },
+    {
+      addon_name                   = "prometheus-node-exporter"
+      addon_version                = "v1.10.2-eksbuild.2"
+      enable_pod_identity          = false
+      pod_identity_service_account = null
+      statements                   = null
+      service_policy_arns          = []
+    },
+    {
+      addon_name                   = "cert-manager"
+      addon_version                = "v1.19.1-eksbuild.1"
+      enable_pod_identity          = false
+      pod_identity_service_account = null
+      statements                   = null
+      service_policy_arns          = []
+    }
+  ]
 }
 
 # authのvariables。authのpluginを利用する場合は値を設定する

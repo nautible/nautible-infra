@@ -10,16 +10,6 @@ module "load_balancer_controller_pod_identity" {
   aws_lb_controller_policy_name   = "${var.pjname}-LoadBalancerPolicy"
 }
 
-module "ebs_csi_driver_pod_identity" {
-  source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.2.1"
-
-  name                      = "${var.pjname}-EbsCsiDriverRole"
-  attach_aws_ebs_csi_policy = true
-  aws_ebs_csi_policy_name   = "${var.pjname}-EbsCsiDriverPolicy"
-
-}
-
 module "cluster_autoscaler_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "2.2.1"

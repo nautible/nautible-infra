@@ -40,7 +40,6 @@ module "eks" {
   ng_cloudinit_pre_nodeadm                      = each.value.node_group.cloudinit_pre_nodeadm
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
   albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
-  csi_driver_role_arn                           = module.eks-pod-identity.csi_driver_role_arn
   autoscaler_role_arn                           = module.eks-pod-identity.autoscaler_role_arn
 }
 
