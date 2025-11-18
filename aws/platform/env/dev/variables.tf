@@ -47,14 +47,13 @@ variable "vpc" {
 }
 
 # EKS
-
 variable "eks_mode" {
-  description = "EKSの運用モード。automode or nodegroup"
-  default     = "nodegroup"
+  description = "EKSの運用モード。automode or nodegroup 推奨）automode"
+  default     = "automode"
 }
 
 variable "eks_nodegroup" {
-  description = "EKS設定"
+  description = "運用モード=nodegroup時のEKS設定"
   type = list(object({
     cluster = object({
       name                         = string
@@ -170,7 +169,7 @@ variable "eks_nodegroup" {
 }
 
 variable "eks_automode" {
-  description = "EKS設定"
+  description = "運用モード=automode時のEKS設定"
   type = list(object({
     cluster = object({
       name                         = string

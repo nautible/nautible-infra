@@ -39,8 +39,6 @@ module "eks" {
   ng_pre_bootstrap_user_data                    = each.value.node_group.pre_bootstrap_user_data
   ng_cloudinit_pre_nodeadm                      = each.value.node_group.cloudinit_pre_nodeadm
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
-  albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
-  autoscaler_role_arn                           = module.eks-pod-identity.autoscaler_role_arn
 }
 
 module "eks_automode" {
@@ -62,13 +60,6 @@ module "eks_automode" {
   cluster_endpoint_public_access_cidrs          = each.value.cluster.endpoint_public_access_cidrs
   cloudwatch_log_group_retention_in_days        = each.value.cloudwatch_log_group_retention_in_days
   albc_security_group_cloudfront_prefix_list_id = each.value.albc_security_group_cloudfront_prefix_list_id
-  albc_role_arn                                 = module.eks-pod-identity.albc_role_arn
-}
-
-module "eks-pod-identity" {
-  source = "./modules/eks-pod-identity"
-
-  pjname = local.pjname
 }
 
 module "route53" {

@@ -13,4 +13,3 @@ variable "cluster_endpoint_public_access" {}
 variable "cluster_endpoint_public_access_cidrs" {}
 variable "cloudwatch_log_group_retention_in_days" {}
 variable "albc_security_group_cloudfront_prefix_list_id" {}
-variable "albc_role_arn" {}

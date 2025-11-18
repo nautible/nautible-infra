@@ -25,5 +25,3 @@ variable "cluster_addons_vpc_cni_version" {}
 variable "cluster_addons_kube_proxy_version" {}
 variable "cloudwatch_log_group_retention_in_days" {}
 variable "albc_security_group_cloudfront_prefix_list_id" {}
-variable "albc_role_arn" {}
-variable "autoscaler_role_arn" {}
