@@ -62,15 +62,15 @@ variable "eks_addon" {
     })))
   }))
   default = [
-    {
-      # EKSのタイプをNodeGroupにした場合のみ設定する
-      addon_name                   = "aws-ebs-csi-driver"
-      addon_version                = "v1.52.1-eksbuild.1"
-      enable_pod_identity          = true
-      pod_identity_service_account = "ebs-csi-controller-sa"
-      statements                   = null
-      service_policy_arns          = ["arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"]
-    },
+    # {
+    #   # EKSのタイプをNodeGroupにした場合のみ設定する
+    #   addon_name                   = "aws-ebs-csi-driver"
+    #   addon_version                = "v1.52.1-eksbuild.1"
+    #   enable_pod_identity          = true
+    #   pod_identity_service_account = "ebs-csi-controller-sa"
+    #   statements                   = null
+    #   service_policy_arns          = ["arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"]
+    # },
     {
       addon_name                   = "amazon-cloudwatch-observability"
       addon_version                = "v4.6.0-eksbuild.1"
