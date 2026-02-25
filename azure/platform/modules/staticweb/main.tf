@@ -4,18 +4,11 @@ resource "azurerm_storage_account" "static_web_sa" {
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  dynamic "static_website" {
-    for_each = var.static_web_error_404_document == "" ? ["true"] : []
-    content {
-      index_document = var.static_web_index_document
-    }
-  }
-  dynamic "static_website" {
-    for_each = var.static_web_error_404_document != "" ? ["true"] : []
-    content {
-      index_document     = var.static_web_index_document
-      error_404_document = var.static_web_error_404_document
-    }
-  }
-  tags = {}
+  tags                     = {}
+}
+
+resource "azurerm_storage_account_static_website" "static_web" {
+  storage_account_id = azurerm_storage_account.static_web_sa.id
+  index_document     = var.static_web_index_document
+  error_404_document = var.static_web_error_404_document != "" ? var.static_web_error_404_document : null
 }

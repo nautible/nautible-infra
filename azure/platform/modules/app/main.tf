@@ -9,7 +9,7 @@ resource "azuread_application" "app" {
   }
 
   required_resource_access {
-    resource_app_id = data.azuread_service_principal.key_vault.application_id
+    resource_app_id = data.azuread_service_principal.key_vault.client_id
     dynamic "resource_access" {
       for_each = data.azuread_service_principal.key_vault.oauth2_permission_scopes
       content {
@@ -28,5 +28,5 @@ resource "azuread_application" "app" {
 }
 
 resource "azuread_service_principal" "app_sp" {
-  application_id = azuread_application.app.application_id
+  client_id = azuread_application.app.client_id
 }
