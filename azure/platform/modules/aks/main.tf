@@ -70,51 +70,85 @@ resource "azurerm_subnet_network_security_group_association" "aks_aci_subnet_nsg
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
   name                = "${var.pjname}aks"
-  kubernetes_version  = var.kubernetes_version
   location            = var.location
   resource_group_name = var.rgname
-  dns_prefix          = var.pjname
+  kubernetes_version  = var.kubernetes_version
+  dns_prefix          = var.is_private_cluster ? null : var.dns_prefix
+  dns_prefix_private_cluster = var.is_private_cluster ? var.dns_prefix : null
+  ai_toolchain_operator_enabled = false
+  automatic_upgrade_channel = var.automatic_upgrade_channel
 
-  default_node_pool {
-    orchestrator_version  = var.kubernetes_version
-    name                  = "agentpool"
-    vm_size               = var.node_vm_size
-    os_disk_size_gb       = var.node_os_disk_size_gb
-    vnet_subnet_id        = azurerm_subnet.subnet[0].id
-    enable_auto_scaling   = true
-    max_count             = var.node_max_count
-    min_count             = var.node_min_count
-    node_count            = var.node_count
-    enable_node_public_ip = false
-    node_labels           = { "nodepool" = "defaultnodepool" }
-    tags                  = merge(var.tags, { "Agent" = "defaultnodepoolagent" })
-    max_pods              = var.max_pods
-
+  dynamic "aci_connector_linux"{
+    for_each = var.enable_aci ? [1] : []
+    content {
+      subnet_name = var.aci_subnet_name
+    }
   }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  http_application_routing_enabled = false
-  azure_policy_enabled             = false
-  oms_agent {
-    log_analytics_workspace_id = azurerm_log_analytics_workspace.aks_log_aw.id
-  }
-  aci_connector_linux {
-    subnet_name = azurerm_subnet.subnet[1].name
-  }
-
-  network_profile {
-    network_plugin = "azure"
-  }
-
-  role_based_access_control_enabled = true
 
   api_server_access_profile {
     authorized_ip_ranges = var.api_server_authorized_ip_ranges
   }
 
+  http_application_routing_enabled = false
+  azure_policy_enabled             = false  
+  cost_analysis_enabled = var.sku_tier == "Free" ? false : true # SKUがStandard以上の場合、コスト分析を有効化する。Free SKUはコスト分析が利用できないため、無効化する。
+
+  dynamic "default_node_pool" {
+    for_each = var.provisioning_mode == "Auto" ? [1] : []
+    content {
+      name                  = "agentpool"
+      vm_size               = var.node_vm_size
+      os_disk_size_gb       = var.node_os_disk_size_gb
+      vnet_subnet_id        = azurerm_subnet.subnet[0].id
+      node_count             = var.node_count
+    }
+  }
+  dynamic "default_node_pool" {
+    for_each = var.provisioning_mode == "Manual" ? [1] : []
+    content {
+      name                  = "agentpool"
+      vm_size               = var.node_vm_size
+      os_disk_size_gb       = var.node_os_disk_size_gb
+      vnet_subnet_id        = azurerm_subnet.subnet[0].id
+      max_count             = var.node_max_count
+      min_count             = var.node_min_count
+      node_count            = var.node_count
+      node_labels           = { "nodepool" = "defaultnodepool" }
+      tags                  = merge(var.tags, { "Agent" = "defaultnodepoolagent" })
+      max_pods              = var.max_pods
+    }
+  }
+
+  node_provisioning_profile {
+    default_node_pools = "None"
+    mode = var.provisioning_mode
+  }
+  identity {
+    type = "SystemAssigned"
+  }
+
+
+  # ブロック名はomsのままだが、Azure Monitor Agent (AMA)拡張機能がデプロイされる
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.aks_log_aw.id
+  }
+
+  network_profile {
+    network_plugin = "azure"
+  }
+  
+  dynamic "service_mesh_profile" {
+    for_each = var.enable_service_mesh ? [1] : []
+    content {
+      mode = "Istio"
+      revisions = var.revisions
+    }
+  }
+
+  role_based_access_control_enabled = true
+
+
+  sku_tier = var.sku_tier
   tags = var.tags
 
   lifecycle {

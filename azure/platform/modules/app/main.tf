@@ -29,4 +29,10 @@ resource "azuread_application" "app" {
 
 resource "azuread_service_principal" "app_sp" {
   client_id = azuread_application.app.client_id
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      owners
+    ]
+  }
 }

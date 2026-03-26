@@ -1,9 +1,11 @@
 # Project name
 variable "pjname" {
+  description = "プロジェクト名称 ex) nautibledev"
   default = "nautibledev"
 }
 # location
 variable "location" {
+  description = "リージョン名称 ex) japaneast"
   default = "japaneast"
 }
 
@@ -15,7 +17,7 @@ variable "vnet" {
   })
   default = {
     # VNET cidr
-    vnet_cidr = "192.0.0.0/8"
+    vnet_cidr = "192.168.0.0/16"
   }
 }
 
@@ -28,6 +30,9 @@ variable "aks" {
     log_analytics_workspace_retention_in_days = number
     cluster_inbound_http_port_range           = string
     api_server_authorized_ip_ranges           = list(string)
+    enable_service_mesh                       = bool
+    revisions                                 = list(string)
+    provisioning_mode                         = string
     subnet = object({
       cidrs = list(string)
       names = list(string)
@@ -43,7 +48,7 @@ variable "aks" {
   })
   default = {
     # kubernetes version 
-    kubernetes_version = "1.27.3"
+    kubernetes_version = "1.33.6"
     # max pods
     max_pods = 110
     # log analytics workspace retention in days
@@ -52,9 +57,12 @@ variable "aks" {
     cluster_inbound_http_port_range = "80"
     # api server authorized ip ranges
     api_server_authorized_ip_ranges = []
+    enable_service_mesh = true
+    revisions = ["asm-1-28"]
+    provisioning_mode = "Auto" # "Auto" or "Manual"
     subnet = {
       # cidr
-      cidrs = ["192.168.0.0/16", "192.169.0.0/16"]
+      cidrs = ["192.168.0.0/24", "192.168.1.0/24"]
       # name
       names = ["aksdefaultnodesubnet", "aksacisubnet"]
     }

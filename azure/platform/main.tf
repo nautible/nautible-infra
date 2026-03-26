@@ -48,6 +48,8 @@ module "aks" {
   log_analytics_workspace_retention_in_days = var.aks.log_analytics_workspace_retention_in_days
   api_server_authorized_ip_ranges           = var.aks.api_server_authorized_ip_ranges
   acr_id                                    = module.acr.acr_id
+  enable_service_mesh                       = var.aks.enable_service_mesh
+  revisions                                 = var.aks.revisions
 }
 
 module "front_door" {
